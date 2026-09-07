@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient'
-import type { Order, PaginatedResponse } from '@/types'
+import type { Order, OrderWithCustomer, PaginatedResponse } from '@/types'
 
 export async function createOrder(
   order: Omit<Order, 'id' | 'created_at'>,
@@ -40,6 +40,20 @@ export async function getOrdersByCustomer(
     pageSize,
     totalPages: Math.ceil((count || 0) / pageSize),
   }
+}
+
+export async function getOrdersByDate(date: string): Promise<OrderWithCustomer[]> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      customer:customers(*)
+    `)
+    .eq('order_date', date)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data || []) as OrderWithCustomer[]
 }
 
 export async function getRecentOrders(
