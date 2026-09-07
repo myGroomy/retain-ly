@@ -3,11 +3,20 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { MagnifyingGlass, UsersThree, ArrowRight } from '@phosphor-icons/react'
+import {
+  MagnifyingGlass,
+  UsersThree,
+  ArrowRight,
+  Calendar,
+  Funnel,
+  X,
+  Phone,
+  ShoppingBag,
+} from '@phosphor-icons/react'
 import { getCustomersWithStats, searchCustomers } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
-import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { fadeUp } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats, RetentionStatus } from '@/types'
 
@@ -21,6 +30,11 @@ export default function CustomerListPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<RetentionStatus | 'all'>('all')
 
+  // Date Filter State
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
+  const [showDateFilter, setShowDateFilter] = useState(false)
+
   const loadCustomers = useCallback(async () => {
     setLoading(true)
     try {
@@ -28,9 +42,7 @@ export default function CustomerListPage() {
         const result = await searchCustomers(searchQuery, page, PAGE_SIZE)
         const withStats: CustomerWithStats[] = result.data.map((c) => ({
           ...c,
-          order_count: 0,
-          last_order_date: c.first_order_date,
-          retention_status: getRetentionStatus(c.first_order_date, DEFAULT_THRESHOLDS),
+          retention_status: getRetentionStatus(c.last_order_date, DEFAULT_THRESHOLDS),
         }))
         setCustomers(withStats)
         setTotalPages(result.totalPages)
@@ -54,7 +66,12 @@ export default function CustomerListPage() {
 
   useEffect(() => { loadCustomers() }, [loadCustomers])
 
-  const filtered = filter === 'all' ? customers : customers.filter((c) => c.retention_status === filter)
+  const filtered = customers.filter((c) => {
+    if (filter !== 'all' && c.retention_status !== filter) return false
+    if (dateFrom && c.last_order_date < dateFrom) return false
+    if (dateTo && c.last_order_date > dateTo) return false
+    return true
+  })
 
   const getInitials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2)
   const getDaysSince = (date: string) => Math.floor((Date.now() - new Date(date).getTime()) / 86400000)
@@ -89,27 +106,89 @@ export default function CustomerListPage() {
     { key: 'churned' as const, label: 'Churned', count: counts.churned },
   ]
 
+  const hasDateFilter = Boolean(dateFrom || dateTo)
+
   return (
-    <main className="mx-auto w-full max-w-5xl px-5 py-8 sm:px-6 md:py-12">
+    <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 md:py-10 pb-28 md:pb-20">
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6">
         <span className="eyebrow">Database</span>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Daftar Customer</h1>
-        <p className="mt-2 text-sm text-ash">{total} customer terdaftar</p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Daftar Customer</h1>
+        <p className="mt-1.5 text-xs text-ash sm:text-sm">{total} customer terdaftar dalam database</p>
       </motion.div>
 
-      {/* Search */}
-      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-5 max-w-lg">
-        <div className="relative">
-          <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-mist" size={20} weight="light" />
-          <input
-            type="text"
-            placeholder="Cari nama atau no. telepon..."
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setPage(0) }}
-            className="field h-12 pl-11"
-          />
+      {/* Search & Date Filter Bar */}
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-5 space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[240px]">
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-mist" size={20} weight="light" />
+            <input
+              type="text"
+              placeholder="Cari nama atau no. telepon..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(0) }}
+              className="field h-12 pl-11 text-sm"
+            />
+          </div>
+          <button
+            onClick={() => setShowDateFilter((prev) => !prev)}
+            className={`flex min-h-[48px] items-center gap-2 rounded-2xl border px-4 text-xs font-semibold transition-all ${
+              hasDateFilter || showDateFilter
+                ? 'border-accent bg-accent-wash text-accent-deep'
+                : 'border-hairline bg-white text-ash hover:bg-sunken hover:text-ink'
+            }`}
+          >
+            <Funnel size={16} weight="bold" />
+            <span>Filter Tanggal</span>
+            {hasDateFilter && (
+              <span className="flex h-2 w-2 rounded-full bg-accent" />
+            )}
+          </button>
         </div>
+
+        {/* Date Range Selector */}
+        {showDateFilter && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="doppel-outer"
+          >
+            <div className="doppel-inner p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-ink">Filter Berdasarkan Order Terakhir</span>
+                {hasDateFilter && (
+                  <button
+                    onClick={() => { setDateFrom(''); setDateTo('') }}
+                    className="flex items-center gap-1 text-xs text-rose-600 hover:underline"
+                  >
+                    <X size={13} weight="bold" /> Reset Tanggal
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="mb-1 block text-[11px] font-semibold text-ash">Dari Tanggal</label>
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="field h-10 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-[11px] font-semibold text-ash">Sampai Tanggal</label>
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className="field h-10 text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Filter Chips */}
@@ -118,7 +197,7 @@ export default function CustomerListPage() {
           <button
             key={f.key}
             onClick={() => { setFilter(f.key); setPage(0) }}
-            className={`group flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-500 active:scale-[0.98] ${
+            className={`group flex min-h-[38px] flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-300 active:scale-[0.98] ${
               filter === f.key
                 ? 'bg-accent text-white shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]'
                 : 'border border-hairline bg-white text-ash hover:bg-sunken hover:text-ink'
@@ -132,7 +211,7 @@ export default function CustomerListPage() {
         ))}
       </motion.div>
 
-      {/* Customer List */}
+      {/* Customer Grid/List */}
       <div className="space-y-3">
         {loading && [1, 2, 3].map((i) => (
           <div key={i} className="animate-pulse">
@@ -150,39 +229,48 @@ export default function CustomerListPage() {
           </div>
         ))}
 
-        <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="space-y-3">
+        <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="grid grid-cols-1 gap-3">
           {!loading && filtered.map((customer) => {
             const status = customer.retention_status
             const days = getDaysSince(customer.last_order_date)
             const favCh = getFavChannel(customer)
             return (
               <Link key={customer.id} href={`/app/customers/${customer.id}`} className="group block">
-                <div className="doppel-outer transition-all duration-500 group-hover:-translate-y-0.5">
-                  <div className="doppel-inner flex items-center justify-between gap-4 p-4 sm:p-5">
-                    <div className="flex items-center gap-3.5">
-                      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xs font-semibold ${getAvatarStyle(status)}`}>
-                        {getInitials(customer.name)}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-ink">{customer.name}</span>
-                          <span className={`rounded-full border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${getStatusStyle(status)}`}>
-                            {status === 'at_risk' ? `${days}d` : status === 'churned' ? `${days}d` : getRetentionLabel(status)}
-                          </span>
+                <div className="doppel-outer transition-all duration-300 group-hover:-translate-y-0.5">
+                  <div className="doppel-inner p-4 sm:p-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      {/* Left info */}
+                      <div className="flex items-start gap-3.5 min-w-0">
+                        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xs font-semibold ${getAvatarStyle(status)}`}>
+                          {getInitials(customer.name)}
                         </div>
-                        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ash">
-                          <span className="font-mono">{customer.phone_normalized}</span>
-                          <span>&middot;</span>
-                          <span>{customer.order_count}x order</span>
-                          {favCh && <><span>&middot;</span><span>{favCh}</span></>}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-semibold text-ink truncate">{customer.name}</span>
+                            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${getStatusStyle(status)}`}>
+                              {status === 'at_risk' ? `${days}d Risk` : status === 'churned' ? `${days}d Churned` : getRetentionLabel(status)}
+                            </span>
+                          </div>
+
+                          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ash">
+                            <span className="font-mono text-ink-soft">{customer.phone_normalized}</span>
+                            <span>&middot;</span>
+                            <span className="font-semibold text-accent">{customer.order_count}x order</span>
+                            {favCh && <><span>&middot;</span><span className="rounded bg-sunken px-1.5 py-0.5 text-[10px] text-ink-soft">{favCh}</span></>}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-right text-xs text-ash">
-                        {days === 0 ? 'Hari ini' : days === 1 ? 'Kemarin' : `${days}h lalu`}
+
+                      {/* Right info (Dates) */}
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 border-hairline pt-2.5 sm:pt-0 text-xs text-ash gap-1 shrink-0">
+                        <div className="flex items-center gap-1 text-[11px]">
+                          <Calendar size={13} className="text-accent" />
+                          <span>Order Terakhir: <strong className="text-ink">{customer.last_order_date}</strong></span>
+                        </div>
+                        <div className="text-[10px] text-mist">
+                          Pertama: {customer.first_order_date}
+                        </div>
                       </div>
-                      <ArrowRight size={16} weight="bold" className="text-mist transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-accent" />
                     </div>
                   </div>
                 </div>
