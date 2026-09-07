@@ -70,7 +70,7 @@ export function CustomerDetailPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+    <>
       <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
         <div className="flex items-center w-full px-6 h-14 max-w-3xl mx-auto gap-4">
           <Link to="/app/customers" className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-500 hover:bg-zinc-100 active:scale-[0.96] transition-all">
@@ -233,6 +233,6 @@ export function CustomerDetailPage() {
           </button>
         </div>
       </motion.div>
-    </div>
+    </>
   )
 }

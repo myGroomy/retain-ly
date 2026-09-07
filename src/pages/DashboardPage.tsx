@@ -41,7 +41,7 @@ export function DashboardPage() {
   const repeatRate = total > 0 ? Math.round((customers.filter((c) => c.order_count > 1).length / total) * 100) : 0
 
   return (
-    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+    <>
       <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
         <div className="flex justify-between items-center w-full px-6 h-14 max-w-5xl mx-auto">
           <div>
@@ -177,6 +177,6 @@ export function DashboardPage() {
           </div>
         </motion.div>
       </main>
-    </div>
+    </>
   )
 }

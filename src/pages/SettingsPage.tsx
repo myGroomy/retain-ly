@@ -6,7 +6,7 @@ export function SettingsPage() {
   const [template, setTemplate] = useState('Halo {nama}, terima kasih sudah order di toko kami! Ada yang bisa kami bantu?')
 
   return (
-    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+    <>
       <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
         <div className="flex justify-between items-center w-full px-6 h-14 max-w-3xl mx-auto">
           <div>
@@ -87,6 +87,6 @@ export function SettingsPage() {
           Simpan Perubahan
         </button>
       </main>
-    </div>
+    </>
   )
 }
