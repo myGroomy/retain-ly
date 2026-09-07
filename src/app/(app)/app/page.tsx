@@ -18,6 +18,7 @@ import { findCustomerByPhone, createCustomer } from '@/services/customerService'
 import { createOrder } from '@/services/orderService'
 import { normalizePhone } from '@/utils/normalizePhone'
 import { FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 import type { ChannelType, Customer } from '@/types'
 
 const CHANNELS = [
@@ -36,6 +37,7 @@ const fadeUp = {
 }
 
 export default function InputOrderPage() {
+  const ready = useMounted()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<Customer[]>([])
@@ -174,7 +176,7 @@ export default function InputOrderPage() {
         </motion.div>
       )}
 
-      <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-8">
+      <motion.div variants={fadeUp} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-8">
         <span className="eyebrow">Rekam Transaksi</span>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Input Order</h1>
         <p className="mt-2 text-sm text-ash">Cari pelanggan, atau daftarkan yang baru</p>
@@ -183,7 +185,7 @@ export default function InputOrderPage() {
       {/* Combined search */}
       <div className="doppel-outer">
         <div className="doppel-inner p-4 sm:p-5">
-          <motion.div variants={fadeUp} initial="hidden" animate="show" className="relative">
+          <motion.div variants={fadeUp} initial="hidden" animate={ready ? 'show' : 'hidden'} className="relative">
             <div className="relative">
               <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-mist" size={20} weight="light" />
               <input

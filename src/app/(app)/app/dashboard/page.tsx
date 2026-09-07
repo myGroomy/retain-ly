@@ -7,9 +7,11 @@ import { getCustomersWithStats } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { DEFAULT_THRESHOLDS } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats } from '@/types'
 
 export default function DashboardPage() {
+  const ready = useMounted()
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -56,7 +58,7 @@ export default function DashboardPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-6 md:py-12">
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-10">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10">
         <span className="eyebrow">Overview</span>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Dashboard Retensi</h1>
         <p className="mt-2 text-sm text-ash">Pemetaan kesehatan seluruh basis customer</p>
@@ -71,7 +73,7 @@ export default function DashboardPage() {
             variants={fadeUp}
             custom={i + 1}
             initial="hidden"
-            animate="show"
+            animate={ready ? 'show' : 'hidden'}
             className="md:col-span-3"
           >
             <div className="doppel-outer h-full">
@@ -94,7 +96,7 @@ export default function DashboardPage() {
         ))}
 
         {/* Segmentation — col-span-7 */}
-        <motion.div variants={fadeUp} custom={5} initial="hidden" animate="show" className="md:col-span-7">
+        <motion.div variants={fadeUp} custom={5} initial="hidden" animate={ready ? 'show' : 'hidden'} className="md:col-span-7">
           <div className="doppel-outer h-full">
             <div className="doppel-inner flex h-full flex-col p-6 sm:p-7">
               <h2 className="text-lg font-semibold text-ink">Segmentasi Customer</h2>
@@ -125,7 +127,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Follow-up needed — col-span-5 */}
-        <motion.div variants={fadeUp} custom={6} initial="hidden" animate="show" className="md:col-span-5">
+        <motion.div variants={fadeUp} custom={6} initial="hidden" animate={ready ? 'show' : 'hidden'} className="md:col-span-5">
           <div className="doppel-outer h-full">
             <div className="doppel-inner flex h-full flex-col p-6 sm:p-7">
               <div className="flex items-center justify-between">

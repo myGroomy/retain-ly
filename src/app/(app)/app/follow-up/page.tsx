@@ -9,9 +9,11 @@ import { buildWaLink } from '@/utils/waLinkBuilder'
 import { downloadVCard, downloadBulkVCard } from '@/utils/vcardGenerator'
 import { DEFAULT_THRESHOLDS } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats } from '@/types'
 
 export default function FollowUpPage() {
+  const ready = useMounted()
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
   const [loading, setLoading] = useState(true)
   const [checked, setChecked] = useState<Set<string>>(new Set())
@@ -54,7 +56,7 @@ export default function FollowUpPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-5 py-8 sm:px-6 md:py-12">
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-10 flex flex-wrap items-start justify-between gap-4">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10 flex flex-wrap items-start justify-between gap-4">
         <div>
           <span className="eyebrow">Jadwal Harian</span>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Follow-up</h1>
@@ -71,7 +73,7 @@ export default function FollowUpPage() {
         )}
       </motion.div>
 
-      <motion.div variants={fadeUp} custom={1} initial="hidden" animate="show" className="space-y-3">
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'} className="space-y-3">
         {customers.map((c) => {
           const isChecked = checked.has(c.id)
           const days = Math.floor((Date.now() - new Date(c.last_order_date).getTime()) / 86400000)

@@ -8,8 +8,10 @@ import { getOrdersByCustomer } from '@/services/orderService'
 import { DEFAULT_THRESHOLDS } from '@/constants'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 
 export default function ExportPage() {
+  const ready = useMounted()
   const [loading, setLoading] = useState(false)
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
@@ -80,13 +82,13 @@ export default function ExportPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-5 py-8 sm:px-6 md:py-12">
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-10">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10">
         <span className="eyebrow">Backup</span>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Export Data</h1>
         <p className="mt-2 text-sm text-ash">Backup data ke CSV</p>
       </motion.div>
 
-      <motion.div variants={fadeUp} custom={1} initial="hidden" animate="show">
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'}>
         <div className="doppel-outer">
           <div className="doppel-inner p-5 sm:p-7">
             <h2 className="text-base font-semibold text-ink">Pilih Data Export</h2>

@@ -6,8 +6,10 @@ import { motion } from 'framer-motion'
 import { Storefront, ArrowRight, ArrowLeft } from '@phosphor-icons/react'
 import { supabase } from '@/services/supabaseClient'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 
 export default function LoginPage() {
+  const ready = useMounted()
   const [username, setUsername] = useState('')
   const [pin, setPin] = useState(['', '', '', '', '', ''])
   const [loading, setLoading] = useState(false)
@@ -62,7 +64,7 @@ export default function LoginPage() {
           <Link href="/" className="group flex items-center gap-2.5">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
+              animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.6, ease: FLUID_EASE }}
               className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] ring-1 ring-hairline"
             >
@@ -78,24 +80,24 @@ export default function LoginPage() {
       <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 32, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
+          animate={ready ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 32, scale: 0.98 }}
           transition={{ duration: 1, ease: FLUID_EASE }}
           className="w-full max-w-[26rem]"
         >
           <div className="mb-10 text-center">
-            <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-5 flex justify-center">
+            <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-5 flex justify-center">
               <span className="eyebrow">Terminal Kasir</span>
             </motion.div>
             <motion.h1
               variants={fadeUp}
               custom={1}
               initial="hidden"
-              animate="show"
+              animate={ready ? 'show' : 'hidden'}
               className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
             >
               Selamat datang kembali
             </motion.h1>
-            <motion.p variants={fadeUp} custom={2} initial="hidden" animate="show" className="mt-3 text-sm text-ash">
+            <motion.p variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-3 text-sm text-ash">
               Login untuk merekam order & follow-up pelanggan
             </motion.p>
           </div>
@@ -103,7 +105,7 @@ export default function LoginPage() {
           <div className="doppel-outer">
             <div className="doppel-inner p-6 sm:p-8">
               <form className="space-y-6" onSubmit={handleLogin}>
-                <motion.div variants={fadeUp} custom={3} initial="hidden" animate="show">
+                <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'}>
                   <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash" htmlFor="username">
                     Username
                   </label>
@@ -119,7 +121,7 @@ export default function LoginPage() {
                   />
                 </motion.div>
 
-                <motion.div variants={fadeUp} custom={4} initial="hidden" animate="show">
+                <motion.div variants={fadeUp} custom={4} initial="hidden" animate={ready ? 'show' : 'hidden'}>
                   <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">PIN (6 Digit)</label>
                   <div className="flex items-center justify-between gap-2">
                     {pin.map((digit, i) => (
@@ -149,7 +151,7 @@ export default function LoginPage() {
                   </motion.div>
                 )}
 
-                <motion.div variants={fadeUp} custom={5} initial="hidden" animate="show">
+                <motion.div variants={fadeUp} custom={5} initial="hidden" animate={ready ? 'show' : 'hidden'}>
                   <button
                     type="submit"
                     disabled={loading}
@@ -176,7 +178,7 @@ export default function LoginPage() {
             variants={fadeUp}
             custom={6}
             initial="hidden"
-            animate="show"
+            animate={ready ? 'show' : 'hidden'}
             className="mt-8 text-center"
           >
             <Link

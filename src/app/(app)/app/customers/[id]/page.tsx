@@ -12,9 +12,11 @@ import { buildWaLink } from '@/utils/waLinkBuilder'
 import { downloadVCard } from '@/utils/vcardGenerator'
 import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats, Order } from '@/types'
 
 export default function CustomerDetailPage() {
+  const ready = useMounted()
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
@@ -81,7 +83,7 @@ export default function CustomerDetailPage() {
         variants={fadeUp}
         custom={0}
         initial="hidden"
-        animate="show"
+        animate={ready ? 'show' : 'hidden'}
         onClick={() => router.back()}
         className="group mb-10 inline-flex items-center gap-2 text-sm font-medium text-ash transition-colors duration-300 hover:text-ink"
       >
@@ -90,7 +92,7 @@ export default function CustomerDetailPage() {
       </motion.button>
 
       {/* Profile Card */}
-      <motion.div variants={fadeUp} custom={1} initial="hidden" animate="show">
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'}>
         <div className="doppel-outer">
           <div className="doppel-inner p-6 sm:p-7">
             <div className="flex items-start justify-between gap-4">
@@ -122,7 +124,7 @@ export default function CustomerDetailPage() {
       </motion.div>
 
       {/* Stats Grid */}
-      <motion.div variants={fadeUp} custom={2} initial="hidden" animate="show" className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
+      <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
         {stats.map((s) => (
           <div key={s.label} className="doppel-outer">
             <div className="doppel-inner p-4 sm:p-5">
@@ -138,7 +140,7 @@ export default function CustomerDetailPage() {
       </motion.div>
 
       {/* Order History */}
-      <motion.div variants={fadeUp} custom={3} initial="hidden" animate="show" className="mt-10">
+      <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-10">
         <h3 className="mb-3 text-base font-semibold text-ink">Riwayat Transaksi</h3>
         <div className="space-y-3">
           {orders.map((order) => {
@@ -174,7 +176,7 @@ export default function CustomerDetailPage() {
       </motion.div>
 
       {/* Recommendation */}
-      <motion.div variants={fadeUp} custom={4} initial="hidden" animate="show" className="mt-4">
+      <motion.div variants={fadeUp} custom={4} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-4">
         <div className="rounded-3xl border border-hairline bg-white p-5">
           <div className="flex items-start gap-3">
             <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-amber/10 text-amber-600">

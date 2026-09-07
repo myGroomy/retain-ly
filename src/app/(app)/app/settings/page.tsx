@@ -4,8 +4,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FloppyDisk, Info, Gear } from '@phosphor-icons/react'
 import { fadeUp } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 
 export default function SettingsPage() {
+  const ready = useMounted()
   const [activeDays, setActiveDays] = useState(30)
   const [atRiskDays, setAtRiskDays] = useState(60)
   const [template, setTemplate] = useState('Halo {nama}, terima kasih sudah order di toko kami! Ada yang bisa kami bantu?')
@@ -13,7 +15,7 @@ export default function SettingsPage() {
   return (
     <main className="mx-auto w-full max-w-3xl px-5 py-8 sm:px-6 md:py-12">
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-10">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10">
         <span className="eyebrow">Preferensi</span>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Settings</h1>
         <p className="mt-2 text-sm text-ash">Konfigurasi retensi & preferensi</p>
@@ -21,7 +23,7 @@ export default function SettingsPage() {
 
       <div className="space-y-5">
         {/* Threshold */}
-        <motion.div variants={fadeUp} custom={1} initial="hidden" animate="show">
+        <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <div className="doppel-outer">
             <div className="doppel-inner p-5 sm:p-7">
               <div className="mb-6 flex items-center gap-3">
@@ -64,7 +66,7 @@ export default function SettingsPage() {
         </motion.div>
 
         {/* Template */}
-        <motion.div variants={fadeUp} custom={2} initial="hidden" animate="show">
+        <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <div className="doppel-outer">
             <div className="doppel-inner p-5 sm:p-7">
               <h2 className="text-base font-semibold text-ink">Template Pesan WhatsApp</h2>
@@ -84,7 +86,7 @@ export default function SettingsPage() {
         </motion.div>
 
         {/* Channels */}
-        <motion.div variants={fadeUp} custom={3} initial="hidden" animate="show">
+        <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <div className="doppel-outer">
             <div className="doppel-inner p-5 sm:p-7">
               <h2 className="text-base font-semibold text-ink">Channel Order</h2>
@@ -101,7 +103,7 @@ export default function SettingsPage() {
         </motion.div>
 
         {/* Save */}
-        <motion.div variants={fadeUp} custom={4} initial="hidden" animate="show">
+        <motion.div variants={fadeUp} custom={4} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <button className="group flex h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-700 hover:-translate-y-px active:scale-[0.98]"
             style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
           >

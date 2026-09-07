@@ -8,9 +8,11 @@ import { getCustomersWithStats, searchCustomers } from '@/services/customerServi
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
+import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats, RetentionStatus } from '@/types'
 
 export default function CustomerListPage() {
+  const ready = useMounted()
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -90,14 +92,14 @@ export default function CustomerListPage() {
   return (
     <main className="mx-auto w-full max-w-5xl px-5 py-8 sm:px-6 md:py-12">
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-10">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10">
         <span className="eyebrow">Database</span>
         <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Daftar Customer</h1>
         <p className="mt-2 text-sm text-ash">{total} customer terdaftar</p>
       </motion.div>
 
       {/* Search */}
-      <motion.div variants={fadeUp} custom={1} initial="hidden" animate="show" className="mb-5 max-w-lg">
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-5 max-w-lg">
         <div className="relative">
           <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-mist" size={20} weight="light" />
           <input
@@ -111,7 +113,7 @@ export default function CustomerListPage() {
       </motion.div>
 
       {/* Filter Chips */}
-      <motion.div variants={fadeUp} custom={2} initial="hidden" animate="show" className="mb-6 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+      <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {filters.map((f) => (
           <button
             key={f.key}
@@ -148,7 +150,7 @@ export default function CustomerListPage() {
           </div>
         ))}
 
-        <motion.div variants={fadeUp} custom={3} initial="hidden" animate="show" className="space-y-3">
+        <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="space-y-3">
           {!loading && filtered.map((customer) => {
             const status = customer.retention_status
             const days = getDaysSince(customer.last_order_date)
