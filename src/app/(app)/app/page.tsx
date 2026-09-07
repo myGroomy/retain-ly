@@ -158,7 +158,7 @@ export default function InputOrderPage() {
     }
   }
 
-  const showDropdown = !selectedCustomer && (results.length > 0 || (query.length >= 2 && !searching))
+  const showDropdown = !selectedCustomer && !isCreatingNew && (results.length > 0 || (query.length >= 2 && !searching))
   const canSubmit = (selectedCustomer || (isCreatingNew && newName.trim() && newPhone.trim())) && !loading
 
   return (
@@ -305,9 +305,18 @@ export default function InputOrderPage() {
           >
             <div className="doppel-outer">
               <div className="doppel-inner p-4 sm:p-5">
-                <div className="mb-4 flex items-center gap-2">
-                  <UserPlus size={18} weight="duotone" className="text-accent" />
-                  <span className="text-base font-semibold text-ink">Pelanggan Baru</span>
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <UserPlus size={18} weight="duotone" className="text-accent" />
+                    <span className="text-base font-semibold text-ink">Pelanggan Baru</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsCreatingNew(false)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-mist transition-colors hover:bg-sunken hover:text-ink"
+                  >
+                    <X size={16} weight="bold" />
+                  </button>
                 </div>
                 <div className="space-y-4">
                   <div>
