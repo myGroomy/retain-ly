@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { getCustomersWithStats } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { DEFAULT_THRESHOLDS } from '@/constants'
 import type { CustomerWithStats } from '@/types'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+}
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.08 } },
+}
 
 export function DashboardPage() {
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
@@ -47,25 +57,41 @@ export function DashboardPage() {
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-6 pb-24 md:pb-8 space-y-6">
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           {[
             { label: 'Total Customer', value: total, icon: 'group', accent: 'text-zinc-900' },
             { label: 'Repeat Rate', value: `${repeatRate}%`, icon: 'repeat', accent: 'text-green-600' },
             { label: 'At Risk', value: counts.at_risk, icon: 'warning', accent: 'text-amber-600' },
             { label: 'Churned', value: counts.churned, icon: 'person_off', accent: 'text-red-500' },
           ].map((s) => (
-            <div key={s.label} className="bg-white rounded-xl border border-zinc-100 p-5">
+            <motion.div
+              key={s.label}
+              variants={fadeUp}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-xl border border-zinc-100 p-5"
+            >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{s.label}</span>
                 <span className={`material-symbols-outlined text-[18px] ${s.accent}`}>{s.icon}</span>
               </div>
               <div className={`text-3xl font-bold tracking-tight ${s.accent}`}>{s.value}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Segmentation */}
-        <div className="bg-white rounded-xl border border-zinc-100 p-6">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="bg-white rounded-xl border border-zinc-100 p-6"
+        >
           <h2 className="text-base font-semibold text-zinc-900 mb-5">Segmentasi Customer</h2>
           <div className="space-y-4">
             {([
@@ -83,18 +109,26 @@ export function DashboardPage() {
                   <span className="text-sm font-semibold text-zinc-900">{s.count}</span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-zinc-100 overflow-hidden">
-                  <div
-                    className={`h-full ${s.color} rounded-full transition-all duration-500`}
-                    style={{ width: total > 0 ? `${(s.count / total) * 100}%` : '0%' }}
-                  ></div>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: total > 0 ? `${(s.count / total) * 100}%` : '0%' }}
+                    transition={{ duration: 0.8, delay: 0.5, ease: 'easeOut' }}
+                    className={`h-full ${s.color} rounded-full`}
+                  ></motion.div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Follow-up needed */}
-        <div className="bg-white rounded-xl border border-zinc-100 p-6">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.4, delay: 0.4 }}
+          className="bg-white rounded-xl border border-zinc-100 p-6"
+        >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-semibold text-zinc-900">Perlu Follow-up</h2>
             <span className="text-xs text-zinc-400">{counts.at_risk + counts.churned} customer</span>
@@ -104,10 +138,16 @@ export function DashboardPage() {
               .filter((c) => c.retention_status !== 'active')
               .sort((a, b) => new Date(a.last_order_date).getTime() - new Date(b.last_order_date).getTime())
               .slice(0, 5)
-              .map((c) => {
+              .map((c, i) => {
                 const days = Math.floor((Date.now() - new Date(c.last_order_date).getTime()) / 86400000)
                 return (
-                  <div key={c.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-50 transition-colors">
+                  <motion.div
+                    key={c.id}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.5 + i * 0.05 }}
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-50 transition-colors"
+                  >
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold ${
                         c.retention_status === 'at_risk'
@@ -128,14 +168,14 @@ export function DashboardPage() {
                     }`}>
                       {getRetentionLabel(c.retention_status)}
                     </span>
-                  </div>
+                  </motion.div>
                 )
               })}
             {customers.filter((c) => c.retention_status !== 'active').length === 0 && (
               <p className="py-8 text-center text-sm text-zinc-400">Semua customer aktif</p>
             )}
           </div>
-        </div>
+        </motion.div>
       </main>
     </div>
   )

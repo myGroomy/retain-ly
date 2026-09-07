@@ -1,9 +1,15 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { getCustomersWithStats, searchCustomers } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
 import type { CustomerWithStats, RetentionStatus } from '@/types'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 },
+}
 
 export function CustomerListPage() {
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
@@ -92,7 +98,12 @@ export function CustomerListPage() {
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-6 pb-24 md:pb-8">
         {/* Search */}
-        <div className="mb-5">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-5"
+        >
           <div className="relative w-full max-w-lg">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
               <span className="material-symbols-outlined text-[18px]">search</span>
@@ -105,10 +116,15 @@ export function CustomerListPage() {
               className="w-full h-11 pl-10 pr-4 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:ring-0 transition-all"
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Filter Chips */}
-        <div className="flex items-center gap-2 mb-5 overflow-x-auto no-scrollbar pb-1">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="flex items-center gap-2 mb-5 overflow-x-auto no-scrollbar pb-1"
+        >
           {([
             { key: 'all' as const, label: 'Semua', count: total },
             { key: 'active' as const, label: 'Active', count: counts.active },
@@ -130,7 +146,7 @@ export function CustomerListPage() {
               }`}>{f.count}</span>
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Customer List */}
         <div className="space-y-2">
@@ -146,41 +162,48 @@ export function CustomerListPage() {
             </div>
           ))}
 
-          {!loading && filtered.map((customer) => {
+          {!loading && filtered.map((customer, i) => {
             const status = customer.retention_status
             const days = getDaysSince(customer.last_order_date)
             const favCh = getFavChannel(customer)
             return (
-              <Link
+              <motion.div
                 key={customer.id}
-                to={`/app/customers/${customer.id}`}
-                className="block bg-white border border-zinc-100 rounded-xl p-4 hover:shadow-md hover:shadow-zinc-100/50 transition-all duration-200"
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
+                transition={{ duration: 0.25, delay: i * 0.03 }}
               >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xs font-semibold ${getAvatarStyle(status)}`}>
-                      {getInitials(customer.name)}
+                <Link
+                  to={`/app/customers/${customer.id}`}
+                  className="block bg-white border border-zinc-100 rounded-xl p-4 hover:shadow-md hover:shadow-zinc-100/50 transition-all duration-200"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xs font-semibold ${getAvatarStyle(status)}`}>
+                        {getInitials(customer.name)}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-semibold text-zinc-900">{customer.name}</span>
+                          <span className={`text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${getStatusStyle(status)}`}>
+                            {status === 'at_risk' ? `${days}d` : status === 'churned' ? `${days}d` : getRetentionLabel(status)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs text-zinc-400 mt-0.5">
+                          <span className="font-mono text-zinc-500">{customer.phone_normalized}</span>
+                          <span>&middot;</span>
+                          <span>{customer.order_count}x order</span>
+                          {favCh && <><span>&middot;</span><span>{favCh}</span></>}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-zinc-900">{customer.name}</span>
-                        <span className={`text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${getStatusStyle(status)}`}>
-                          {status === 'at_risk' ? `${days}d` : status === 'churned' ? `${days}d` : getRetentionLabel(status)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs text-zinc-400 mt-0.5">
-                        <span className="font-mono text-zinc-500">{customer.phone_normalized}</span>
-                        <span>&middot;</span>
-                        <span>{customer.order_count}x order</span>
-                        {favCh && <><span>&middot;</span><span>{favCh}</span></>}
-                      </div>
+                    <div className="text-right text-xs text-zinc-400">
+                      {days === 0 ? 'Hari ini' : days === 1 ? 'Kemarin' : `${days}h lalu`}
                     </div>
                   </div>
-                  <div className="text-right text-xs text-zinc-400">
-                    {days === 0 ? 'Hari ini' : days === 1 ? 'Kemarin' : `${days}h lalu`}
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </motion.div>
             )
           })}
 

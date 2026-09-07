@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { getCustomersWithStats } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { buildWaLink } from '@/utils/waLinkBuilder'
 import { downloadVCard, downloadBulkVCard } from '@/utils/vcardGenerator'
 import { DEFAULT_THRESHOLDS } from '@/constants'
 import type { CustomerWithStats } from '@/types'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 },
+}
 
 export function FollowUpPage() {
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
@@ -64,11 +70,18 @@ export function FollowUpPage() {
       </header>
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-6 pb-24 md:pb-8 space-y-2">
-        {customers.map((c) => {
+        {customers.map((c, i) => {
           const isChecked = checked.has(c.id)
           const days = Math.floor((Date.now() - new Date(c.last_order_date).getTime()) / 86400000)
           return (
-            <div key={c.id} className={`bg-white border border-zinc-100 rounded-xl p-4 flex items-center justify-between transition-all ${isChecked ? 'opacity-40' : ''}`}>
+            <motion.div
+              key={c.id}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.25, delay: i * 0.03 }}
+              className={`bg-white border border-zinc-100 rounded-xl p-4 flex items-center justify-between transition-all ${isChecked ? 'opacity-40' : ''}`}
+            >
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => toggleCheck(c.id)}
@@ -106,7 +119,7 @@ export function FollowUpPage() {
                   <span className="material-symbols-outlined text-[14px]">person_add</span>
                 </button>
               </div>
-            </div>
+            </motion.div>
           )
         })}
         {customers.length === 0 && (

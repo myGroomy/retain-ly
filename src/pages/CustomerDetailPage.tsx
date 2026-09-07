@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { getCustomerById } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
@@ -7,6 +8,11 @@ import { buildWaLink } from '@/utils/waLinkBuilder'
 import { downloadVCard } from '@/utils/vcardGenerator'
 import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
 import type { CustomerWithStats, Order } from '@/types'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+}
 
 export function CustomerDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -76,7 +82,13 @@ export function CustomerDetailPage() {
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-6 pb-32 md:pb-8 space-y-5">
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl border border-zinc-100 p-5">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.4 }}
+          className="bg-white rounded-2xl border border-zinc-100 p-5"
+        >
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-zinc-900">{customer.name}</h2>
@@ -103,10 +115,15 @@ export function CustomerDetailPage() {
               {customer.order_count}x Order
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="grid grid-cols-2 gap-3"
+        >
           {[
             { label: 'Total Order', value: `${customer.order_count}x`, icon: 'shopping_bag' },
             { label: 'Channel Favorit', value: fav?.label || 'N/A', icon: 'restaurant' },
@@ -122,16 +139,26 @@ export function CustomerDetailPage() {
               {s.sub && <div className="text-xs text-zinc-400 mt-0.5">{s.sub}</div>}
             </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Order History */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
           <h3 className="text-sm font-semibold text-zinc-900 mb-3">Riwayat Transaksi</h3>
           <div className="space-y-2">
-            {orders.map((order) => {
+            {orders.map((order, i) => {
               const ch = CHANNELS.find((c) => c.id === order.channel)
               return (
-                <div key={order.id} className="bg-white border border-zinc-100 rounded-xl p-3.5 hover:shadow-sm transition-shadow">
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.25, delay: 0.3 + i * 0.04 }}
+                  className="bg-white border border-zinc-100 rounded-xl p-3.5 hover:shadow-sm transition-shadow"
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-zinc-50 flex items-center justify-center">
@@ -149,15 +176,20 @@ export function CustomerDetailPage() {
                       <span className="text-xs text-zinc-400">Selesai</span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )
             })}
             {orders.length === 0 && <p className="py-8 text-center text-sm text-zinc-400">Belum ada riwayat order</p>}
           </div>
-        </div>
+        </motion.div>
 
         {/* Recommendation */}
-        <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="bg-zinc-50 border border-zinc-200 rounded-xl p-4"
+        >
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-zinc-500 text-[18px] mt-0.5">lightbulb</span>
             <div>
@@ -172,11 +204,16 @@ export function CustomerDetailPage() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </main>
 
       {/* Fixed bottom CTA */}
-      <div className="fixed bottom-16 md:bottom-0 left-0 md:left-60 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-zinc-100 z-30">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
+        className="fixed bottom-16 md:bottom-0 left-0 md:left-60 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-zinc-100 z-30"
+      >
         <div className="w-full max-w-3xl mx-auto flex items-center gap-3">
           <a
             href={buildWaLink(customer.phone_normalized, customer.name)}
@@ -195,7 +232,7 @@ export function CustomerDetailPage() {
             vCard
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

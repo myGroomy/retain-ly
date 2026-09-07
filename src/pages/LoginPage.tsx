@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { supabase } from '@/services/supabaseClient'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+}
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
@@ -47,7 +53,12 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-zinc-100">
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-zinc-100"
+      >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
@@ -56,16 +67,28 @@ export function LoginPage() {
             <span className="text-lg font-semibold tracking-tight">Retain-ly</span>
           </Link>
         </div>
-      </nav>
+      </motion.nav>
 
       <main className="flex-1 flex items-center justify-center px-6 pt-16">
-        <div className="w-full max-w-sm">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="w-full max-w-sm"
+        >
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold tracking-tight mb-2">Masuk ke Terminal Kasir</h1>
             <p className="text-sm text-zinc-500">Gunakan kredensial outlet Anda</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-sm">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-white rounded-2xl border border-zinc-200 p-6 shadow-sm"
+          >
             <form className="space-y-5" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-1.5" htmlFor="email">Email</label>
@@ -84,8 +107,11 @@ export function LoginPage() {
                 <label className="block text-sm font-medium text-zinc-700 mb-1.5">PIN (6 Digit)</label>
                 <div className="flex items-center justify-between gap-2">
                   {pin.map((digit, i) => (
-                    <input
+                    <motion.input
                       key={i}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.4 + i * 0.05 }}
                       id={`pin-${i}`}
                       type="password"
                       maxLength={1}
@@ -101,9 +127,13 @@ export function LoginPage() {
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700"
+                >
                   {error}
-                </div>
+                </motion.div>
               )}
 
               <button
@@ -121,12 +151,12 @@ export function LoginPage() {
                 )}
               </button>
             </form>
-          </div>
+          </motion.div>
 
           <p className="text-center text-sm text-zinc-400 mt-6">
             <Link to="/" className="hover:text-zinc-600 transition-colors">&larr; Kembali ke beranda</Link>
           </p>
-        </div>
+        </motion.div>
       </main>
     </div>
   )
