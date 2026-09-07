@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Storefront,
   Basket,
@@ -12,7 +13,12 @@ import {
   Gear,
   SignOut,
   DotOutline,
+  List,
+  X,
+  FileCsv,
+  DownloadSimple,
 } from '@phosphor-icons/react'
+import { getAppSettings } from '@/utils/appSettings'
 import type { ReactNode } from 'react'
 
 interface User {
@@ -28,14 +34,15 @@ const NAV_ITEMS = [
   { href: '/app/settings', icon: Gear, label: 'Settings' },
 ]
 
-function NavLink({ href, icon: Icon, label }: { href: string; icon: React.ElementType; label: string }) {
+function NavLink({ href, icon: Icon, label, onClick }: { href: string; icon: React.ElementType; label: string; onClick?: () => void }) {
   const pathname = usePathname()
   const isActive = pathname === href
 
   return (
     <Link
       href={href}
-      className={`group relative flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm transition-all duration-500 active:scale-[0.98] ${
+      onClick={onClick}
+      className={`group relative flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm transition-all duration-300 active:scale-[0.98] ${
         isActive
           ? 'bg-white font-semibold text-accent shadow-[0_2px_8px_-4px_rgba(47,108,255,0.4)] ring-1 ring-hairline'
           : 'text-ash hover:bg-sunken hover:text-ink'
@@ -50,18 +57,18 @@ function NavLink({ href, icon: Icon, label }: { href: string; icon: React.Elemen
   )
 }
 
-function Sidebar({ user, onLogout }: { user: User | null; onLogout: () => void }) {
+function Sidebar({ user, storeName, onLogout }: { user: User | null; storeName: string; onLogout: () => void }) {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col p-4 md:flex">
       <div className="doppel-outer flex-1 rounded-[2rem]">
         <div className="doppel-inner flex h-full flex-col justify-between rounded-[calc(2rem-0.375rem)]">
           <div className="flex flex-col gap-6 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent text-white shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]">
                 <Storefront size={22} weight="fill" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-semibold text-ink">Cabang Senopati</div>
+                <div className="truncate text-sm font-semibold text-ink">{storeName}</div>
                 <div className="mt-0.5 flex items-center gap-1.5">
                   <DotOutline size={14} weight="fill" className="text-emerald" />
                   <span className="text-xs font-semibold text-emerald">Online</span>
@@ -73,6 +80,14 @@ function Sidebar({ user, onLogout }: { user: User | null; onLogout: () => void }
               {NAV_ITEMS.map((item) => (
                 <NavLink key={item.href} {...item} />
               ))}
+              {/* Export Link in Sidebar */}
+              <Link
+                href="/app/export"
+                className="group relative flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm text-ash transition-all duration-300 hover:bg-sunken hover:text-ink active:scale-[0.98]"
+              >
+                <FileCsv size={20} weight="duotone" className="text-accent" />
+                <span>Export Data CSV</span>
+              </Link>
             </nav>
           </div>
 
@@ -142,6 +157,13 @@ function BottomNav({ onLogout }: { onLogout: () => void }) {
 export default function AppLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
+  const [storeName, setStoreName] = useState('Cabang Senopati')
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  const syncSettings = () => {
+    const s = getAppSettings()
+    setStoreName(s.storeName)
+  }
 
   useEffect(() => {
     const stored = localStorage.getItem('retainly_user')
@@ -150,6 +172,11 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       return
     }
     setUser(JSON.parse(stored))
+    syncSettings()
+
+    const handleSettingsEvent = () => syncSettings()
+    window.addEventListener('retainly_settings_changed', handleSettingsEvent)
+    return () => window.removeEventListener('retainly_settings_changed', handleSettingsEvent)
   }, [router])
 
   const handleLogout = () => {
@@ -159,7 +186,99 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="sky-hero grain relative min-h-[100dvh] md:pl-64">
-      <Sidebar user={user} onLogout={handleLogout} />
+      {/* Top Navbar Header with Hamburg Menu */}
+      <header className="sticky top-0 z-40 border-b border-hairline bg-white/80 backdrop-blur-md">
+        <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-white md:hidden">
+              <Storefront size={18} weight="fill" />
+            </div>
+            <div>
+              <span className="text-sm font-semibold text-ink">{storeName}</span>
+              <div className="flex items-center gap-1">
+                <DotOutline size={12} weight="fill" className="text-emerald" />
+                <span className="text-[10px] font-semibold text-emerald">Online</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Hamburg Menu Button */}
+          <button
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-hairline bg-white text-ink transition-all hover:bg-sunken active:scale-95"
+            title="Menu Utama"
+          >
+            {menuOpen ? <X size={20} weight="bold" /> : <List size={22} weight="bold" />}
+          </button>
+        </div>
+      </header>
+
+      {/* Hamburg Menu Overlay Drawer */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+              className="fixed inset-0 z-50 bg-ink/20 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="fixed top-16 right-4 z-50 w-72 overflow-hidden"
+            >
+              <div className="doppel-outer">
+                <div className="doppel-inner p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-hairline pb-3 px-1">
+                    <div>
+                      <div className="text-sm font-semibold text-ink">{storeName}</div>
+                      <div className="text-xs text-ash">{user?.username} ({user?.role || 'Kasir'})</div>
+                    </div>
+                    <button
+                      onClick={() => setMenuOpen(false)}
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-mist hover:bg-sunken hover:text-ink"
+                    >
+                      <X size={16} weight="bold" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-1">
+                    {NAV_ITEMS.map((item) => (
+                      <NavLink key={item.href} {...item} onClick={() => setMenuOpen(false)} />
+                    ))}
+
+                    <Link
+                      href="/app/export"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold text-accent bg-accent-wash/60 transition-all hover:bg-accent-wash"
+                    >
+                      <FileCsv size={20} weight="duotone" />
+                      <span>Export Data (CSV / Excel)</span>
+                    </Link>
+                  </div>
+
+                  <div className="border-t border-hairline pt-3">
+                    <button
+                      onClick={() => { setMenuOpen(false); handleLogout() }}
+                      className="flex w-full items-center gap-2.5 rounded-2xl px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose/10 transition-colors"
+                    >
+                      <SignOut size={16} weight="bold" />
+                      <span>Keluar (Logout)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <Sidebar user={user} storeName={storeName} onLogout={handleLogout} />
       <main className="relative pb-28 md:pb-10">{children}</main>
       <BottomNav onLogout={handleLogout} />
     </div>

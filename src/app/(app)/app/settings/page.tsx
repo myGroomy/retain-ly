@@ -1,114 +1,240 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { FloppyDisk, Info, Gear } from '@phosphor-icons/react'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  FloppyDisk,
+  Info,
+  Gear,
+  Storefront,
+  WhatsappLogo,
+  Plus,
+  Trash,
+  Check,
+} from '@phosphor-icons/react'
+import { getAppSettings, saveAppSettings, type AppSettings } from '@/utils/appSettings'
 import { fadeUp } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 
 export default function SettingsPage() {
   const ready = useMounted()
-  const [activeDays, setActiveDays] = useState(30)
-  const [atRiskDays, setAtRiskDays] = useState(60)
-  const [template, setTemplate] = useState('Halo {nama}, terima kasih sudah order di toko kami! Ada yang bisa kami bantu?')
+  const [settings, setSettings] = useState<AppSettings>(getAppSettings())
+  const [newChannelInput, setNewChannelInput] = useState('')
+  const [savedToast, setSavedToast] = useState(false)
+
+  useEffect(() => {
+    setSettings(getAppSettings())
+  }, [])
+
+  const handleSave = () => {
+    saveAppSettings(settings)
+    setSavedToast(true)
+    setTimeout(() => setSavedToast(false), 2500)
+  }
+
+  const handleAddChannel = () => {
+    if (!newChannelInput.trim()) return
+    if (settings.customChannels.includes(newChannelInput.trim())) return
+    setSettings((prev) => ({
+      ...prev,
+      customChannels: [...prev.customChannels, newChannelInput.trim()],
+    }))
+    setNewChannelInput('')
+  }
+
+  const handleRemoveChannel = (channelName: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      customChannels: prev.customChannels.filter((c) => c !== channelName),
+    }))
+  }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-5 py-8 sm:px-6 md:py-12">
+    <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 md:py-10 pb-28 md:pb-20">
+      {/* Toast */}
+      <AnimatePresence>
+        {savedToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-white shadow-xl shadow-emerald/30"
+          >
+            <Check size={18} weight="bold" /> Pengaturan Berhasil Disimpan & Diterapkan!
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Heading */}
-      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-10">
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-8">
         <span className="eyebrow">Preferensi</span>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Settings</h1>
-        <p className="mt-2 text-sm text-ash">Konfigurasi retensi & preferensi</p>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Pengaturan Aplikasi</h1>
+        <p className="mt-1.5 text-xs text-ash sm:text-sm">Kustomisasi identitas toko, ambang retensi, channel order, dan template WhatsApp</p>
       </motion.div>
 
       <div className="space-y-5">
-        {/* Threshold */}
+        {/* Store Profile */}
         <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <div className="doppel-outer">
             <div className="doppel-inner p-5 sm:p-7">
-              <div className="mb-6 flex items-center gap-3">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-wash text-accent">
+                  <Storefront size={20} weight="duotone" />
+                </span>
+                <div>
+                  <h2 className="text-base font-semibold text-ink">Identitas Cabang / Toko</h2>
+                  <p className="mt-0.5 text-xs text-ash">Nama toko yang akan tampil pada resi, sidebar, dan template WA</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Nama Cabang / Outlet</label>
+                <input
+                  type="text"
+                  value={settings.storeName}
+                  onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
+                  placeholder="Misal: Cabang Senopati / Outlet Sudirman"
+                  className="field h-12 text-sm font-medium"
+                />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Retention Threshold */}
+        <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'}>
+          <div className="doppel-outer">
+            <div className="doppel-inner p-5 sm:p-7">
+              <div className="mb-4 flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-wash text-accent">
                   <Gear size={20} weight="duotone" />
                 </span>
                 <div>
-                  <h2 className="text-base font-semibold text-ink">Threshold Retensi</h2>
-                  <p className="mt-0.5 text-xs text-ash">Atur batas hari untuk segmentasi customer</p>
+                  <h2 className="text-base font-semibold text-ink">Threshold Retensi (Status Churn)</h2>
+                  <p className="mt-0.5 text-xs text-ash">Atur batas hari tanpa order untuk mengklasifikasikan status customer</p>
                 </div>
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Active (hari)</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Batas Active (Hari)</label>
                   <input
                     type="number"
-                    value={activeDays}
-                    onChange={(e) => setActiveDays(Number(e.target.value))}
-                    className="field h-11 bg-sunken/50"
+                    value={settings.activeDays}
+                    onChange={(e) => setSettings({ ...settings, activeDays: Number(e.target.value) || 30 })}
+                    className="field h-11 bg-sunken/50 font-semibold"
                   />
-                  <p className="mt-1.5 text-xs text-ash">0 &ndash; {activeDays} hari</p>
+                  <p className="mt-1.5 text-[11px] text-ash">0 &ndash; {settings.activeDays} hari = <strong className="text-emerald">Active</strong></p>
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">At Risk (hari)</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Batas At Risk (Hari)</label>
                   <input
                     type="number"
-                    value={atRiskDays}
-                    onChange={(e) => setAtRiskDays(Number(e.target.value))}
-                    className="field h-11 bg-sunken/50"
+                    value={settings.atRiskDays}
+                    onChange={(e) => setSettings({ ...settings, atRiskDays: Number(e.target.value) || 60 })}
+                    className="field h-11 bg-sunken/50 font-semibold"
                   />
-                  <p className="mt-1.5 text-xs text-ash">{activeDays + 1} &ndash; {atRiskDays} hari</p>
+                  <p className="mt-1.5 text-[11px] text-ash">{settings.activeDays + 1} &ndash; {settings.atRiskDays} hari = <strong className="text-amber-600">At Risk</strong></p>
                 </div>
               </div>
-              <div className="mt-5 flex items-start gap-3 rounded-2xl border border-amber/20 bg-amber/5 p-4">
+
+              <div className="mt-5 flex items-start gap-3 rounded-2xl border border-amber/20 bg-amber/5 p-3.5">
                 <Info size={18} weight="duotone" className="mt-0.5 shrink-0 text-amber-600" />
-                <p className="text-xs leading-relaxed text-ash">Customer melewati {atRiskDays} hari tanpa order akan masuk status Churned.</p>
+                <p className="text-xs leading-relaxed text-ash">
+                  Customer yang tidak melakukan transaksi lebih dari <strong>{settings.atRiskDays} hari</strong> akan otomatis dimasukkan ke status <strong className="text-rose-600">Churned</strong> di seluruh dashboard & laporan.
+                </p>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Template */}
-        <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'}>
-          <div className="doppel-outer">
-            <div className="doppel-inner p-5 sm:p-7">
-              <h2 className="text-base font-semibold text-ink">Template Pesan WhatsApp</h2>
-              <p className="mt-0.5 text-xs text-ash">Gunakan {'{nama}'} untuk menyisipkan nama customer</p>
-              <textarea
-                value={template}
-                onChange={(e) => setTemplate(e.target.value)}
-                rows={3}
-                className="field mt-4 resize-none bg-sunken/50"
-              />
-              <div className="mt-3 rounded-2xl border border-hairline bg-white p-4">
-                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-mist">Preview</p>
-                <p className="text-sm leading-relaxed text-ink-soft">{template.replace('{nama}', 'Budi Santoso')}</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Channels */}
+        {/* WhatsApp Message Template */}
         <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <div className="doppel-outer">
             <div className="doppel-inner p-5 sm:p-7">
-              <h2 className="text-base font-semibold text-ink">Channel Order</h2>
-              <p className="mt-0.5 text-xs text-ash">Platform yang tersedia untuk pencatatan order</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {['Dine-in', 'Takeaway', 'Gofood', 'Grab', 'Shopee', 'WhatsApp', 'Lainnya'].map((ch) => (
-                  <span key={ch} className="rounded-full border border-hairline bg-white px-3.5 py-1.5 text-xs font-medium text-ink-soft">
-                    {ch}
-                  </span>
-                ))}
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald/10 text-emerald">
+                  <WhatsappLogo size={20} weight="fill" />
+                </span>
+                <div>
+                  <h2 className="text-base font-semibold text-ink">Template Pesan WhatsApp Follow-up</h2>
+                  <p className="mt-0.5 text-xs text-ash">Variabel yang didukung: <code className="text-accent font-semibold">{'{nama}'}</code> dan <code className="text-accent font-semibold">{'{toko}'}</code></p>
+                </div>
+              </div>
+
+              <textarea
+                value={settings.waTemplate}
+                onChange={(e) => setSettings({ ...settings, waTemplate: e.target.value })}
+                rows={3}
+                className="field resize-none text-sm leading-relaxed"
+              />
+
+              <div className="mt-3 rounded-2xl border border-hairline bg-sunken/40 p-4">
+                <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-mist">Preview Hasil Chat WA</p>
+                <p className="text-xs leading-relaxed text-ink font-medium">
+                  {settings.waTemplate.replace('{nama}', 'Budi Santoso').replace('{toko}', settings.storeName)}
+                </p>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Save */}
+        {/* Custom Order Channels */}
         <motion.div variants={fadeUp} custom={4} initial="hidden" animate={ready ? 'show' : 'hidden'}>
-          <button className="group flex h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-700 hover:-translate-y-px active:scale-[0.98]"
+          <div className="doppel-outer">
+            <div className="doppel-inner p-5 sm:p-7">
+              <h2 className="text-base font-semibold text-ink">Channel Order Transaksi</h2>
+              <p className="mt-0.5 text-xs text-ash">Tambah atau hapus channel platform pemesanan F&B Anda</p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {settings.customChannels.map((ch) => (
+                  <span
+                    key={ch}
+                    className="flex items-center gap-2 rounded-full border border-hairline bg-white px-3.5 py-1.5 text-xs font-semibold text-ink"
+                  >
+                    <span>{ch}</span>
+                    <button
+                      onClick={() => handleRemoveChannel(ch)}
+                      className="text-mist hover:text-rose-600 transition-colors"
+                      title={`Hapus ${ch}`}
+                    >
+                      <Trash size={13} weight="bold" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-4 flex items-center gap-2">
+                <input
+                  type="text"
+                  value={newChannelInput}
+                  onChange={(e) => setNewChannelInput(e.target.value)}
+                  placeholder="Tambah channel baru (misal: TikTok Shop)..."
+                  className="field h-10 text-xs flex-1"
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddChannel() }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddChannel}
+                  className="flex h-10 items-center gap-1.5 rounded-2xl bg-accent px-4 text-xs font-semibold text-white transition-all hover:bg-accent-deep"
+                >
+                  <Plus size={14} weight="bold" />
+                  <span>Tambah</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Save Button */}
+        <motion.div variants={fadeUp} custom={5} initial="hidden" animate={ready ? 'show' : 'hidden'}>
+          <button
+            onClick={handleSave}
+            className="group flex min-h-[50px] h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98]"
             style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
           >
             <FloppyDisk size={18} weight="bold" />
-            <span>Simpan Perubahan</span>
+            <span>Simpan Semua Pengaturan</span>
           </button>
         </motion.div>
       </div>
