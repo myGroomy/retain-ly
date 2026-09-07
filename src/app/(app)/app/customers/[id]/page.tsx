@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowUUpLeft,
@@ -18,6 +19,8 @@ import {
   Check,
   X,
   FloppyDisk,
+  Plus,
+  Basket,
 } from '@phosphor-icons/react'
 import { getCustomerById, updateCustomer } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
@@ -122,34 +125,47 @@ export default function CustomerDetailPage() {
   ]
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-5 py-8 sm:px-6 md:py-12">
-      {/* Back */}
-      <motion.button
+    <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 md:py-10 pb-36 md:pb-32">
+      {/* Top Header & Actions */}
+      <motion.div
         variants={fadeUp}
         custom={0}
         initial="hidden"
         animate={ready ? 'show' : 'hidden'}
-        onClick={() => router.back()}
-        className="group mb-10 inline-flex items-center gap-2 text-sm font-medium text-ash transition-colors duration-300 hover:text-ink"
+        className="mb-6 flex items-center justify-between gap-3"
       >
-        <ArrowUUpLeft size={18} weight="bold" className="transition-transform duration-300 group-hover:-translate-x-0.5" />
-        Kembali
-      </motion.button>
+        <button
+          onClick={() => router.back()}
+          className="group inline-flex items-center gap-2 text-sm font-medium text-ash transition-colors duration-300 hover:text-ink min-h-[44px]"
+        >
+          <ArrowUUpLeft size={18} weight="bold" className="transition-transform duration-300 group-hover:-translate-x-0.5" />
+          Kembali
+        </button>
+
+        <Link
+          href="/app"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs sm:text-sm font-semibold text-white transition-all hover:bg-accent-deep active:scale-[0.98]"
+          style={{ boxShadow: '0 6px 16px -6px rgba(47, 108, 255, 0.5)' }}
+        >
+          <Plus size={16} weight="bold" />
+          <span>+ Catat Order Baru</span>
+        </Link>
+      </motion.div>
 
       {/* Profile Card */}
       <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'}>
         <div className="doppel-outer">
-          <div className="doppel-inner p-6 sm:p-7">
+          <div className="doppel-inner p-5 sm:p-7">
             {!isEditing ? (
               <>
                 <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h1 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{customer.name}</h1>
-                    <a href={`tel:${customer.phone_normalized}`} className="mt-2 inline-flex items-center gap-2 text-sm text-ash transition-colors duration-300 hover:text-accent">
-                      <Phone size={16} weight="bold" className="text-accent" />
+                  <div className="min-w-0 flex-1">
+                    <h1 className="truncate text-xl font-semibold tracking-tight text-ink sm:text-3xl">{customer.name}</h1>
+                    <a href={`tel:${customer.phone_normalized}`} className="mt-1.5 inline-flex items-center gap-2 text-sm font-mono text-ash transition-colors duration-300 hover:text-accent">
+                      <Phone size={16} weight="bold" className="text-accent shrink-0" />
                       {customer.phone_normalized}
                     </a>
-                    <div className="mt-3 flex items-center gap-2">
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
                       <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${getStatusStyle()}`}>
                         {getRetentionLabel(status)}
                       </span>
@@ -158,20 +174,20 @@ export default function CustomerDetailPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-3">
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-accent-wash text-xl font-semibold text-accent-deep">
+                  <div className="flex flex-col items-end gap-2.5 shrink-0">
+                    <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-3xl bg-accent-wash text-lg sm:text-xl font-semibold text-accent-deep">
                       {initials}
                     </div>
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="group flex items-center gap-1.5 rounded-full border border-hairline bg-white px-3 py-1.5 text-xs font-semibold text-ash transition-all duration-300 hover:bg-sunken hover:text-ink active:scale-[0.96]"
+                      className="group flex min-h-[36px] items-center gap-1.5 rounded-full border border-hairline bg-white px-3 py-1.5 text-xs font-semibold text-ash transition-all duration-300 hover:bg-sunken hover:text-ink active:scale-[0.96]"
                     >
                       <PencilSimple size={14} weight="bold" className="text-accent" />
                       Edit Kontak
                     </button>
                   </div>
                 </div>
-                <div className="mt-5 flex items-center gap-1.5 rounded-2xl border border-emerald/25 bg-emerald/10 px-3 py-2 text-xs font-medium text-emerald">
+                <div className="mt-4 flex items-center gap-1.5 rounded-2xl border border-emerald/25 bg-emerald/10 px-3 py-2 text-xs font-medium text-emerald">
                   <CheckCircle size={14} weight="fill" />
                   WA Verified
                 </div>
@@ -218,7 +234,7 @@ export default function CustomerDetailPage() {
                   <button
                     onClick={handleSaveCustomer}
                     disabled={saving}
-                    className="group flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-px active:scale-[0.98] disabled:opacity-40"
+                    className="group flex min-h-[44px] h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-xs sm:text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-px active:scale-[0.98] disabled:opacity-40"
                   >
                     {saving ? (
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -231,7 +247,7 @@ export default function CustomerDetailPage() {
                   </button>
                   <button
                     onClick={() => { setIsEditing(false); setSaveError(null) }}
-                    className="flex h-11 items-center justify-center rounded-full border border-hairline bg-white px-5 text-xs font-semibold text-ash transition-all hover:bg-sunken"
+                    className="flex min-h-[44px] h-11 items-center justify-center rounded-full border border-hairline bg-white px-5 text-xs font-semibold text-ash transition-all hover:bg-sunken"
                   >
                     Batal
                   </button>
@@ -251,7 +267,7 @@ export default function CustomerDetailPage() {
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-ash">{s.label}</span>
                 <s.icon size={16} weight="light" className="text-mist" />
               </div>
-              <div className="truncate text-sm font-semibold text-ink">{s.value}</div>
+              <div className="truncate text-sm font-semibold text-ink sm:text-base">{s.value}</div>
               {s.sub && <div className="mt-0.5 text-xs text-ash">{s.sub}</div>}
             </div>
           </div>
@@ -259,24 +275,27 @@ export default function CustomerDetailPage() {
       </motion.div>
 
       {/* Order History */}
-      <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-10">
-        <h3 className="mb-3 text-base font-semibold text-ink">Riwayat Transaksi</h3>
+      <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-8 sm:mt-10">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-semibold text-ink">Riwayat Transaksi</h3>
+          <span className="text-xs text-ash">{orders.length} order</span>
+        </div>
         <div className="space-y-3">
           {orders.map((order) => {
             const ch = CHANNELS.find((c) => c.id === order.channel)
             return (
               <div key={order.id} className="doppel-outer">
                 <div className="doppel-inner flex items-center justify-between p-4">
-                  <div className="flex items-center gap-3.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-wash text-accent">
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-accent-wash text-accent">
                       <ShoppingBag size={18} weight="duotone" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <div className="text-sm font-semibold text-ink">{order.order_date}</div>
                       <div className="text-xs text-ash">Cabang Senopati</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <span className="rounded-full border border-hairline bg-white px-3 py-1 text-[11px] font-semibold text-ink-soft">
                       {ch?.label || order.channel}
                     </span>
@@ -302,7 +321,7 @@ export default function CustomerDetailPage() {
               <Lightbulb size={18} weight="duotone" />
             </span>
             <div>
-              <div className="text-sm font-semibold text-ink">Rekomendasi</div>
+              <div className="text-sm font-semibold text-ink">Rekomendasi Retensi</div>
               <p className="mt-1 text-sm leading-relaxed text-ash">
                 {status === 'churned'
                   ? `Customer ini sudah ${days} hari tidak order. Kirim pesan WhatsApp personal untuk menawarkan promo kembali.`
@@ -316,27 +335,27 @@ export default function CustomerDetailPage() {
         </div>
       </motion.div>
 
-      {/* Fixed bottom CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-30 md:left-64">
-        <div className="mx-auto max-w-3xl p-4">
+      {/* Fixed bottom CTA — mobile optimized above bottom nav */}
+      <div className="fixed inset-x-0 bottom-20 md:bottom-0 z-30 md:left-64">
+        <div className="mx-auto max-w-3xl px-4 py-3">
           <div className="doppel-outer rounded-[1.75rem]">
-            <div className="doppel-inner flex items-center gap-3 rounded-[calc(1.75rem-0.375rem)] p-3">
+            <div className="doppel-inner flex items-center gap-2.5 rounded-[calc(1.75rem-0.375rem)] p-2.5 sm:p-3">
               <a
                 href={buildWaLink(customer.phone_normalized, customer.name)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-13 flex-1 items-center justify-center gap-3 rounded-full bg-emerald text-sm font-semibold text-white transition-all duration-700 hover:-translate-y-px active:scale-[0.98]"
+                className="group flex min-h-[48px] h-12 sm:h-13 flex-1 items-center justify-center gap-2.5 rounded-full bg-emerald text-xs sm:text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98]"
                 style={{ boxShadow: '0 8px 24px -8px rgba(16, 185, 129, 0.5)' }}
               >
                 <WhatsappLogo size={20} weight="fill" />
-                Kirim WhatsApp
+                <span>Kirim WhatsApp</span>
               </a>
               <button
                 onClick={() => downloadVCard(customer.name, customer.phone_normalized)}
-                className="flex h-13 items-center gap-2 rounded-full border border-hairline bg-white px-5 text-sm font-semibold text-ink-soft transition-all duration-500 hover:bg-sunken hover:text-ink active:scale-[0.96]"
+                className="flex min-h-[48px] h-12 sm:h-13 items-center gap-2 rounded-full border border-hairline bg-white px-4 sm:px-5 text-xs sm:text-sm font-semibold text-ink-soft transition-all duration-500 hover:bg-sunken hover:text-ink active:scale-[0.96]"
               >
                 <UserPlus size={18} weight="duotone" className="text-accent" />
-                vCard
+                <span className="hidden sm:inline">vCard</span>
               </button>
             </div>
           </div>

@@ -6,18 +6,43 @@ export async function searchCustomers(
   query: string,
   page = 0,
   pageSize = 20,
-): Promise<PaginatedResponse<Customer>> {
+): Promise<PaginatedResponse<CustomerWithStats>> {
   const { data, count, error } = await supabase
     .from('customers')
-    .select('*', { count: 'exact' })
+    .select(
+      `
+      *,
+      orders:orders(order_date, channel)
+    `,
+      { count: 'exact' },
+    )
     .or(`phone_normalized.ilike.%${query}%,name.ilike.%${query}%`)
     .order('name')
     .range(page * pageSize, (page + 1) * pageSize - 1)
 
   if (error) throw error
 
+  const customersWithStats: CustomerWithStats[] = (data || []).map((customer) => {
+    const orders = customer.orders as Array<{ order_date: string; channel: string }> | null
+    const orderCount = orders?.length || 0
+    const lastOrderDate =
+      orders && orders.length > 0
+        ? orders.reduce((latest, order) =>
+            order.order_date > latest ? order.order_date : latest,
+          orders[0].order_date,
+        )
+        : customer.first_order_date
+
+    return {
+      ...customer,
+      order_count: orderCount,
+      last_order_date: lastOrderDate,
+      retention_status: 'active' as const,
+    }
+  })
+
   return {
-    data: data || [],
+    data: customersWithStats,
     count: count || 0,
     page,
     pageSize,
@@ -34,7 +59,7 @@ export async function getCustomersWithStats(
     .select(
       `
       *,
-      orders:orders(order_date)
+      orders:orders(order_date, channel)
     `,
       { count: 'exact' },
     )
@@ -44,7 +69,7 @@ export async function getCustomersWithStats(
   if (error) throw error
 
   const customersWithStats: CustomerWithStats[] = (data || []).map((customer) => {
-    const orders = customer.orders as Array<{ order_date: string }> | null
+    const orders = customer.orders as Array<{ order_date: string; channel: string }> | null
     const orderCount = orders?.length || 0
     const lastOrderDate =
       orders && orders.length > 0
