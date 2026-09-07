@@ -2,10 +2,24 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ArrowUUpLeft, Phone, CheckCircle, ShoppingBag, ForkKnife, ClockCounterClockwise, Calendar, WhatsappLogo, UserPlus, Lightbulb } from '@phosphor-icons/react'
-import { getCustomerById } from '@/services/customerService'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  ArrowUUpLeft,
+  Phone,
+  CheckCircle,
+  ShoppingBag,
+  ForkKnife,
+  ClockCounterClockwise,
+  Calendar,
+  WhatsappLogo,
+  UserPlus,
+  Lightbulb,
+  PencilSimple,
+  Check,
+  X,
+  FloppyDisk,
+} from '@phosphor-icons/react'
+import { getCustomerById, updateCustomer } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { buildWaLink } from '@/utils/waLinkBuilder'
@@ -20,9 +34,17 @@ export default function CustomerDetailPage() {
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
+
   const [customer, setCustomer] = useState<CustomerWithStats | null>(null)
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false)
+  const [editName, setEditName] = useState('')
+  const [editPhone, setEditPhone] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   useEffect(() => { if (id) loadData() }, [id])
 
@@ -34,19 +56,42 @@ export default function CustomerDetailPage() {
       if (c) {
         const status = getRetentionStatus(c.last_order_date, DEFAULT_THRESHOLDS)
         setCustomer({ ...c, retention_status: status })
+        setEditName(c.name)
+        setEditPhone(c.phone_normalized)
       }
       setOrders(o.data)
     } catch { /* silent */ } finally { setLoading(false) }
   }
 
+  const handleSaveCustomer = async () => {
+    if (!customer) return
+    if (!editName.trim()) { setSaveError('Nama tidak boleh kosong'); return }
+    if (!editPhone.trim()) { setSaveError('Nomor HP tidak boleh kosong'); return }
+
+    setSaving(true)
+    setSaveError(null)
+    try {
+      const updated = await updateCustomer(customer.id, {
+        name: editName,
+        phone_normalized: editPhone,
+      })
+      setCustomer((prev) => prev ? { ...prev, name: updated.name, phone_normalized: updated.phone_normalized } : null)
+      setIsEditing(false)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Gagal mengubah data customer')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   if (loading) {
     return (
-      <div className="flex flex-1 items-center justify-center">
+      <div className="flex flex-1 items-center justify-center min-h-[60dvh]">
         <span className="h-6 w-6 animate-spin rounded-full border-2 border-ink/15 border-t-accent" />
       </div>
     )
   }
-  if (!customer) return <div className="flex flex-1 items-center justify-center text-ash">Customer not found</div>
+  if (!customer) return <div className="flex flex-1 items-center justify-center text-ash min-h-[60dvh]">Customer not found</div>
 
   const status = customer.retention_status
   const days = Math.floor((Date.now() - new Date(customer.last_order_date).getTime()) / 86400000)
@@ -95,30 +140,104 @@ export default function CustomerDetailPage() {
       <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'}>
         <div className="doppel-outer">
           <div className="doppel-inner p-6 sm:p-7">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{customer.name}</h1>
-                <a href={`tel:${customer.phone_normalized}`} className="mt-2 inline-flex items-center gap-2 text-sm text-ash transition-colors duration-300 hover:text-accent">
-                  <Phone size={16} weight="bold" className="text-accent" />
-                  {customer.phone_normalized}
-                </a>
-                <div className="mt-3 flex items-center gap-2">
-                  <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${getStatusStyle()}`}>
-                    {getRetentionLabel(status)}
-                  </span>
-                  <span className="rounded-full border border-hairline bg-white px-2.5 py-0.5 text-[11px] font-medium text-ash">
-                    {customer.order_count}x Order
-                  </span>
+            {!isEditing ? (
+              <>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h1 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{customer.name}</h1>
+                    <a href={`tel:${customer.phone_normalized}`} className="mt-2 inline-flex items-center gap-2 text-sm text-ash transition-colors duration-300 hover:text-accent">
+                      <Phone size={16} weight="bold" className="text-accent" />
+                      {customer.phone_normalized}
+                    </a>
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${getStatusStyle()}`}>
+                        {getRetentionLabel(status)}
+                      </span>
+                      <span className="rounded-full border border-hairline bg-white px-2.5 py-0.5 text-[11px] font-medium text-ash">
+                        {customer.order_count}x Order
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-3">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-accent-wash text-xl font-semibold text-accent-deep">
+                      {initials}
+                    </div>
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="group flex items-center gap-1.5 rounded-full border border-hairline bg-white px-3 py-1.5 text-xs font-semibold text-ash transition-all duration-300 hover:bg-sunken hover:text-ink active:scale-[0.96]"
+                    >
+                      <PencilSimple size={14} weight="bold" className="text-accent" />
+                      Edit Kontak
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-5 flex items-center gap-1.5 rounded-2xl border border-emerald/25 bg-emerald/10 px-3 py-2 text-xs font-medium text-emerald">
+                  <CheckCircle size={14} weight="fill" />
+                  WA Verified
+                </div>
+              </>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-ink">Edit Profil Customer</span>
+                  <button
+                    onClick={() => { setIsEditing(false); setSaveError(null) }}
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-mist transition-colors hover:bg-sunken hover:text-ink"
+                  >
+                    <X size={16} weight="bold" />
+                  </button>
+                </div>
+
+                {saveError && (
+                  <div className="rounded-2xl border border-rose/20 bg-rose/10 p-3 text-xs text-rose-600">
+                    {saveError}
+                  </div>
+                )}
+
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">Nama Lengkap</label>
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="field h-11"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">No. WhatsApp</label>
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    className="field h-11 font-mono"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    onClick={handleSaveCustomer}
+                    disabled={saving}
+                    className="group flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-px active:scale-[0.98] disabled:opacity-40"
+                  >
+                    {saving ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    ) : (
+                      <>
+                        <FloppyDisk size={16} weight="bold" />
+                        Simpan Perubahan
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => { setIsEditing(false); setSaveError(null) }}
+                    className="flex h-11 items-center justify-center rounded-full border border-hairline bg-white px-5 text-xs font-semibold text-ash transition-all hover:bg-sunken"
+                  >
+                    Batal
+                  </button>
                 </div>
               </div>
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-accent-wash text-xl font-semibold text-accent-deep">
-                {initials}
-              </div>
-            </div>
-            <div className="mt-5 flex items-center gap-1.5 rounded-2xl border border-emerald/25 bg-emerald/10 px-3 py-2 text-xs font-medium text-emerald">
-              <CheckCircle size={14} weight="fill" />
-              WA Verified
-            </div>
+            )}
           </div>
         </div>
       </motion.div>

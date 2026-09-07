@@ -59,6 +59,8 @@ export default function InputOrderPage() {
 
   useEffect(() => () => { if (debounceTimer) clearTimeout(debounceTimer) }, [debounceTimer])
 
+  const isPhone = (val: string) => /^\d{8,15}$/.test(val.replace(/\D/g, ''))
+
   const handleSearch = (value: string) => {
     setQuery(value)
     setSelectedCustomer(null)
@@ -88,27 +90,23 @@ export default function InputOrderPage() {
 
   const handleSelectCustomer = (customer: Customer) => {
     setSelectedCustomer(customer)
-    setQuery(`${customer.name} — ${customer.phone_normalized}`)
-    setResults([])
     setIsCreatingNew(false)
+    setQuery(`${customer.name} (${customer.phone_normalized})`)
+    setResults([])
   }
 
   const handleCreateNew = () => {
     setIsCreatingNew(true)
     setSelectedCustomer(null)
-    setNewName(query)
-    setNewPhone('')
-  }
-
-  const isPhone = (val: string) => /^\d{8,15}$/.test(val.replace(/\D/g, ''))
-
-  useEffect(() => {
-    if (query.length >= 8 && isPhone(query) && !selectedCustomer && !isCreatingNew) {
+    setResults([])
+    if (isPhone(query)) {
       setNewPhone(query)
       setNewName('')
-      setIsCreatingNew(true)
+    } else {
+      setNewName(query)
+      setNewPhone('')
     }
-  }, [query])
+  }
 
   const handleReset = () => {
     setQuery('')
@@ -160,7 +158,7 @@ export default function InputOrderPage() {
     }
   }
 
-  const showDropdown = (results.length > 0 || (query.length >= 2 && !searching))
+  const showDropdown = !selectedCustomer && (results.length > 0 || (query.length >= 2 && !searching))
   const canSubmit = (selectedCustomer || (isCreatingNew && newName.trim() && newPhone.trim())) && !loading
 
   return (

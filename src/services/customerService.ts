@@ -134,3 +134,22 @@ export async function createCustomer(
   if (error) throw error
   return data
 }
+
+export async function updateCustomer(
+  id: string,
+  updates: Partial<Pick<Customer, 'name' | 'phone_normalized'>>,
+): Promise<Customer> {
+  const payload: Partial<Pick<Customer, 'name' | 'phone_normalized'>> = {}
+  if (updates.name) payload.name = updates.name.trim()
+  if (updates.phone_normalized) payload.phone_normalized = normalizePhone(updates.phone_normalized)
+
+  const { data, error } = await supabase
+    .from('customers')
+    .update(payload)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
