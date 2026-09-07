@@ -68,26 +68,21 @@ export function ExportPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col md:pl-sidebar-width min-h-screen bg-canvas-soft">
-      <header className="sticky top-0 z-30 bg-canvas-base shadow-sm">
-        <div className="flex justify-between items-center w-full px-4 h-top-nav-height max-w-container-max-width mx-auto">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-surface-subtle flex items-center justify-center text-text-ink">
-              <span className="material-symbols-outlined">storefront</span>
-            </div>
-            <div>
-              <h1 className="font-headline-md text-headline-md font-semibold text-text-ink tracking-tight">Export Data</h1>
-              <p className="font-caption text-caption text-text-body hidden sm:block">Backup data ke CSV</p>
-            </div>
+    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+      <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
+        <div className="flex justify-between items-center w-full px-6 h-14 max-w-3xl mx-auto">
+          <div>
+            <h1 className="text-base font-semibold text-zinc-900">Export Data</h1>
+            <p className="text-xs text-zinc-400">Backup data ke CSV</p>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-form-max-width mx-auto px-4 py-4 md:py-6 pb-24 md:pb-8 space-y-5">
-        <section className="bg-surface-card border border-hairline-strong rounded-xl p-4 md:p-6 space-y-5">
+      <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-6 pb-24 md:pb-8 space-y-5">
+        <div className="bg-white rounded-2xl border border-zinc-100 p-5 md:p-6 space-y-5">
           <div>
-            <h2 className="font-headline-sm text-headline-sm text-text-ink">Pilih Data Export</h2>
-            <p className="font-caption text-caption text-text-body mt-0.5">Pilih jenis data yang ingin di-export ke CSV</p>
+            <h2 className="text-base font-semibold text-zinc-900">Pilih Data Export</h2>
+            <p className="text-xs text-zinc-400 mt-0.5">Pilih jenis data yang ingin di-export ke CSV</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -95,46 +90,46 @@ export function ExportPage() {
               onClick={() => setExportType('customers')}
               className={`p-4 rounded-xl border-2 text-left transition-all ${
                 exportType === 'customers'
-                  ? 'border-text-ink bg-surface-subtle'
-                  : 'border-hairline-strong bg-canvas-base hover:border-hairline-strong'
+                  ? 'border-zinc-900 bg-zinc-50'
+                  : 'border-zinc-200 hover:border-zinc-300'
               }`}
             >
-              <span className="material-symbols-outlined text-[24px] text-text-ink mb-2">group</span>
-              <div className="font-body-strong text-body-strong text-text-ink">Data Customer</div>
-              <div className="font-caption text-caption text-text-body mt-0.5">Daftar semua customer unik</div>
+              <span className="material-symbols-outlined text-[20px] text-zinc-700 mb-2">group</span>
+              <div className="text-sm font-semibold text-zinc-900">Data Customer</div>
+              <div className="text-xs text-zinc-400 mt-0.5">Daftar semua customer unik</div>
             </button>
             <button
               onClick={() => setExportType('orders')}
               className={`p-4 rounded-xl border-2 text-left transition-all ${
                 exportType === 'orders'
-                  ? 'border-text-ink bg-surface-subtle'
-                  : 'border-hairline-strong bg-canvas-base hover:border-hairline-strong'
+                  ? 'border-zinc-900 bg-zinc-50'
+                  : 'border-zinc-200 hover:border-zinc-300'
               }`}
             >
-              <span className="material-symbols-outlined text-[24px] text-text-ink mb-2">receipt_long</span>
-              <div className="font-body-strong text-body-strong text-text-ink">Data Order</div>
-              <div className="font-caption text-caption text-text-body mt-0.5">Riwayat semua transaksi</div>
+              <span className="material-symbols-outlined text-[20px] text-zinc-700 mb-2">receipt_long</span>
+              <div className="text-sm font-semibold text-zinc-900">Data Order</div>
+              <div className="text-xs text-zinc-400 mt-0.5">Riwayat semua transaksi</div>
             </button>
           </div>
 
           {exportType === 'orders' && (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block font-body-strong text-body-strong text-text-ink mb-1.5">Dari Tanggal</label>
+                <label className="block text-sm font-medium text-zinc-700 mb-1.5">Dari Tanggal</label>
                 <input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
-                  className="w-full h-11 px-3.5 bg-canvas-base border border-hairline-strong rounded-lg text-body-md font-body-md text-text-ink focus:border-text-ink focus:outline-none transition-colors"
+                  className="w-full h-11 px-3.5 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:border-zinc-900 focus:ring-0 focus:outline-none transition-colors"
                 />
               </div>
               <div>
-                <label className="block font-body-strong text-body-strong text-text-ink mb-1.5">Sampai Tanggal</label>
+                <label className="block text-sm font-medium text-zinc-700 mb-1.5">Sampai Tanggal</label>
                 <input
                   type="date"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
-                  className="w-full h-11 px-3.5 bg-canvas-base border border-hairline-strong rounded-lg text-body-md font-body-md text-text-ink focus:border-text-ink focus:outline-none transition-colors"
+                  className="w-full h-11 px-3.5 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:border-zinc-900 focus:ring-0 focus:outline-none transition-colors"
                 />
               </div>
             </div>
@@ -143,18 +138,18 @@ export function ExportPage() {
           <button
             onClick={handleExport}
             disabled={loading}
-            className="w-full h-12 bg-cta-black hover:bg-cta-black-active text-on-primary rounded-lg font-button text-button font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
+            className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
           >
             {loading ? (
-              <span className="inline-block w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[18px]">file_download</span>
+                <span className="material-symbols-outlined text-[16px]">file_download</span>
                 Export ke CSV
               </>
             )}
           </button>
-        </section>
+        </div>
       </main>
     </div>
   )

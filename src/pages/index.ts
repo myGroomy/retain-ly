@@ -1,3 +1,4 @@
+export { LandingPage } from './LandingPage'
 export { LoginPage } from './LoginPage'
 export { InputOrderPage } from './InputOrderPage'
 export { CustomerListPage } from './CustomerListPage'

@@ -17,7 +17,13 @@ export function DashboardPage() {
     })()
   }, [])
 
-  if (loading) return <div className="flex-1 flex items-center justify-center"><span className="material-symbols-outlined animate-spin text-text-muted">progress_activity</span></div>
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <span className="material-symbols-outlined animate-spin text-zinc-300">progress_activity</span>
+      </div>
+    )
+  }
 
   const counts = { active: 0, at_risk: 0, churned: 0 }
   customers.forEach((c) => counts[c.retention_status as keyof typeof counts]++)
@@ -25,75 +31,73 @@ export function DashboardPage() {
   const repeatRate = total > 0 ? Math.round((customers.filter((c) => c.order_count > 1).length / total) * 100) : 0
 
   return (
-    <div className="flex-1 flex flex-col md:pl-sidebar-width min-h-screen bg-canvas-soft">
-      <header className="sticky top-0 z-30 bg-canvas-base shadow-sm">
-        <div className="flex justify-between items-center w-full px-4 h-top-nav-height max-w-container-max-width mx-auto">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-surface-subtle flex items-center justify-center text-text-ink">
-              <span className="material-symbols-outlined">storefront</span>
-            </div>
-            <div>
-              <h1 className="font-headline-md text-headline-md font-semibold text-text-ink tracking-tight">Retention Dashboard</h1>
-              <p className="font-caption text-caption text-text-body hidden sm:block">Cabang Senopati • Overview</p>
-            </div>
+    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+      <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
+        <div className="flex justify-between items-center w-full px-6 h-14 max-w-5xl mx-auto">
+          <div>
+            <h1 className="text-base font-semibold text-zinc-900">Dashboard Retensi</h1>
+            <p className="text-xs text-zinc-400">Overview semua customer</p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-semantic-active-surface border border-semantic-active-border rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-semantic-active"></span>
-              <span className="font-caption text-caption text-semantic-active font-medium">Online</span>
-            </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-50 border border-green-200 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+            <span className="text-xs text-green-700 font-medium">Online</span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-container-max-width mx-auto px-4 py-4 md:py-6 pb-24 md:pb-8 space-y-5">
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-6 pb-24 md:pb-8 space-y-6">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'TOTAL CUSTOMER', value: total, icon: 'group', color: 'text-text-ink' },
-            { label: 'REPEAT RATE', value: `${repeatRate}%`, icon: 'repeat', color: 'text-semantic-active' },
-            { label: 'AT RISK', value: counts.at_risk, icon: 'warning', color: 'text-semantic-risk' },
-            { label: 'CHURNED', value: counts.churned, icon: 'person_off', color: 'text-semantic-churned' },
+            { label: 'Total Customer', value: total, icon: 'group', accent: 'text-zinc-900' },
+            { label: 'Repeat Rate', value: `${repeatRate}%`, icon: 'repeat', accent: 'text-green-600' },
+            { label: 'At Risk', value: counts.at_risk, icon: 'warning', accent: 'text-amber-600' },
+            { label: 'Churned', value: counts.churned, icon: 'person_off', accent: 'text-red-500' },
           ].map((s) => (
-            <div key={s.label} className="bg-surface-card border border-hairline-strong rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-caption-uppercase text-caption-uppercase text-text-muted">{s.label}</span>
-                <span className={`material-symbols-outlined text-[20px] ${s.color}`}>{s.icon}</span>
+            <div key={s.label} className="bg-white rounded-xl border border-zinc-100 p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{s.label}</span>
+                <span className={`material-symbols-outlined text-[18px] ${s.accent}`}>{s.icon}</span>
               </div>
-              <div className={`font-numeric-stat text-numeric-stat ${s.color}`}>{s.value}</div>
+              <div className={`text-3xl font-bold tracking-tight ${s.accent}`}>{s.value}</div>
             </div>
           ))}
-        </section>
+        </div>
 
-        <section className="bg-surface-card border border-hairline-strong rounded-xl p-4 md:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-headline-sm text-headline-sm text-text-ink">Segmentasi Customer</h2>
-          </div>
+        {/* Segmentation */}
+        <div className="bg-white rounded-xl border border-zinc-100 p-6">
+          <h2 className="text-base font-semibold text-zinc-900 mb-5">Segmentasi Customer</h2>
           <div className="space-y-4">
             {([
-              { key: 'active', label: 'Active (0-30 hari)', count: counts.active, color: 'bg-semantic-active', surface: 'bg-semantic-active-surface' },
-              { key: 'at_risk', label: 'At Risk (31-60 hari)', count: counts.at_risk, color: 'bg-semantic-risk', surface: 'bg-semantic-risk-surface' },
-              { key: 'churned', label: 'Churned (61+ hari)', count: counts.churned, color: 'bg-semantic-churned', surface: 'bg-semantic-churned-surface' },
+              { key: 'active', label: 'Active', range: '0-30 hari', count: counts.active, color: 'bg-green-500' },
+              { key: 'at_risk', label: 'At Risk', range: '31-60 hari', count: counts.at_risk, color: 'bg-amber-500' },
+              { key: 'churned', label: 'Churned', range: '61+ hari', count: counts.churned, color: 'bg-red-400' },
             ] as const).map((s) => (
               <div key={s.key}>
-                <div className="mb-1.5 flex items-center justify-between">
+                <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <span className={`w-2.5 h-2.5 rounded-full ${s.color}`}></span>
-                    <span className="font-body-sm text-body-sm text-text-ink">{s.label}</span>
+                    <span className={`w-2 h-2 rounded-full ${s.color}`}></span>
+                    <span className="text-sm text-zinc-700">{s.label}</span>
+                    <span className="text-xs text-zinc-400">{s.range}</span>
                   </div>
-                  <span className="font-body-strong text-body-strong text-text-ink">{s.count}</span>
+                  <span className="text-sm font-semibold text-zinc-900">{s.count}</span>
                 </div>
-                <div className="h-2.5 w-full rounded-full bg-surface-subtle overflow-hidden">
-                  <div className={`h-full ${s.color} rounded-full transition-all duration-500`} style={{ width: total > 0 ? `${(s.count / total) * 100}%` : '0%' }}></div>
+                <div className="h-2 w-full rounded-full bg-zinc-100 overflow-hidden">
+                  <div
+                    className={`h-full ${s.color} rounded-full transition-all duration-500`}
+                    style={{ width: total > 0 ? `${(s.count / total) * 100}%` : '0%' }}
+                  ></div>
                 </div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
-        <section className="bg-surface-card border border-hairline-strong rounded-xl p-4 md:p-6">
+        {/* Follow-up needed */}
+        <div className="bg-white rounded-xl border border-zinc-100 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-headline-sm text-headline-sm text-text-ink">Perlu Follow-up</h2>
-            <span className="font-caption text-caption text-text-muted">{counts.at_risk + counts.churned} customer</span>
+            <h2 className="text-base font-semibold text-zinc-900">Perlu Follow-up</h2>
+            <span className="text-xs text-zinc-400">{counts.at_risk + counts.churned} customer</span>
           </div>
           <div className="space-y-2">
             {customers
@@ -103,27 +107,35 @@ export function DashboardPage() {
               .map((c) => {
                 const days = Math.floor((Date.now() - new Date(c.last_order_date).getTime()) / 86400000)
                 return (
-                  <div key={c.id} className="flex items-center justify-between p-3 rounded-lg bg-surface-subtle hover:bg-hairline-default transition-colors">
+                  <div key={c.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-50 transition-colors">
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-lg border flex items-center justify-center font-headline-sm text-headline-sm text-xs ${c.retention_status === 'at_risk' ? 'bg-semantic-risk-surface border-semantic-risk-border text-semantic-risk' : 'bg-semantic-churned-surface border-semantic-churned-border text-semantic-churned'}`}>
+                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold ${
+                        c.retention_status === 'at_risk'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-red-50 text-red-600 border border-red-200'
+                      }`}>
                         {c.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                       </div>
                       <div>
-                        <div className="font-body-strong text-body-strong text-text-ink">{c.name}</div>
-                        <div className="font-caption text-caption text-text-body">{c.phone_normalized} • {days} hari lalu</div>
+                        <div className="text-sm font-medium text-zinc-900">{c.name}</div>
+                        <div className="text-xs text-zinc-400">{c.phone_normalized} &middot; {days} hari lalu</div>
                       </div>
                     </div>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase ${c.retention_status === 'at_risk' ? 'bg-semantic-risk-surface text-semantic-risk border border-semantic-risk-border' : 'bg-semantic-churned-surface text-semantic-churned border border-semantic-churned-border'}`}>
+                    <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                      c.retention_status === 'at_risk'
+                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                        : 'bg-red-50 text-red-600 border border-red-200'
+                    }`}>
                       {getRetentionLabel(c.retention_status)}
                     </span>
                   </div>
                 )
               })}
             {customers.filter((c) => c.retention_status !== 'active').length === 0 && (
-              <p className="py-6 text-center text-sm text-text-muted">Semua customer aktif</p>
+              <p className="py-8 text-center text-sm text-zinc-400">Semua customer aktif</p>
             )}
           </div>
-        </section>
+        </div>
       </main>
     </div>
   )

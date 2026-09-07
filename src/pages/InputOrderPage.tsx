@@ -88,7 +88,7 @@ export function InputOrderPage() {
 
       setShowToast(true)
       setTimeout(() => setShowToast(false), 4000)
-      setTimeout(() => navigate('/customers'), 1500)
+      setTimeout(() => navigate('/app/customers'), 1500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal menyimpan order')
     } finally {
@@ -105,300 +105,218 @@ export function InputOrderPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col md:pl-sidebar-width w-full pb-36 md:pb-12 bg-canvas-soft">
-      <header className="bg-canvas-base sticky top-0 z-30 shadow-sm md:shadow-none">
-        <div className="flex justify-between items-center w-full px-4 h-top-nav-height max-w-container-max-width mx-auto">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-surface-subtle flex items-center justify-center text-text-ink">
-              <span className="material-symbols-outlined text-[20px]">storefront</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-headline-sm text-headline-sm font-semibold text-text-ink leading-tight tracking-tight">Cabang Senopati</h1>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-semantic-active-surface border border-semantic-active-border text-semantic-active font-caption-uppercase text-caption-uppercase">
-                  <span className="w-1.5 h-1.5 rounded-full bg-semantic-active"></span>
-                  Online
-                </span>
-              </div>
-              <p className="font-caption text-caption text-text-body hidden sm:block">Jam Operasional: 09:00 - 22:00 WIB • Terminal #01</p>
-            </div>
+    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+      <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
+        <div className="flex justify-between items-center w-full px-6 h-14 max-w-3xl mx-auto">
+          <div>
+            <h1 className="text-base font-semibold text-zinc-900">Input Order</h1>
+            <p className="text-xs text-zinc-400">Rekam transaksi & data pelanggan</p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="text-right mr-1 hidden sm:block">
-              <div className="font-caption-uppercase text-caption-uppercase text-text-muted">RETENSI HARI INI</div>
-              <div className="font-headline-sm text-headline-sm font-bold text-text-ink">74.2%</div>
-            </div>
-            <button className="w-9 h-9 rounded-lg border border-hairline-strong flex items-center justify-center text-text-body hover:bg-surface-subtle active:scale-[0.96] transition-transform">
-              <span className="material-symbols-outlined text-[18px]">sync</span>
-            </button>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-50 border border-green-200 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+            <span className="text-xs text-green-700 font-medium">Online</span>
           </div>
         </div>
       </header>
 
-      <main className="w-full max-w-form-max-width mx-auto px-gutter-mobile md:px-0 pt-4 md:pt-6 space-y-4">
-        <div className="bg-surface-card rounded-xl border border-hairline-strong p-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-surface-dark flex items-center justify-center text-text-on-dark font-headline-sm text-headline-sm">
-              <span className="material-symbols-outlined">point_of_sale</span>
-            </div>
-            <div>
-              <div className="font-headline-sm text-headline-sm text-text-ink leading-tight">Input Order Cepat</div>
-              <div className="font-caption text-caption text-text-body">Rekam kontak WhatsApp & data retensi pelanggan</div>
-            </div>
-          </div>
-          <span className="bg-surface-subtle border border-hairline-strong px-2.5 py-1 rounded-full font-caption-uppercase text-caption-uppercase text-text-ink font-semibold">Shift Pagi</span>
-        </div>
-
-        <form className="bg-surface-card rounded-xl border border-hairline-strong p-4 md:p-6 space-y-5" onSubmit={handleSubmit}>
+      <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-6 pb-32 md:pb-8 space-y-5">
+        <form className="bg-white rounded-2xl border border-zinc-100 p-5 md:p-6 space-y-5" onSubmit={handleSubmit}>
+          {/* Date */}
           <div>
-            <label className="block font-body-strong text-body-strong text-text-ink mb-1.5 flex items-center justify-between">
-              <span>Tanggal Transaksi</span>
-              <span className="font-caption text-caption text-text-muted">Auto-lock shift date</span>
-            </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-3.5 text-text-body flex items-center pointer-events-none">
-                <span className="material-symbols-outlined text-[20px]">calendar_today</span>
-              </span>
-              <input
-                type="date"
-                value={orderDate}
-                onChange={(e) => setOrderDate(e.target.value)}
-                className="w-full h-11 pl-11 pr-10 bg-surface-subtle text-text-ink font-body-md text-body-md rounded-lg border border-hairline-strong focus:outline-none cursor-default font-medium"
-              />
-            </div>
+            <label className="block text-sm font-medium text-zinc-700 mb-1.5">Tanggal Transaksi</label>
+            <input
+              type="date"
+              value={orderDate}
+              onChange={(e) => setOrderDate(e.target.value)}
+              className="w-full h-11 px-3.5 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-900 font-medium focus:border-zinc-900 focus:ring-0 focus:outline-none transition-colors"
+            />
           </div>
 
+          {/* Search */}
           <div className="relative">
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="font-body-strong text-body-strong text-text-ink">Cari Nama atau No. Telp</label>
-              <span className="font-caption-uppercase text-caption-uppercase text-semantic-active font-semibold flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">bolt</span>
-                Pencarian Cepat
-              </span>
-            </div>
-            <div className="relative flex items-center">
-              <span className="absolute left-3.5 text-text-body flex items-center pointer-events-none">
-                <span className="material-symbols-outlined text-[20px]">search</span>
+            <label className="block text-sm font-medium text-zinc-700 mb-1.5">Cari Nama atau No. HP</label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+                <span className="material-symbols-outlined text-[18px]">search</span>
               </span>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 placeholder="Ketik 4 digit nomor HP atau nama..."
-                className="w-full h-12 pl-11 pr-10 bg-canvas-base text-text-ink font-body-md text-body-md rounded-lg border-2 border-text-ink focus:outline-none transition-all placeholder:text-text-muted"
+                className="w-full h-12 pl-10 pr-10 bg-white border-2 border-zinc-900 rounded-lg text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none transition-all"
               />
               {searchQuery && (
-                <button type="button" onClick={() => { setSearchQuery(''); setName(''); setPhone(''); setSelectedCustomer(null) }} className="absolute right-3 text-text-body hover:text-text-ink p-1 rounded">
-                  <span className="material-symbols-outlined text-[18px]">cancel</span>
+                <button type="button" onClick={() => { setSearchQuery(''); setName(''); setPhone(''); setSelectedCustomer(null) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 p-1 rounded">
+                  <span className="material-symbols-outlined text-[16px]">close</span>
                 </button>
               )}
             </div>
 
+            {/* Search Results Dropdown */}
             {results.length > 0 && !selectedCustomer && (
-              <div className="mt-2 bg-canvas-base border border-hairline-strong rounded-xl shadow-xl overflow-hidden z-20 transition-all">
-                <div className="px-3 py-2 bg-hairline-soft border-b border-hairline-default flex items-center justify-between">
-                  <span className="font-caption-uppercase text-caption-uppercase text-text-muted">Hasil Pencarian Database</span>
-                  <span className="font-caption text-caption text-text-body">{results.length} Terdaftar</span>
+              <div className="absolute left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-xl shadow-xl overflow-hidden z-20">
+                <div className="px-3 py-2 border-b border-zinc-100 flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">Hasil Pencarian</span>
+                  <span className="text-xs text-zinc-500">{results.length} ditemukan</span>
                 </div>
                 {results.map((customer) => (
                   <div
                     key={customer.id}
-                    className="p-3 hover:bg-surface-subtle cursor-pointer transition-colors border-b border-hairline-default"
+                    className="p-3 hover:bg-zinc-50 cursor-pointer transition-colors border-b border-zinc-50"
                     onClick={() => handleSelectCustomer(customer.id, customer.name, customer.phone_normalized)}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-text-ink text-on-primary flex items-center justify-center font-headline-sm text-headline-sm text-xs mt-0.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center text-xs font-semibold">
                           {customer.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
                         </div>
                         <div>
-                          <div className="font-headline-sm text-headline-sm text-text-ink font-semibold flex items-center gap-1.5">
-                            {customer.name}
-                            <span className="material-symbols-outlined text-semantic-active text-[16px] fill" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                          </div>
-                          <div className="font-body-sm text-body-sm text-text-body font-mono">{customer.phone_normalized}</div>
+                          <div className="text-sm font-medium text-zinc-900">{customer.name}</div>
+                          <div className="text-xs text-zinc-400 font-mono">{customer.phone_normalized}</div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <span className="h-[22px] px-2 rounded-full font-caption-uppercase text-caption-uppercase font-semibold flex items-center bg-semantic-active-surface text-semantic-active border border-semantic-active-border">ACTIVE</span>
-                        <span className="font-caption text-caption text-text-body">Customer terdaftar</span>
-                      </div>
+                      <span className="material-symbols-outlined text-green-500 text-[16px]">check_circle</span>
                     </div>
                   </div>
                 ))}
-                <div className="p-3 hover:bg-surface-subtle cursor-pointer transition-colors flex items-center justify-between text-text-ink" onClick={handleAddNew}>
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-surface-subtle border border-hairline-strong flex items-center justify-center text-text-ink">
-                      <span className="material-symbols-outlined text-[18px]">person_add</span>
+                <div
+                  className="p-3 hover:bg-zinc-50 cursor-pointer transition-colors flex items-center justify-between"
+                  onClick={handleAddNew}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500">
+                      <span className="material-symbols-outlined text-[16px]">person_add</span>
                     </div>
                     <div>
-                      <div className="font-body-strong text-body-strong text-text-ink leading-tight">Buat Kontak Baru</div>
-                      <div className="font-caption text-caption text-text-body">Gunakan '{searchQuery}' sebagai nama pelanggan baru</div>
+                      <div className="text-sm font-medium text-zinc-900">Buat Baru</div>
+                      <div className="text-xs text-zinc-400">Gunakan &apos;{searchQuery}&apos; sebagai nama</div>
                     </div>
                   </div>
-                  <span className="material-symbols-outlined text-text-body">chevron_right</span>
+                  <span className="material-symbols-outlined text-zinc-300 text-[18px]">chevron_right</span>
                 </div>
               </div>
             )}
 
+            {/* Duplicate Alert */}
             {showDuplicateAlert && duplicateData && (
-              <div className="mt-3 rounded-xl border border-semantic-risk-border bg-semantic-risk-surface p-3.5 space-y-3">
-                <div className="flex items-start gap-2.5">
-                  <span className="material-symbols-outlined text-semantic-risk text-[22px] flex-shrink-0 mt-0.5">contact_phone</span>
-                  <div className="text-text-ink">
-                    <div className="font-headline-sm text-headline-sm text-semantic-risk font-semibold">Deteksi Nomor Pelanggan</div>
-                    <p className="font-body-sm text-body-sm text-text-ink mt-0.5">
-                      Nomor <strong className="font-semibold font-mono">{duplicateData.phone}</strong> sudah terdaftar atas nama <strong className="font-semibold">{duplicateData.name}</strong>. Gunakan data ini atau buat entry baru?
+              <div className="absolute left-0 right-0 mt-2 bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3 z-20">
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined text-amber-600 text-[20px] mt-0.5">contact_phone</span>
+                  <div>
+                    <div className="text-sm font-semibold text-amber-800">Nomor Sudah Terdaftar</div>
+                    <p className="text-xs text-amber-700 mt-0.5">
+                      <strong>{duplicateData.name}</strong> ({duplicateData.phone}) sudah ada di database.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 pt-1">
-                  <button type="button" onClick={handleApplyExisting} className="flex-1 h-10 bg-cta-black hover:bg-cta-black-active text-on-primary rounded-lg font-button text-button font-medium flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all">
-                    <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={handleApplyExisting} className="flex-1 h-9 bg-zinc-900 text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all">
+                    <span className="material-symbols-outlined text-[14px]">check</span>
                     Pakai Data Ini
                   </button>
-                  <button type="button" onClick={() => { setShowDuplicateAlert(false); setDuplicateData(null) }} className="h-10 px-3.5 bg-canvas-base border border-hairline-strong text-text-ink hover:bg-surface-subtle rounded-lg font-button text-button font-medium active:scale-[0.98] transition-all">
-                    Tetap Buat Baru
+                  <button type="button" onClick={() => { setShowDuplicateAlert(false); setDuplicateData(null) }} className="h-9 px-3 bg-white border border-zinc-200 text-zinc-700 rounded-lg text-xs font-medium active:scale-[0.98] transition-all">
+                    Buat Baru
                   </button>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          {/* Name & Phone */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-body-strong text-body-strong text-text-ink mb-1.5" htmlFor="name">Nama Customer <span className="text-error">*</span></label>
-              <div className="relative flex items-center">
-                <span className="absolute left-3.5 text-text-body flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-[18px]">person</span>
-                </span>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Nama lengkap pelanggan"
-                  className="w-full h-11 pl-10 pr-3.5 bg-canvas-base text-text-ink font-body-md text-body-md rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none transition-all"
-                  required
-                />
-              </div>
+              <label className="block text-sm font-medium text-zinc-700 mb-1.5" htmlFor="name">Nama Customer *</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nama lengkap"
+                className="w-full h-11 px-3.5 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-0 focus:outline-none transition-colors"
+                required
+              />
             </div>
             <div>
-              <label className="block font-body-strong text-body-strong text-text-ink mb-1.5 flex items-center justify-between">
-                <span>No. Handphone (WhatsApp) <span className="text-error">*</span></span>
-                {phone && normalizePhone(phone).match(/^08\d{8,13}$/) && (
-                  <span className="font-caption text-caption text-semantic-active font-semibold flex items-center gap-0.5">
-                    <span className="material-symbols-outlined text-[14px] fill" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                    Valid WA
-                  </span>
-                )}
-              </label>
-              <div className="relative flex items-center">
-                <span className="absolute left-3.5 text-text-body flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-[18px]">call</span>
-                </span>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="08xxxxxxxxxx"
-                  className="w-full h-11 pl-10 pr-3.5 bg-canvas-base text-text-ink font-body-md text-body-md font-mono rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none transition-all"
-                  required
-                />
-              </div>
+              <label className="block text-sm font-medium text-zinc-700 mb-1.5">No. WhatsApp *</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="08xxxxxxxxxx"
+                className="w-full h-11 px-3.5 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-900 font-mono placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-0 focus:outline-none transition-colors"
+                required
+              />
             </div>
           </div>
 
+          {/* Channel */}
           <div>
-            <label className="block font-body-strong text-body-strong text-text-ink mb-1.5 flex items-center justify-between">
-              <span>Channel Order <span className="text-error">*</span></span>
-              <span className="font-caption text-caption text-text-muted">Pilih platform transaksi</span>
-            </label>
-            <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 mb-2">
+            <label className="block text-sm font-medium text-zinc-700 mb-2">Channel Order *</label>
+            <div className="flex flex-wrap gap-2">
               {CHANNELS.map((ch) => (
                 <button
                   key={ch.id}
                   type="button"
                   onClick={() => setChannel(ch.id)}
-                  className={`py-2 px-1 rounded-lg text-center font-caption-uppercase text-caption-uppercase font-semibold transition-all active:scale-[0.96] ${
+                  className={`px-3.5 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all active:scale-[0.96] ${
                     channel === ch.id
-                      ? 'border-2 border-text-ink bg-text-ink text-on-primary'
-                      : 'border border-hairline-strong bg-canvas-base text-text-body hover:border-text-ink'
+                      ? 'bg-zinc-900 text-white'
+                      : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
                   }`}
                 >
                   {ch.label}
                 </button>
               ))}
             </div>
-            <div className="relative flex items-center">
-              <select
-                value={channel}
-                onChange={(e) => setChannel(e.target.value as ChannelType)}
-                className="w-full h-11 px-3.5 bg-canvas-base text-text-ink font-body-md text-body-md rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none appearance-none cursor-pointer"
-              >
-                {CHANNELS.map((ch) => (
-                  <option key={ch.id} value={ch.id}>{ch.label}</option>
-                ))}
-              </select>
-              <span className="absolute right-3 text-text-body pointer-events-none">
-                <span className="material-symbols-outlined text-[20px]">expand_more</span>
-              </span>
-            </div>
             {channel === 'custom' && (
-              <div className="mt-2 pt-2 border-t border-hairline-default">
-                <label className="block font-caption text-caption text-text-body mb-1">Spesifikasi Channel 'Lainnya':</label>
-                <input
-                  type="text"
-                  value={customChannel}
-                  onChange={(e) => setCustomChannel(e.target.value)}
-                  placeholder="Contoh: Bazaar Senopati, Catering Kantor..."
-                  className="w-full h-10 px-3 bg-surface-subtle text-text-ink font-body-sm text-body-sm rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none"
-                />
-              </div>
+              <input
+                type="text"
+                value={customChannel}
+                onChange={(e) => setCustomChannel(e.target.value)}
+                placeholder="Sebutkan channel..."
+                className="w-full h-10 px-3.5 mt-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-0 focus:outline-none"
+              />
             )}
           </div>
 
           {error && (
-            <div className="rounded-xl border border-error-container bg-error-container p-3 text-sm text-on-error-container">{error}</div>
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
           )}
         </form>
       </main>
 
-      <div className="fixed bottom-bottom-nav-height md:bottom-0 left-0 md:left-sidebar-width right-0 p-3 md:p-4 bg-canvas-base/95 backdrop-blur-md border-t border-hairline-default z-30 flex flex-col items-center">
-        <div className="w-full max-w-form-max-width mx-auto flex flex-col items-center">
+      {/* Fixed bottom CTA */}
+      <div className="fixed bottom-16 md:bottom-0 left-0 md:left-60 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-zinc-100 z-30">
+        <div className="w-full max-w-3xl mx-auto flex items-center gap-3">
           {showToast && (
-            <div className="mb-2.5 w-full bg-cta-black text-on-primary px-3.5 py-2 rounded-lg flex items-center justify-between shadow-lg transition-all duration-300">
-              <div className="flex items-center gap-2 font-body-sm text-body-sm">
-                <span className="w-5 h-5 rounded-full bg-semantic-active flex items-center justify-center text-white">
-                  <span className="material-symbols-outlined text-[14px] fill" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
-                </span>
-                <span className="font-medium">Order tersimpan! Database pelanggan telah diperbarui.</span>
-              </div>
-              <button onClick={() => setShowToast(false)} className="text-text-muted hover:text-white p-0.5">
-                <span className="material-symbols-outlined text-[16px]">close</span>
-              </button>
+            <div className="absolute bottom-full left-4 right-4 mb-2 bg-zinc-900 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-lg">
+              <span className="material-symbols-outlined text-green-400 text-[16px]">check_circle</span>
+              <span className="text-sm font-medium">Order tersimpan!</span>
             </div>
           )}
-          <div className="w-full flex items-center gap-2">
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-1 h-12 bg-cta-black hover:bg-cta-black-active text-on-primary rounded-lg font-button text-button font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50"
-            >
-              {loading ? (
-                <span className="inline-block w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-[20px]">save</span>
-                  <span>Simpan Order Transaksi</span>
-                </>
-              )}
-            </button>
-            <button type="button" onClick={() => { setSearchQuery(''); setName(''); setPhone(''); setChannel('takeaway') }} className="h-12 w-12 rounded-lg border border-hairline-strong flex items-center justify-center text-text-body hover:bg-surface-subtle active:scale-[0.96] transition-transform">
-              <span className="material-symbols-outlined text-[20px]">refresh</span>
-            </button>
-          </div>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 h-12 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
+          >
+            {loading ? (
+              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-[18px]">save</span>
+                <span>Simpan Order</span>
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setSearchQuery(''); setName(''); setPhone(''); setChannel('takeaway') }}
+            className="h-12 w-12 rounded-lg border border-zinc-200 flex items-center justify-center text-zinc-400 hover:bg-zinc-50 active:scale-[0.96] transition-transform"
+          >
+            <span className="material-symbols-outlined text-[18px]">refresh</span>
+          </button>
         </div>
       </div>
     </div>

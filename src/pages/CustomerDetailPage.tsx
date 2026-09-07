@@ -32,8 +32,14 @@ export function CustomerDetailPage() {
     } catch { /* silent */ } finally { setLoading(false) }
   }
 
-  if (loading) return <div className="flex-1 flex items-center justify-center"><span className="material-symbols-outlined animate-spin text-text-muted">progress_activity</span></div>
-  if (!customer) return <div className="flex-1 flex items-center justify-center text-text-muted">Customer not found</div>
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <span className="material-symbols-outlined animate-spin text-zinc-300">progress_activity</span>
+      </div>
+    )
+  }
+  if (!customer) return <div className="flex-1 flex items-center justify-center text-zinc-400">Customer not found</div>
 
   const status = customer.retention_status
   const days = Math.floor((Date.now() - new Date(customer.last_order_date).getTime()) / 86400000)
@@ -51,141 +57,112 @@ export function CustomerDetailPage() {
 
   const fav = getFavChannel()
 
+  const getStatusStyle = () => {
+    if (status === 'active') return 'bg-green-50 text-green-700 border border-green-200'
+    if (status === 'at_risk') return 'bg-amber-50 text-amber-700 border border-amber-200'
+    return 'bg-red-50 text-red-600 border border-red-200'
+  }
+
   return (
-    <div className="flex-1 flex flex-col md:pl-sidebar-width min-h-screen bg-canvas-soft">
-      <header className="sticky top-0 z-30 bg-canvas-base border-b border-hairline-default px-gutter-mobile h-top-nav-height flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link to="/customers" className="w-10 h-10 -ml-2 rounded-lg flex items-center justify-center text-text-ink hover:bg-surface-subtle active:scale-[0.96] transition-all">
-            <span className="material-symbols-outlined">arrow_back</span>
+    <div className="flex-1 flex flex-col md:pl-60 min-h-screen bg-zinc-50">
+      <header className="sticky top-0 z-30 bg-white border-b border-zinc-100">
+        <div className="flex items-center w-full px-6 h-14 max-w-3xl mx-auto gap-4">
+          <Link to="/app/customers" className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-500 hover:bg-zinc-100 active:scale-[0.96] transition-all">
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </Link>
-          <h1 className="font-headline-md text-headline-md text-text-ink">Profil Pelanggan</h1>
-        </div>
-        <div className="flex items-center gap-1.5 bg-semantic-active-surface border border-semantic-active-border px-2.5 py-1 rounded-full">
-          <span className="w-2 h-2 rounded-full bg-semantic-active animate-pulse"></span>
-          <span className="font-caption-uppercase text-caption-uppercase text-semantic-active uppercase">Online</span>
+          <h1 className="text-base font-semibold text-zinc-900">Profil Pelanggan</h1>
         </div>
       </header>
 
-      <main className="flex-1 px-gutter-mobile pt-5 pb-44 space-y-6">
-        <section className="bg-surface-card border border-hairline-strong rounded-xl p-md">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
-              <h2 className="font-display-hero-mobile md:font-display-hero text-display-hero-mobile md:text-display-hero text-text-ink tracking-tight">{customer.name}</h2>
-              <div className="flex items-center gap-2 pt-0.5">
-                <a href={`tel:${customer.phone_normalized}`} className="font-body-strong text-body-strong text-text-body hover:text-text-ink flex items-center gap-1 transition-colors">
-                  <span className="material-symbols-outlined text-[18px]">phone</span>
+      <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-6 pb-32 md:pb-8 space-y-5">
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl border border-zinc-100 p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-zinc-900">{customer.name}</h2>
+              <div className="flex items-center gap-2 mt-1">
+                <a href={`tel:${customer.phone_normalized}`} className="text-sm text-zinc-500 hover:text-zinc-900 flex items-center gap-1 transition-colors">
+                  <span className="material-symbols-outlined text-[16px]">phone</span>
                   {customer.phone_normalized}
                 </a>
-                <span className="inline-flex items-center gap-1 bg-semantic-active-surface border border-semantic-active-border text-semantic-active text-[11px] font-medium px-2 py-0.5 rounded-full">
-                  <span className="material-symbols-outlined fill text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                  WhatsApp Terverifikasi
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
+                  <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                  WA Verified
                 </span>
               </div>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-surface-subtle border border-hairline-strong flex items-center justify-center font-headline-md text-headline-md text-text-ink shrink-0">{initials}</div>
-          </div>
-          <div className="mt-4 pt-3.5 border-t border-hairline-default flex flex-wrap items-center gap-2">
-            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${status === 'active' ? 'bg-semantic-active-surface text-semantic-active border border-semantic-active-border' : status === 'at_risk' ? 'bg-semantic-risk-surface text-semantic-risk border border-semantic-risk-border' : 'bg-semantic-churned-surface text-semantic-churned border border-semantic-churned-border'}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${status === 'active' ? 'bg-semantic-active' : status === 'at_risk' ? 'bg-semantic-risk' : 'bg-semantic-churned'}`}></span>
-              <span className="font-caption-uppercase text-caption-uppercase">{getRetentionLabel(status)}</span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 bg-surface-subtle text-text-ink border border-hairline-strong px-2.5 py-1 rounded-full">
-              <span className="material-symbols-outlined text-[15px]">loyalty</span>
-              <span className="font-caption-uppercase text-caption-uppercase">Loyal Customer ({customer.order_count}x order)</span>
-            </div>
-            <div className="ml-auto inline-flex items-center gap-1 text-text-body font-caption text-caption">
-              <span className="material-symbols-outlined text-[15px]">history_toggle_off</span>
-              Siklus: 7-10 Hari
+            <div className="w-12 h-12 rounded-xl bg-zinc-100 flex items-center justify-center text-lg font-semibold text-zinc-600 shrink-0">
+              {initials}
             </div>
           </div>
-        </section>
+          <div className="mt-4 pt-4 border-t border-zinc-100 flex flex-wrap items-center gap-2">
+            <span className={`text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${getStatusStyle()}`}>
+              {getRetentionLabel(status)}
+            </span>
+            <span className="text-xs text-zinc-400 bg-zinc-50 border border-zinc-200 px-2 py-0.5 rounded-full">
+              {customer.order_count}x Order
+            </span>
+          </div>
+        </div>
 
-        <section className="grid grid-cols-2 gap-3">
-          <div className="bg-surface-card border border-hairline-strong rounded-xl p-3.5 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-body mb-2">
-              <span className="font-caption-uppercase text-caption-uppercase">TOTAL ORDER</span>
-              <span className="material-symbols-outlined text-[18px] text-text-muted">shopping_bag</span>
-            </div>
-            <div>
-              <div className="font-numeric-stat text-numeric-stat text-text-ink">{customer.order_count} Kali</div>
-              <div className="font-caption text-caption text-text-body mt-0.5">{customer.order_count > 5 ? 'Frekuensi Tinggi' : 'Frekuensi Normal'}</div>
-            </div>
-          </div>
-          <div className="bg-surface-card border border-hairline-strong rounded-xl p-3.5 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-body mb-2">
-              <span className="font-caption-uppercase text-caption-uppercase">CHANNEL FAVORIT</span>
-              <span className="material-symbols-outlined text-[18px] text-text-muted">moped</span>
-            </div>
-            <div>
-              <div className="font-headline-lg text-headline-lg text-text-ink">{fav?.label || 'N/A'} {fav && <span className="font-body-md text-body-md text-text-body">({fav.pct}%)</span>}</div>
-              <div className="font-caption text-caption text-text-body mt-0.5">{fav ? `${fav.count} dari ${orders.length} pesanan` : 'Belum ada data'}</div>
-            </div>
-          </div>
-          <div className="bg-surface-card border border-hairline-strong rounded-xl p-3.5 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-body mb-2">
-              <span className="font-caption-uppercase text-caption-uppercase">ORDER TERAKHIR</span>
-              <span className="material-symbols-outlined text-[18px] text-text-muted">update</span>
-            </div>
-            <div>
-              <div className="font-body-strong text-body-strong text-text-ink">{customer.last_order_date}</div>
-              <div className={`inline-flex items-center gap-1 font-caption text-caption mt-0.5 ${status === 'active' ? 'text-semantic-active' : status === 'at_risk' ? 'text-semantic-risk' : 'text-semantic-churned'}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${status === 'active' ? 'bg-semantic-active' : status === 'at_risk' ? 'bg-semantic-risk' : 'bg-semantic-churned'}`}></span>
-                {days === 0 ? 'Hari ini' : days === 1 ? 'Kemarin' : `${days} hari lalu`}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: 'Total Order', value: `${customer.order_count}x`, icon: 'shopping_bag' },
+            { label: 'Channel Favorit', value: fav?.label || 'N/A', icon: 'restaurant' },
+            { label: 'Order Terakhir', value: customer.last_order_date, sub: days === 0 ? 'Hari ini' : `${days} hari lalu`, icon: 'update' },
+            { label: 'Order Pertama', value: customer.first_order_date, icon: 'calendar_month' },
+          ].map((s) => (
+            <div key={s.label} className="bg-white rounded-xl border border-zinc-100 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">{s.label}</span>
+                <span className="material-symbols-outlined text-[16px] text-zinc-300">{s.icon}</span>
               </div>
+              <div className="text-sm font-semibold text-zinc-900">{s.value}</div>
+              {s.sub && <div className="text-xs text-zinc-400 mt-0.5">{s.sub}</div>}
             </div>
-          </div>
-          <div className="bg-surface-card border border-hairline-strong rounded-xl p-3.5 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-body mb-2">
-              <span className="font-caption-uppercase text-caption-uppercase">ORDER PERTAMA</span>
-              <span className="material-symbols-outlined text-[18px] text-text-muted">calendar_month</span>
-            </div>
-            <div>
-              <div className="font-body-strong text-body-strong text-text-ink">{customer.first_order_date}</div>
-              <div className="font-caption text-caption text-text-body mt-0.5">{Math.floor((Date.now() - new Date(customer.first_order_date).getTime()) / 2592000000)} bulan berlangganan</div>
-            </div>
-          </div>
-        </section>
+          ))}
+        </div>
 
-        <section className="space-y-3">
-          <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center gap-2">
-              <h3 className="font-headline-sm text-headline-sm text-text-ink">Riwayat Transaksi</h3>
-              <span className="inline-flex items-center justify-center bg-surface-subtle border border-hairline-strong font-caption-uppercase text-caption-uppercase px-2 py-0.5 rounded-full text-text-ink">{orders.length}</span>
-            </div>
-          </div>
-          <div className="space-y-2.5">
+        {/* Order History */}
+        <div>
+          <h3 className="text-sm font-semibold text-zinc-900 mb-3">Riwayat Transaksi</h3>
+          <div className="space-y-2">
             {orders.map((order) => {
               const ch = CHANNELS.find((c) => c.id === order.channel)
               return (
-                <article key={order.id} className="bg-surface-card border border-hairline-strong rounded-xl p-3.5 hover:border-text-ink transition-colors">
+                <div key={order.id} className="bg-white border border-zinc-100 rounded-xl p-3.5 hover:shadow-sm transition-shadow">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-7 h-7 rounded-lg bg-surface-subtle flex items-center justify-center text-text-ink">
-                        <span className="material-symbols-outlined text-[16px]">local_mall</span>
-                      </span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-zinc-50 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-[16px] text-zinc-400">local_mall</span>
+                      </div>
                       <div>
-                        <div className="font-body-strong text-body-strong text-text-ink">{order.order_date}</div>
-                        <div className="font-caption text-caption text-text-body">Cabang Senopati</div>
+                        <div className="text-sm font-medium text-zinc-900">{order.order_date}</div>
+                        <div className="text-xs text-zinc-400">Cabang Senopati</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-subtle text-text-ink border border-hairline-strong">{ch?.label || order.channel}</span>
-                      <span className="font-caption text-caption text-text-muted shrink-0">Selesai</span>
+                      <span className="text-[11px] font-medium bg-zinc-50 text-zinc-600 border border-zinc-200 px-2 py-0.5 rounded">
+                        {ch?.label || order.channel}
+                      </span>
+                      <span className="text-xs text-zinc-400">Selesai</span>
                     </div>
                   </div>
-                </article>
+                </div>
               )
             })}
-            {orders.length === 0 && <p className="py-4 text-center text-sm text-text-muted">Belum ada riwayat order</p>}
+            {orders.length === 0 && <p className="py-8 text-center text-sm text-zinc-400">Belum ada riwayat order</p>}
           </div>
-        </section>
+        </div>
 
-        <section className="bg-surface-subtle border border-hairline-strong rounded-xl p-3.5">
-          <div className="flex items-start gap-2.5">
-            <span className="material-symbols-outlined text-text-ink text-[20px] mt-0.5">lightbulb</span>
+        {/* Recommendation */}
+        <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <span className="material-symbols-outlined text-zinc-500 text-[18px] mt-0.5">lightbulb</span>
             <div>
-              <div className="font-body-strong text-body-strong text-text-ink">Rekomendasi Follow-up Kasir</div>
-              <p className="font-body-sm text-body-sm text-text-body mt-1">
+              <div className="text-sm font-semibold text-zinc-900">Rekomendasi</div>
+              <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
                 {status === 'churned'
                   ? `Customer ini sudah ${days} hari tidak order. Kirim pesan WhatsApp personal untuk menawarkan promo kembali.`
                   : status === 'at_risk'
@@ -195,26 +172,27 @@ export function CustomerDetailPage() {
               </p>
             </div>
           </div>
-        </section>
+        </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 md:left-sidebar-width right-0 p-4 bg-canvas-base/95 backdrop-blur-md border-t border-hairline-default z-30">
-        <div className="w-full max-w-form-max-width mx-auto flex items-center gap-3">
+      {/* Fixed bottom CTA */}
+      <div className="fixed bottom-16 md:bottom-0 left-0 md:left-60 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-zinc-100 z-30">
+        <div className="w-full max-w-3xl mx-auto flex items-center gap-3">
           <a
             href={buildWaLink(customer.phone_normalized, customer.name)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 h-12 bg-semantic-active hover:bg-green-700 text-white rounded-lg font-button text-button font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+            className="flex-1 h-12 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
           >
-            <span className="material-symbols-outlined text-[20px]">chat</span>
+            <span className="material-symbols-outlined text-[18px]">chat</span>
             Kirim WhatsApp
           </a>
           <button
             onClick={() => downloadVCard(customer.name, customer.phone_normalized)}
-            className="h-12 px-4 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-surface-subtle text-text-ink font-button text-button font-medium flex items-center gap-2 active:scale-[0.98] transition-all"
+            className="h-12 px-4 rounded-lg border border-zinc-200 bg-white text-zinc-700 text-sm font-medium flex items-center gap-2 active:scale-[0.98] transition-all hover:bg-zinc-50"
           >
-            <span className="material-symbols-outlined text-[18px]">contacts</span>
-            Download vCard
+            <span className="material-symbols-outlined text-[16px]">contacts</span>
+            vCard
           </button>
         </div>
       </div>
