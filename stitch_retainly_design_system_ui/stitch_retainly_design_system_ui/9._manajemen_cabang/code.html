@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retain-ly - Manajemen Cabang</title>
+<!-- Google Fonts: Inter & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "semantic-active-surface": "#f0fdf4",
+            "on-surface-variant": "#444748",
+            "cta-black-active": "#1a1a1a",
+            "on-primary-container": "#858383",
+            "surface-variant": "#dfe2ec",
+            "on-tertiary-fixed": "#1c1b1a",
+            "primary": "#000000",
+            "inverse-surface": "#2c3138",
+            "primary-container": "#1c1b1b",
+            "canvas-soft": "#fafafa",
+            "surface-dark": "#171717",
+            "semantic-churned-border": "#fecdd3",
+            "cta-black": "#000000",
+            "primary-fixed-dim": "#c8c6c5",
+            "outline": "#747878",
+            "canvas-base": "#ffffff",
+            "secondary": "#005fad",
+            "semantic-churned-surface": "#fff1f2",
+            "semantic-churned-accent": "#eb8e90",
+            "semantic-risk": "#ab6400",
+            "surface-card": "#ffffff",
+            "hairline-strong": "#dcdee0",
+            "on-secondary-container": "#003869",
+            "outline-variant": "#c4c7c7",
+            "on-error-container": "#93000a",
+            "surface-container-high": "#e5e8f1",
+            "semantic-churned": "#e11d48",
+            "tertiary-fixed-dim": "#cac6c4",
+            "surface-container-lowest": "#ffffff",
+            "surface-dim": "#d7dae3",
+            "surface-bright": "#f8f9ff",
+            "on-tertiary": "#ffffff",
+            "semantic-risk-accent": "#f59e0b",
+            "on-secondary-fixed-variant": "#004884",
+            "secondary-fixed": "#d4e3ff",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed-variant": "#484645",
+            "on-primary-fixed": "#1c1b1b",
+            "on-primary": "#ffffff",
+            "surface-container": "#ebeef7",
+            "surface-container-low": "#f0f3fd",
+            "semantic-active": "#16a34a",
+            "text-on-dark-muted": "#b0b4ba",
+            "on-secondary-fixed": "#001c39",
+            "on-tertiary-container": "#868382",
+            "hairline-soft": "#f5f5f7",
+            "tertiary-fixed": "#e6e2df",
+            "surface-dark-elevated": "#1a1a1a",
+            "hairline-default": "#f0f0f3",
+            "on-background": "#181c22",
+            "surface-tint": "#5f5e5e",
+            "semantic-active-border": "#bbf7d0",
+            "on-primary-fixed-variant": "#474746",
+            "tertiary-container": "#1c1b1a",
+            "semantic-risk-surface": "#fffbeb",
+            "secondary-fixed-dim": "#a4c9ff",
+            "secondary-container": "#56a3ff",
+            "surface-container-highest": "#dfe2ec",
+            "background": "#f8f9ff",
+            "text-muted": "#999999",
+            "semantic-risk-border": "#fde68a",
+            "text-body": "#60646c",
+            "text-ink": "#171717",
+            "inverse-primary": "#c8c6c5",
+            "on-secondary": "#ffffff",
+            "on-surface": "#181c22",
+            "primary-fixed": "#e5e2e1",
+            "accent-preview": "#8145b5",
+            "inverse-on-surface": "#eef1fa",
+            "text-on-dark": "#ffffff",
+            "surface": "#f8f9ff",
+            "tertiary": "#000000",
+            "error": "#ba1a1a",
+            "text-disabled": "#cccccc",
+            "surface-subtle": "#f0f0f3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "container-max-width": "1200px",
+            "bottom-nav-height": "64px",
+            "xl": "24px",
+            "sm": "12px",
+            "xs": "8px",
+            "md": "16px",
+            "top-nav-height": "56px",
+            "gutter-desktop": "24px",
+            "sidebar-width": "240px",
+            "xxs": "4px",
+            "lg": "20px",
+            "xxl": "32px",
+            "form-max-width": "540px",
+            "gutter-mobile": "16px"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "headline-md": ["Hanken Grotesk"],
+            "body-strong": ["Inter"],
+            "display-hero-mobile": ["Hanken Grotesk"],
+            "caption": ["Inter"],
+            "button": ["Inter"],
+            "numeric-stat": ["Hanken Grotesk"],
+            "caption-uppercase": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Hanken Grotesk"],
+            "display-hero": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["14px", { "lineHeight": "21px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "body-strong": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "600" }],
+            "display-hero-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "400" }],
+            "button": ["14px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "500" }],
+            "numeric-stat": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "caption-uppercase": ["11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-hero": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-canvas-soft text-text-ink antialiased min-h-screen flex flex-col justify-between selection:bg-surface-subtle selection:text-text-ink">
+<!-- Mobile Wrapper Simulation (Constrained to max-w-md for precise mobile fidelity) -->
+<div class="w-full max-w-md mx-auto bg-canvas-base min-h-screen flex flex-col border-x border-hairline-strong relative shadow-sm">
+<!-- Top Bar Navigation -->
+<header class="sticky top-0 z-40 bg-canvas-base border-b border-hairline-strong px-gutter-mobile h-top-nav-height flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-cta-black text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="storefront">storefront</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="font-headline-sm text-headline-sm text-text-ink font-semibold tracking-tight">Manajemen Cabang</h1>
+<span class="font-caption-uppercase text-[10px] tracking-wider px-1.5 py-0.5 rounded bg-surface-subtle border border-hairline-strong text-text-ink font-semibold">OWNER</span>
+</div>
+</div>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-cta-black text-on-primary font-button text-button active:scale-[0.97] transition-transform shadow-sm" onclick="toggleModal(true)">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+<span>Tambah</span>
+</button>
+</header>
+<!-- Operational Summary Banner -->
+<div class="px-gutter-mobile pt-4 pb-3 bg-canvas-base border-b border-hairline-default">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-caption text-caption text-text-body">Ringkasan Operasional Unit</p>
+<p class="font-body-strong text-body-strong text-text-ink mt-0.5">Total 4 Cabang Terdaftar</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1 bg-semantic-active-surface px-2 py-1 rounded-full border border-semantic-active-border">
+<span class="w-1.5 h-1.5 rounded-full bg-semantic-active"></span>
+<span class="font-caption-uppercase text-caption-uppercase text-semantic-active font-semibold">3 AKTIF</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-subtle px-2 py-1 rounded-full border border-hairline-strong">
+<span class="w-1.5 h-1.5 rounded-full bg-text-muted"></span>
+<span class="font-caption-uppercase text-caption-uppercase text-text-body font-semibold">1 NONAKTIF</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content List: Cards Layout -->
+<main class="flex-1 px-gutter-mobile py-4 space-y-3 pb-24">
+<!-- Cabang 1: Senopati (Utama) -->
+<article class="bg-surface-card rounded-xl border border-hairline-strong p-4 hover:border-text-ink transition-colors relative">
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Cabang Senopati</h2>
+<span class="font-caption-uppercase text-[10px] px-1.5 py-0.2 rounded bg-surface-subtle text-text-ink font-semibold border border-hairline-strong">Utama</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption-uppercase font-caption-uppercase bg-semantic-active-surface text-semantic-active border border-semantic-active-border">
+            Aktif
+          </span>
+</div>
+<div class="flex items-start gap-1.5 text-text-body mb-3">
+<span class="material-symbols-outlined text-[16px] text-text-muted mt-0.5 flex-shrink-0" data-icon="location_on">location_on</span>
+<p class="font-body-sm text-body-sm leading-snug">Jl. Senopati No. 42, Kebayoran Baru, Jakarta Selatan</p>
+</div>
+<!-- Telemetry & Metrics Strip -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-canvas-soft border border-hairline-default mb-3">
+<div>
+<span class="font-caption text-[11px] text-text-body block">Pelanggan Terdaftar</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-text-ink font-semibold">1.420</span>
+<span class="font-caption text-[11px] text-text-body">cust</span>
+</div>
+</div>
+<div class="border-l border-hairline-strong pl-2.5">
+<span class="font-caption text-[11px] text-text-body block">Retention / Repeat</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-semantic-active font-semibold">48%</span>
+<span class="font-caption text-[10px] text-semantic-active font-medium bg-semantic-active-surface px-1 rounded">Sehat</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-text-body mb-4 px-1">
+<span class="material-symbols-outlined text-[15px] text-text-muted" data-icon="badge">badge</span>
+<span class="font-caption text-caption text-text-body">POS Login:</span>
+<span class="font-caption text-caption text-text-ink font-medium select-all">kasir.senopati@retainly.id</span>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 pt-2 border-t border-hairline-default">
+<button class="flex-1 inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-hairline-soft text-text-ink font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+<span>Edit</span>
+</button>
+<button class="inline-flex items-center justify-center h-10 px-3 rounded-lg border border-hairline-strong text-semantic-churned hover:bg-semantic-churned-surface hover:border-semantic-churned-border font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="block">block</span>
+<span>Nonaktifkan</span>
+</button>
+</div>
+</article>
+<!-- Cabang 2: Dharmawangsa -->
+<article class="bg-surface-card rounded-xl border border-hairline-strong p-4 hover:border-text-ink transition-colors relative">
+<div class="flex items-start justify-between gap-2 mb-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Cabang Dharmawangsa</h2>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption-uppercase font-caption-uppercase bg-semantic-active-surface text-semantic-active border border-semantic-active-border">
+            Aktif
+          </span>
+</div>
+<div class="flex items-start gap-1.5 text-text-body mb-3">
+<span class="material-symbols-outlined text-[16px] text-text-muted mt-0.5 flex-shrink-0" data-icon="location_on">location_on</span>
+<p class="font-body-sm text-body-sm leading-snug">Jl. Dharmawangsa Raya No. 18, Jakarta Selatan</p>
+</div>
+<!-- Telemetry & Metrics Strip -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-canvas-soft border border-hairline-default mb-3">
+<div>
+<span class="font-caption text-[11px] text-text-body block">Pelanggan Terdaftar</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-text-ink font-semibold">980</span>
+<span class="font-caption text-[11px] text-text-body">cust</span>
+</div>
+</div>
+<div class="border-l border-hairline-strong pl-2.5">
+<span class="font-caption text-[11px] text-text-body block">Retention / Repeat</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-semantic-active font-semibold">42%</span>
+<span class="font-caption text-[10px] text-semantic-active font-medium bg-semantic-active-surface px-1 rounded">Stabil</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-text-body mb-4 px-1">
+<span class="material-symbols-outlined text-[15px] text-text-muted" data-icon="badge">badge</span>
+<span class="font-caption text-caption text-text-body">POS Login:</span>
+<span class="font-caption text-caption text-text-ink font-medium select-all">kasir.dharmawangsa@retainly.id</span>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 pt-2 border-t border-hairline-default">
+<button class="flex-1 inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-hairline-soft text-text-ink font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+<span>Edit</span>
+</button>
+<button class="inline-flex items-center justify-center h-10 px-3 rounded-lg border border-hairline-strong text-semantic-churned hover:bg-semantic-churned-surface hover:border-semantic-churned-border font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="block">block</span>
+<span>Nonaktifkan</span>
+</button>
+</div>
+</article>
+<!-- Cabang 3: Kemang -->
+<article class="bg-surface-card rounded-xl border border-hairline-strong p-4 hover:border-text-ink transition-colors relative">
+<div class="flex items-start justify-between gap-2 mb-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Cabang Kemang</h2>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption-uppercase font-caption-uppercase bg-semantic-active-surface text-semantic-active border border-semantic-active-border">
+            Aktif
+          </span>
+</div>
+<div class="flex items-start gap-1.5 text-text-body mb-3">
+<span class="material-symbols-outlined text-[16px] text-text-muted mt-0.5 flex-shrink-0" data-icon="location_on">location_on</span>
+<p class="font-body-sm text-body-sm leading-snug">Jl. Kemang Timur No. 88, Jakarta Selatan</p>
+</div>
+<!-- Telemetry & Metrics Strip -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-canvas-soft border border-hairline-default mb-3">
+<div>
+<span class="font-caption text-[11px] text-text-body block">Pelanggan Terdaftar</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-text-ink font-semibold">730</span>
+<span class="font-caption text-[11px] text-text-body">cust</span>
+</div>
+</div>
+<div class="border-l border-hairline-strong pl-2.5">
+<span class="font-caption text-[11px] text-text-body block">Retention / Repeat</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-semantic-active font-semibold">39%</span>
+<span class="font-caption text-[10px] text-semantic-risk font-medium bg-semantic-risk-surface px-1 rounded">Pantau</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-text-body mb-4 px-1">
+<span class="material-symbols-outlined text-[15px] text-text-muted" data-icon="badge">badge</span>
+<span class="font-caption text-caption text-text-body">POS Login:</span>
+<span class="font-caption text-caption text-text-ink font-medium select-all">kasir.kemang@retainly.id</span>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 pt-2 border-t border-hairline-default">
+<button class="flex-1 inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-hairline-soft text-text-ink font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+<span>Edit</span>
+</button>
+<button class="inline-flex items-center justify-center h-10 px-3 rounded-lg border border-hairline-strong text-semantic-churned hover:bg-semantic-churned-surface hover:border-semantic-churned-border font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="block">block</span>
+<span>Nonaktifkan</span>
+</button>
+</div>
+</article>
+<!-- Cabang 4: Bintaro (Outlet Baru / Nonaktif sementara) -->
+<article class="bg-surface-card rounded-xl border border-hairline-strong p-4 opacity-90 transition-colors relative">
+<div class="flex items-start justify-between gap-2 mb-2">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-body font-semibold">Cabang Bintaro</h2>
+<span class="font-caption text-[11px] text-text-muted">Outlet Baru / Nonaktif sementara</span>
+</div>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-caption-uppercase font-caption-uppercase bg-surface-subtle text-text-body border border-hairline-strong">
+            Nonaktif
+          </span>
+</div>
+<div class="flex items-start gap-1.5 text-text-body mb-3">
+<span class="material-symbols-outlined text-[16px] text-text-muted mt-0.5 flex-shrink-0" data-icon="location_on">location_on</span>
+<p class="font-body-sm text-body-sm leading-snug">Ruko Bintaro Sektor 7, Tangerang Selatan</p>
+</div>
+<!-- Telemetry Strip -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-canvas-soft border border-hairline-default mb-3">
+<div>
+<span class="font-caption text-[11px] text-text-body block">Pelanggan Terdaftar</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-headline-sm text-headline-sm text-text-ink font-semibold">120</span>
+<span class="font-caption text-[11px] text-text-body">cust</span>
+</div>
+</div>
+<div class="border-l border-hairline-strong pl-2.5">
+<span class="font-caption text-[11px] text-text-body block">Status Operasi</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-body-strong text-body-strong text-text-muted">Setup Selesai</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-text-body mb-4 px-1">
+<span class="material-symbols-outlined text-[15px] text-text-muted" data-icon="badge">badge</span>
+<span class="font-caption text-caption text-text-body">POS Login:</span>
+<span class="font-caption text-caption text-text-body font-medium select-all">kasir.bintaro@retainly.id</span>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 pt-2 border-t border-hairline-default">
+<button class="flex-1 inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-hairline-soft text-text-ink font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+<span>Edit</span>
+</button>
+<button class="flex-1 inline-flex items-center justify-center gap-1.5 h-10 px-3 rounded-lg bg-semantic-active text-on-primary hover:opacity-95 font-button text-button transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+<span>Aktifkan</span>
+</button>
+</div>
+</article>
+</main>
+<!-- Modal / Bottom Sheet: Tambah Cabang Baru -->
+<div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] hidden items-end justify-center transition-opacity duration-200" id="branchModal">
+<div class="w-full max-w-md bg-canvas-base rounded-t-2xl border-t border-hairline-strong p-5 shadow-2xl animate-in slide-in-from-bottom duration-200">
+<!-- Sheet Handle -->
+<div class="w-12 h-1 rounded-full bg-hairline-strong mx-auto mb-4"></div>
+<div class="flex items-center justify-between pb-3 border-b border-hairline-default mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-text-ink font-semibold">Tambah Cabang Baru</h3>
+<p class="font-caption text-caption text-text-body mt-0.5">Konfigurasi outlet &amp; akses login kasir POS</p>
+</div>
+<button class="p-1.5 rounded-lg hover:bg-hairline-soft text-text-body active:scale-95" onclick="toggleModal(false)">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+<form class="space-y-4" onsubmit="handleFormSubmit(event)">
+<!-- Field 1: Nama Cabang -->
+<div>
+<label class="block font-caption text-caption text-text-ink font-medium mb-1.5">
+              Nama Cabang <span class="text-error">*</span>
+</label>
+<input class="w-full h-11 px-3 rounded-lg border border-hairline-strong bg-canvas-base text-text-ink font-body-md text-body-md focus:border-text-ink focus:ring-0 outline-none placeholder:text-text-muted transition-all" placeholder="misal: Outlet SCBD" required="" type="text"/>
+</div>
+<!-- Field 2: Alamat Lengkap -->
+<div>
+<label class="block font-caption text-caption text-text-ink font-medium mb-1.5">
+              Alamat Lengkap <span class="text-text-muted font-normal">(opsional)</span>
+</label>
+<textarea class="w-full p-3 rounded-lg border border-hairline-strong bg-canvas-base text-text-ink font-body-md text-body-md focus:border-text-ink focus:ring-0 outline-none placeholder:text-text-muted resize-none transition-all" placeholder="Jl. Jendral Sudirman Kav. 52..." rows="2"></textarea>
+</div>
+<!-- Field 3: Email Login Kasir Cabang -->
+<div>
+<label class="block font-caption text-caption text-text-ink font-medium mb-1.5">
+              Email Login Kasir Cabang <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-11 pl-9 pr-3 rounded-lg border border-hairline-strong bg-canvas-base text-text-ink font-body-md text-body-md focus:border-text-ink focus:ring-0 outline-none placeholder:text-text-muted transition-all" placeholder="kasir.scbd@retainly.id" required="" type="email"/>
+<span class="material-symbols-outlined absolute left-3 top-3 text-[18px] text-text-muted" data-icon="mail">mail</span>
+</div>
+<p class="font-caption text-[11px] text-text-body mt-1">Akun ini langsung terhubung ke aplikasi POS kasir.</p>
+</div>
+<!-- Bottom Sheet Action Buttons -->
+<div class="pt-3 flex items-center gap-3">
+<button class="flex-1 h-11 rounded-lg border border-hairline-strong bg-canvas-base text-text-ink font-button text-button hover:bg-hairline-soft active:scale-[0.98] transition-all" onclick="toggleModal(false)" type="button">
+              Batal
+            </button>
+<button class="flex-1 h-11 rounded-lg bg-cta-black text-on-primary font-button text-button hover:bg-cta-black-active active:scale-[0.98] transition-all shadow-sm" type="submit">
+              Simpan Cabang
+            </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Persistent Bottom Navigation Bar (Owner Role, Destination Count: 5) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-bottom-nav-height px-2 pb-safe bg-canvas-base border-t border-hairline-default">
+<!-- Tab 1: Input -->
+<a class="flex flex-col items-center justify-center text-text-muted font-caption-uppercase active:scale-[0.96] transition-transform duration-100 flex-1 py-1" href="javascript:void(0)">
+<span class="material-symbols-outlined text-[22px]" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-caption-uppercase text-[11px] mt-1">Input</span>
+</a>
+<!-- Tab 2: Pelanggan -->
+<a class="flex flex-col items-center justify-center text-text-muted font-caption-uppercase active:scale-[0.96] transition-transform duration-100 flex-1 py-1" href="javascript:void(0)">
+<span class="material-symbols-outlined text-[22px]" data-icon="group">group</span>
+<span class="font-caption-uppercase text-[11px] mt-1">Pelanggan</span>
+</a>
+<!-- Tab 3: Dashboard -->
+<a class="flex flex-col items-center justify-center text-text-muted font-caption-uppercase active:scale-[0.96] transition-transform duration-100 flex-1 py-1" href="javascript:void(0)">
+<span class="material-symbols-outlined text-[22px]" data-icon="query_stats">query_stats</span>
+<span class="font-caption-uppercase text-[11px] mt-1">Dashboard</span>
+</a>
+<!-- Tab 4: Cabang (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-cta-black font-body-strong active:scale-[0.96] transition-transform duration-100 flex-1 py-1" href="javascript:void(0)">
+<span class="material-symbols-outlined text-[22px]" data-icon="domain" style="font-variation-settings: 'FILL' 1;">domain</span>
+<span class="font-caption-uppercase text-[11px] font-semibold mt-1 text-cta-black">Cabang</span>
+</a>
+<!-- Tab 5: Pengaturan -->
+<a class="flex flex-col items-center justify-center text-text-muted font-caption-uppercase active:scale-[0.96] transition-transform duration-100 flex-1 py-1" href="javascript:void(0)">
+<span class="material-symbols-outlined text-[22px]" data-icon="settings">settings</span>
+<span class="font-caption-uppercase text-[11px] mt-1">Pengaturan</span>
+</a>
+</nav>
+</div>
+<script>
+    function toggleModal(show) {
+      const modal = document.getElementById('branchModal');
+      if (show) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      toggleModal(false);
+      // Optional subtle micro-notification could hook here
+    }
+  </script>
+</body></html>

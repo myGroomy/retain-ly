@@ -1,0 +1,637 @@
+<!DOCTYPE html><html class="light" lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Retain-ly - Input Order Transaksi</title>
+<!-- Fonts: Hanken Grotesk & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "semantic-active-surface": "#f0fdf4",
+            "hairline-soft": "#f5f5f7",
+            "outline": "#747878",
+            "surface-card": "#ffffff",
+            "surface-dark": "#171717",
+            "background": "#f8f9ff",
+            "accent-preview": "#8145b5",
+            "surface-container-low": "#f0f3fd",
+            "text-on-dark": "#ffffff",
+            "inverse-primary": "#c8c6c5",
+            "outline-variant": "#c4c7c7",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#484645",
+            "inverse-surface": "#2c3138",
+            "on-secondary-fixed-variant": "#004884",
+            "surface-container": "#ebeef7",
+            "on-surface-variant": "#444748",
+            "surface-tint": "#5f5e5e",
+            "text-muted": "#999999",
+            "surface-subtle": "#f0f0f3",
+            "tertiary-container": "#1c1b1a",
+            "cta-black-active": "#1a1a1a",
+            "semantic-churned-border": "#fecdd3",
+            "surface-variant": "#dfe2ec",
+            "surface-container-high": "#e5e8f1",
+            "semantic-active-border": "#bbf7d0",
+            "on-error": "#ffffff",
+            "on-primary-container": "#858383",
+            "tertiary": "#000000",
+            "semantic-churned-accent": "#eb8e90",
+            "text-body": "#60646c",
+            "primary-fixed": "#e5e2e1",
+            "semantic-risk-surface": "#fffbeb",
+            "semantic-risk-border": "#fde68a",
+            "surface-dim": "#d7dae3",
+            "on-tertiary-fixed": "#1c1b1a",
+            "secondary-fixed": "#d4e3ff",
+            "semantic-churned-surface": "#fff1f2",
+            "surface-container-highest": "#dfe2ec",
+            "semantic-risk": "#ab6400",
+            "surface-dark-elevated": "#1a1a1a",
+            "secondary-fixed-dim": "#a4c9ff",
+            "inverse-on-surface": "#eef1fa",
+            "secondary": "#005fad",
+            "on-secondary-fixed": "#001c39",
+            "tertiary-fixed-dim": "#cac6c4",
+            "on-secondary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#181c22",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#1c1b1b",
+            "on-secondary-container": "#003869",
+            "on-primary-fixed-variant": "#474746",
+            "hairline-default": "#f0f0f3",
+            "semantic-churned": "#e11d48",
+            "secondary-container": "#56a3ff",
+            "cta-black": "#000000",
+            "on-primary": "#ffffff",
+            "on-primary-fixed": "#1c1b1b",
+            "canvas-base": "#ffffff",
+            "canvas-soft": "#fafafa",
+            "primary": "#000000",
+            "text-ink": "#171717",
+            "on-error-container": "#93000a",
+            "on-tertiary-container": "#868382",
+            "tertiary-fixed": "#e6e2df",
+            "on-background": "#181c22",
+            "text-on-dark-muted": "#b0b4ba",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#c8c6c5",
+            "surface": "#f8f9ff",
+            "hairline-strong": "#dcdee0",
+            "text-disabled": "#cccccc",
+            "semantic-active": "#16a34a",
+            "semantic-risk-accent": "#f59e0b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "md": "16px",
+            "gutter-desktop": "24px",
+            "xxs": "4px",
+            "bottom-nav-height": "64px",
+            "sidebar-width": "240px",
+            "xs": "8px",
+            "container-max-width": "1200px",
+            "form-max-width": "540px",
+            "lg": "20px",
+            "xl": "24px",
+            "top-nav-height": "56px",
+            "xxl": "32px",
+            "gutter-mobile": "16px",
+            "sm": "12px"
+          },
+          "fontFamily": {
+            "display-hero": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "display-hero-mobile": ["Hanken Grotesk"],
+            "caption": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Hanken Grotesk"],
+            "numeric-stat": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption-uppercase": ["Inter"],
+            "body-strong": ["Inter"],
+            "button": ["Inter"],
+            "headline-lg": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "display-hero": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "21px", "letterSpacing": "0", "fontWeight": "400" }],
+            "display-hero-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "numeric-stat": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "caption-uppercase": ["11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "body-strong": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "600" }],
+            "button": ["14px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Hide scrollbars for clean cash register appearance */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-canvas-soft text-text-ink antialiased min-h-screen flex flex-col font-body-md text-body-md select-none">
+<!-- ========================================================================= -->
+<!-- DESKTOP / POS SIDEBAR (NavigationDrawer Shared Component)               -->
+<!-- ========================================================================= -->
+<aside class="fixed top-0 left-0 h-full w-sidebar-width hidden md:flex flex-col bg-canvas-base dark:bg-surface-dark border-r border-hairline-default dark:border-surface-tint z-40">
+<div class="h-full w-sidebar-width p-4 flex flex-col justify-between">
+<!-- Branch / Counter Terminal Header -->
+<div>
+<div class="flex items-center gap-3 p-2.5 mb-6 rounded-lg bg-surface-subtle dark:bg-surface-dark-elevated">
+<div class="w-10 h-10 rounded-lg bg-cta-black text-on-primary flex items-center justify-center font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="font-headline-sm text-headline-sm text-text-ink dark:text-text-on-dark truncate leading-tight">Cabang Senopati</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-semantic-active animate-pulse"></span>
+<span class="font-caption text-caption text-semantic-active font-medium">Online</span>
+<span class="font-caption text-caption text-text-body">• Store #04</span>
+</div>
+</div>
+</div>
+<!-- Section Label -->
+<p class="font-caption-uppercase text-caption-uppercase text-text-muted px-3 mb-2 tracking-wider">TERMINAL KASIR</p>
+<!-- Navigation Drawer Items -->
+<nav class="space-y-1">
+<!-- Active: Input Order -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-subtle dark:bg-surface-dark-elevated text-primary dark:text-text-on-dark font-semibold active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined text-primary dark:text-text-on-dark" data-icon="point_of_sale" data-weight="fill" style="font-variation-settings: 'FILL' 1;">point_of_sale</span>
+<span class="font-body-md text-body-md">Input Order</span>
+</a>
+<!-- Inactive: Customer List -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body dark:text-text-on-dark-muted hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:text-text-ink dark:hover:text-text-on-dark active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Customer List</span>
+</a>
+<!-- Inactive: Retention Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body dark:text-text-on-dark-muted hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:text-text-ink dark:hover:text-text-on-dark active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Retention Dashboard</span>
+</a>
+<!-- Inactive: Daily Follow-up -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body dark:text-text-on-dark-muted hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:text-text-ink dark:hover:text-text-on-dark active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-body-md text-body-md">Daily Follow-up</span>
+<span class="ml-auto bg-semantic-risk-surface text-semantic-risk text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-semantic-risk-border">3</span>
+</a>
+<!-- Inactive: Settings -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body dark:text-text-on-dark-muted hover:bg-surface-subtle dark:hover:bg-surface-dark-elevated hover:text-text-ink dark:hover:text-text-on-dark active:scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Drawer Footer Meta -->
+<div class="border-t border-hairline-default pt-3 px-2">
+<div class="font-caption text-caption text-text-body">F&amp;B Counter Terminal</div>
+<div class="font-caption-uppercase text-caption-uppercase text-text-muted mt-0.5">Retain-ly POS Core v2.4</div>
+</div>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE                                                           -->
+<!-- ========================================================================= -->
+<div class="flex-1 flex flex-col md:pl-sidebar-width w-full pb-36 md:pb-12">
+<!-- TOP APP BAR (Shared Component) -->
+<header class="bg-canvas-base dark:bg-surface-dark sticky top-0 z-30 shadow-sm md:shadow-none">
+<div class="flex justify-between items-center w-full px-4 h-top-nav-height max-w-container-max-width mx-auto">
+<!-- Left: Brand / Branch Context -->
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-subtle flex items-center justify-center text-text-ink">
+<span class="material-symbols-outlined text-[20px]" data-icon="storefront">storefront</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-sm text-headline-sm font-semibold text-text-ink dark:text-text-on-dark leading-tight tracking-tight">Cabang Senopati</h1>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-semantic-active-surface border border-semantic-active-border text-semantic-active font-caption-uppercase text-caption-uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-semantic-active"></span>
+                Online
+              </span>
+</div>
+<p class="font-caption text-caption text-text-body hidden sm:block">Jam Operasional: 09:00 - 22:00 WIB • Terminal #01</p>
+</div>
+</div>
+<!-- Right: Mobile Quick Stats & Sync Action -->
+<div class="flex items-center gap-2">
+<div class="text-right mr-1 hidden sm:block">
+<div class="font-caption-uppercase text-caption-uppercase text-text-muted">RETENSI HARI INI</div>
+<div class="font-headline-sm text-headline-sm font-bold text-text-ink">74.2%</div>
+</div>
+<button aria-label="Sync orders" class="w-9 h-9 rounded-lg border border-hairline-strong flex items-center justify-center text-text-body hover:bg-surface-subtle active:scale-[0.96] transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="sync">sync</span>
+</button>
+</div>
+</div>
+</header>
+<!-- CONTENT WRAPPER -->
+<main class="w-full max-w-form-max-width mx-auto px-gutter-mobile md:px-0 pt-4 md:pt-6 space-y-4">
+<!-- BENTO HEADER: Real-Time Cashier Shift Indicator -->
+<div class="bg-surface-card rounded-xl border border-hairline-strong p-3.5 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-dark flex items-center justify-center text-text-on-dark font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-text-ink leading-tight">Input Order Cepat</div>
+<div class="font-caption text-caption text-text-body">Rekam kontak WhatsApp &amp; data retensi pelanggan</div>
+</div>
+</div>
+<span class="bg-surface-subtle border border-hairline-strong px-2.5 py-1 rounded-full font-caption-uppercase text-caption-uppercase text-text-ink font-semibold">
+          Shift Pagi
+        </span>
+</div>
+<!-- MAIN INPUT FORM CARD -->
+<form class="bg-surface-card rounded-xl border border-hairline-strong p-4 md:p-6 space-y-5" id="orderForm" onsubmit="event.preventDefault();">
+<!-- FIELD 1: TANGGAL TRANSAKSI -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5 flex items-center justify-between" for="transactionDate">
+<span class="">Tanggal Transaksi</span>
+<span class="font-caption text-caption text-text-muted">Auto-lock shift date</span>
+</label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-text-body flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+</span>
+<input class="w-full h-11 pl-11 pr-10 bg-surface-subtle text-text-ink font-body-md text-body-md rounded-lg border border-hairline-strong focus:outline-none cursor-default font-medium" id="transactionDate" readonly="" type="text" value="Hari ini (24 Okt 2023)">
+<button class="absolute right-3 text-text-body hover:text-text-ink p-1 rounded transition-colors" title="Ubah tanggal" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit_calendar">edit_calendar</span>
+</button>
+</div>
+</div>
+<!-- FIELD 2: PENCARIAN CERDAS (SMART AUTOCOMPLETE) -->
+<div class="relative">
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-body-strong text-body-strong text-text-ink" for="customerSearch">
+              Cari Nama atau No. Telp
+            </label>
+<span class="font-caption-uppercase text-caption-uppercase text-semantic-active font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="bolt">bolt</span>
+              Pencarian Cepat
+            </span>
+</div>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-text-body flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</span>
+<input class="w-full h-12 pl-11 pr-10 bg-canvas-base text-text-ink font-body-md text-body-md rounded-lg border-2 border-text-ink focus:outline-none transition-all placeholder:text-text-muted" id="customerSearch" placeholder="Ketik 4 digit nomor HP atau nama..." type="text" value="Budi">
+<button class="absolute right-3 text-text-body hover:text-text-ink p-1 rounded" onclick="document.getElementById('customerSearch').value=''; document.getElementById('customerSearch').focus();" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="cancel">cancel</span>
+</button>
+</div>
+<!-- AUTOCOMPLETE DROPDOWN PANEL (OPEN STATE AS REQUESTED) -->
+<div class="mt-2 bg-canvas-base border border-hairline-strong rounded-xl shadow-xl overflow-hidden z-20 transition-all" id="autocompleteDropdown">
+<div class="px-3 py-2 bg-hairline-soft border-b border-hairline-default flex items-center justify-between">
+<span class="font-caption-uppercase text-caption-uppercase text-text-muted">Hasil Pencarian Database</span>
+<span class="font-caption text-caption text-text-body">1 Terdaftar</span>
+</div>
+<!-- Suggestion Item 1: Budi Santoso (ACTIVE CUSTOMER MATCH) -->
+<div class="p-3 hover:bg-surface-subtle cursor-pointer transition-colors border-b border-hairline-default bg-semantic-active-surface/20" onclick="selectSuggestion('Budi Santoso', '081234567890')">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<div class="w-8 h-8 rounded-full bg-text-ink text-on-primary flex items-center justify-center font-headline-sm text-headline-sm text-xs mt-0.5">
+                    BS
+                  </div>
+<div>
+<div class="font-headline-sm text-headline-sm text-text-ink font-semibold flex items-center gap-1.5">
+                      Budi Santoso
+                      <span class="material-symbols-outlined text-semantic-active text-[16px]" data-icon="verified">verified</span>
+</div>
+<div class="font-body-sm text-body-sm text-text-body font-mono">0812-3456-7890</div>
+</div>
+</div>
+<!-- Retention Badge Chip -->
+<div class="flex flex-col items-end gap-1">
+<span class="h-[22px] px-2 rounded-full font-caption-uppercase text-caption-uppercase font-semibold flex items-center bg-semantic-active-surface text-semantic-active border border-semantic-active-border">
+                    ACTIVE
+                  </span>
+<span class="font-caption text-caption text-text-body">Sudah order 5x</span>
+</div>
+</div>
+<div class="mt-2.5 pt-2 border-t border-dashed border-hairline-strong flex items-center justify-between font-caption text-caption text-text-body">
+<span class="">Terakhir: 3 hari lalu • Dine-in</span>
+<span class="text-text-ink font-medium underline flex items-center gap-0.5">
+                  Pilih Pelanggan
+                  <span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Option: Tambah Sebagai Customer Baru -->
+<div class="p-3 hover:bg-surface-subtle cursor-pointer transition-colors flex items-center justify-between text-text-ink" onclick="addNewCustomerEntry()">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-subtle border border-hairline-strong flex items-center justify-center text-text-ink">
+<span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
+</div>
+<div>
+<div class="font-body-strong text-body-strong text-text-ink leading-tight">Buat Kontak Baru</div>
+<div class="font-caption text-caption text-text-body">Gunakan 'Budi' sebagai nama pelanggan baru</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-body" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- EMBEDDED CONFIRMATION STATE / INLINE MODAL (As Requested) -->
+<div class="rounded-xl border border-semantic-risk-border bg-semantic-risk-surface p-3.5 space-y-3" id="duplicateAlertBox">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-semantic-risk text-[22px] flex-shrink-0 mt-0.5" data-icon="contact_phone">contact_phone</span>
+<div class="text-text-ink">
+<div class="font-headline-sm text-headline-sm text-semantic-risk font-semibold">Deteksi Nomor Pelanggan</div>
+<p class="font-body-sm text-body-sm text-text-ink mt-0.5">
+                Nomor <strong class="font-semibold font-mono">081234567890</strong> sudah terdaftar atas nama <strong class="font-semibold">Budi Santoso</strong>. Gunakan data ini atau buat entry baru?
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-1">
+<button class="flex-1 h-10 bg-cta-black hover:bg-cta-black-active text-on-primary rounded-lg font-button text-button font-medium flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all" onclick="applyExistingData()" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+              Pakai Data Ini
+            </button>
+<button class="h-10 px-3.5 bg-canvas-base border border-hairline-strong text-text-ink hover:bg-surface-subtle rounded-lg font-button text-button font-medium active:scale-[0.98] transition-all" onclick="dismissDuplicateAlert()" type="button">
+              Tetap Buat Baru
+            </button>
+</div>
+</div>
+<!-- FIELD 3: AUTO-FILLED / EDITABLE CUSTOMER DETAILS (2-Column Desktop Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+<!-- Customer Name -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5" for="customerName">
+              Nama Customer <span class="text-error">*</span>
+</label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-text-body flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[18px]" data-icon="person">person</span>
+</span>
+<input class="w-full h-11 pl-10 pr-3.5 bg-canvas-base text-text-ink font-body-md text-body-md rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none transition-all" id="customerName" placeholder="Nama lengkap pelanggan" required="" type="text" value="Budi Santoso">
+</div>
+</div>
+<!-- Phone / WhatsApp Number -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5 flex items-center justify-between" for="customerPhone">
+<span class="">No. Handphone (WhatsApp) <span class="text-error">*</span></span>
+<span class="font-caption text-caption text-semantic-active font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+                Valid WA
+              </span>
+</label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-text-body flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[18px]" data-icon="call">call</span>
+</span>
+<input class="w-full h-11 pl-10 pr-3.5 bg-canvas-base text-text-ink font-body-md text-body-md font-mono rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none transition-all" id="customerPhone" placeholder="08xxxxxxxxxx" required="" type="tel" value="081234567890">
+</div>
+</div>
+</div>
+<!-- FIELD 4: CHANNEL ORDER (Multi-channel selection pills & Dropdown) -->
+<div>
+<label class="block font-body-strong text-body-strong text-text-ink mb-1.5 flex items-center justify-between">
+<span class="">Channel Order <span class="text-error">*</span></span>
+<span class="font-caption text-caption text-text-muted">Pilih platform transaksi</span>
+</label>
+<!-- Fast Access Cashier Channel Pills -->
+<div class="grid grid-cols-4 sm:grid-cols-7 gap-1.5 mb-2">
+<button class="channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body" onclick="setChannel('Dine-in')" type="button">
+              Dine-in
+            </button>
+<button class="channel-pill py-2 px-1 rounded-lg border-2 border-text-ink bg-text-ink text-on-primary text-center font-caption-uppercase text-caption-uppercase font-semibold transition-all active:scale-[0.96]" onclick="setChannel('Takeaway')" type="button">
+              Takeaway
+            </button>
+<button class="channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body" onclick="setChannel('Gofood')" type="button">
+              Gofood
+            </button>
+<button class="channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body" onclick="setChannel('Grab')" type="button">
+              Grab
+            </button>
+<button class="channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body" onclick="setChannel('Shopee')" type="button">
+              Shopee
+            </button>
+<button class="channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body" onclick="setChannel('WhatsApp')" type="button">
+              WhatsApp
+            </button>
+<button class="channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body" onclick="setChannel('Lainnya')" type="button">
+              Lainnya
+            </button>
+</div>
+<!-- Fallback Native Select for Standard Dropdown Requirement -->
+<div class="relative flex items-center">
+<select class="w-full h-11 px-3.5 bg-canvas-base text-text-ink font-body-md text-body-md rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none appearance-none cursor-pointer" id="channelSelect" onchange="handleChannelDropdown(this.value)">
+<option selected="" value="Takeaway">Takeaway (Bungkus Langsung)</option>
+<option value="Dine-in">Dine-in (Makan di Tempat)</option>
+<option value="Gofood">Gofood (GoJek)</option>
+<option value="Shopee">ShopeeFood</option>
+<option value="Grab">GrabFood</option>
+<option value="WhatsApp">WhatsApp Direct Order</option>
+<option value="Lainnya">Lainnya (Input Manual / Event)</option>
+</select>
+<span class="absolute right-3 text-text-body pointer-events-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span>
+</span>
+</div>
+<!-- PREVIEW INPUT TEKS JIKA MEMILIH 'LAINNYA' -->
+<div class="hidden mt-2 pt-2 border-t border-hairline-default" id="otherChannelContainer">
+<label class="block font-caption text-caption text-text-body mb-1" for="otherChannelInput">
+              Spesifikasi Channel 'Lainnya':
+            </label>
+<div class="relative">
+<input class="w-full h-10 px-3 bg-surface-subtle text-text-ink font-body-sm text-body-sm rounded-lg border border-hairline-strong focus:border-2 focus:border-text-ink focus:outline-none" id="otherChannelInput" placeholder="Contoh: Bazaar Senopati, Catering Kantor, Titip Teman..." type="text">
+</div>
+</div>
+</div>
+<!-- NOMINAL TRANSAKSI & CATATAN MENU (OPSIONAL) -->
+
+<!-- SUMMARY MINI BANNER -->
+
+</form>
+</main>
+<!-- ========================================================================= -->
+<!-- STICKY ACTION BAR + TOAST PREVIEW (Fixed above mobile bottom bar)         -->
+<!-- ========================================================================= -->
+<div class="fixed bottom-bottom-nav-height md:bottom-0 left-0 md:left-sidebar-width right-0 p-3 md:p-4 bg-canvas-base/95 backdrop-blur-md border-t border-hairline-default z-30 flex flex-col items-center">
+<div class="w-full max-w-form-max-width mx-auto flex flex-col items-center">
+<!-- TOAST VISUAL ALERT PREVIEW (Located strictly above the save button) -->
+<div class="mb-2.5 w-full bg-cta-black text-on-primary px-3.5 py-2 rounded-lg flex items-center justify-between shadow-lg transform transition-all duration-300" id="toastAlert">
+<div class="flex items-center gap-2 font-body-sm text-body-sm">
+<span class="w-5 h-5 rounded-full bg-semantic-active flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[14px]" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</span>
+<span class="font-medium">Order tersimpan! Database pelanggan telah diperbarui.</span>
+</div>
+<button class="text-text-muted hover:text-white p-0.5" onclick="dismissToast()" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="close">close</span>
+</button>
+</div>
+<!-- PRIMARY FIXED ACTION BUTTON -->
+<div class="w-full flex items-center gap-2">
+<button class="flex-1 h-12 bg-cta-black hover:bg-cta-black-active text-on-primary rounded-lg font-button text-button font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer" onclick="triggerSaveOrder()" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="save">save</span>
+<span class="">Simpan Order Transaksi</span>
+</button>
+<button class="h-12 w-12 rounded-lg border border-hairline-strong flex items-center justify-center text-text-body hover:bg-surface-subtle active:scale-[0.96] transition-transform" onclick="resetForm()" title="Reset Form" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="refresh">refresh</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- MOBILE BOTTOM NAVIGATION (Shared Component: BottomNavBar)                 -->
+<!-- ========================================================================= -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 h-bottom-nav-height bg-canvas-base dark:bg-surface-dark border-t border-hairline-default dark:border-surface-tint md:hidden">
+<!-- Tab 1: Home (ACTIVE DESTINATION - Input Order) -->
+<a aria-current="page" class="flex flex-col items-center justify-center text-primary dark:text-text-on-dark font-semibold py-1 active:scale-[0.96] transition-transform flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="point_of_sale" data-weight="fill" style="font-variation-settings: 'FILL' 1;">point_of_sale</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-0.5">Home</span>
+</a>
+<!-- Tab 2: Customer -->
+<a class="flex flex-col items-center justify-center text-text-muted dark:text-text-on-dark-muted py-1 active:scale-[0.96] transition-transform hover:text-primary flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="group">group</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-0.5">Customer</span>
+</a>
+<!-- Tab 3: Dashboard -->
+<a class="flex flex-col items-center justify-center text-text-muted dark:text-text-on-dark-muted py-1 active:scale-[0.96] transition-transform hover:text-primary flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="analytics">analytics</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-0.5">Dashboard</span>
+</a>
+<!-- Tab 4: Follow-up -->
+<a class="flex flex-col items-center justify-center text-text-muted dark:text-text-on-dark-muted py-1 active:scale-[0.96] transition-transform hover:text-primary flex-1 relative" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="checklist">checklist</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-0.5">Follow-up</span>
+<span class="absolute top-1 right-5 w-2 h-2 rounded-full bg-semantic-risk"></span>
+</a>
+<!-- Tab 5: Settings -->
+<a class="flex flex-col items-center justify-center text-text-muted dark:text-text-on-dark-muted py-1 active:scale-[0.96] transition-transform hover:text-primary flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="settings">settings</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-0.5">Settings</span>
+</a>
+</nav>
+<!-- ========================================================================= -->
+<!-- LIGHTWEIGHT CASHIER INTERACTIONS SCRIPT                                  -->
+<!-- ========================================================================= -->
+<script>
+    // Handle Selecting Autocomplete Suggestion
+    function selectSuggestion(name, phone) {
+      document.getElementById('customerName').value = name;
+      document.getElementById('customerPhone').value = phone;
+      document.getElementById('customerSearch').value = name + ' (' + phone + ')';
+      document.getElementById('duplicateAlertBox').classList.add('hidden');
+    }
+
+    // Handle Creating Brand New Customer Entry
+    function addNewCustomerEntry() {
+      const searchVal = document.getElementById('customerSearch').value;
+      document.getElementById('customerName').value = searchVal || 'Pelanggan Baru';
+      document.getElementById('customerPhone').value = '';
+      document.getElementById('customerPhone').focus();
+      document.getElementById('duplicateAlertBox').classList.add('hidden');
+    }
+
+    // Inline Modal Actions
+    function applyExistingData() {
+      selectSuggestion('Budi Santoso', '081234567890');
+    }
+
+    function dismissDuplicateAlert() {
+      document.getElementById('duplicateAlertBox').classList.add('hidden');
+    }
+
+    // Channel Selection Mechanics
+    function setChannel(channelName) {
+      const select = document.getElementById('channelSelect');
+      select.value = channelName;
+      handleChannelDropdown(channelName);
+
+      // Update pill styling
+      const pills = document.querySelectorAll('.channel-pill');
+      pills.forEach(pill => {
+        if (pill.innerText.trim().toLowerCase() === channelName.toLowerCase()) {
+          pill.className = "channel-pill py-2 px-1 rounded-lg border-2 border-text-ink bg-text-ink text-on-primary text-center font-caption-uppercase text-caption-uppercase font-semibold transition-all active:scale-[0.96]";
+        } else {
+          pill.className = "channel-pill py-2 px-1 rounded-lg border border-hairline-strong text-center font-caption-uppercase text-caption-uppercase font-semibold hover:border-text-ink transition-all active:scale-[0.96] bg-canvas-base text-text-body";
+        }
+      });
+    }
+
+    function handleChannelDropdown(val) {
+      const otherBox = document.getElementById('otherChannelContainer');
+      if (val === 'Lainnya') {
+        otherBox.classList.remove('hidden');
+        document.getElementById('otherChannelInput').focus();
+      } else {
+        otherBox.classList.add('hidden');
+      }
+    }
+
+    // Toast Mechanics
+    function triggerSaveOrder() {
+      const toast = document.getElementById('toastAlert');
+      toast.classList.remove('hidden', 'opacity-0');
+      toast.classList.add('opacity-100');
+
+      // Vibrate on mobile POS if supported
+      if (navigator.vibrate) {
+        navigator.vibrate([40]);
+      }
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 4000);
+    }
+
+    function dismissToast() {
+      const toast = document.getElementById('toastAlert');
+      toast.classList.add('hidden');
+    }
+
+    function resetForm() {
+      document.getElementById('customerSearch').value = '';
+      document.getElementById('customerName').value = '';
+      document.getElementById('customerPhone').value = '';
+      document.getElementById('orderAmount').value = '';
+      document.getElementById('orderNotes').value = '';
+      setChannel('Takeaway');
+      document.getElementById('customerSearch').focus();
+    }
+  </script>
+
+
+</body></html>

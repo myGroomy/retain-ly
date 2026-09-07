@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retain-ly — Daftar Customer</title>
+<!-- Google Fonts: Inter & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "semantic-active-surface": "#f0fdf4",
+            "hairline-soft": "#f5f5f7",
+            "outline": "#747878",
+            "surface-card": "#ffffff",
+            "surface-dark": "#171717",
+            "background": "#f8f9ff",
+            "accent-preview": "#8145b5",
+            "surface-container-low": "#f0f3fd",
+            "text-on-dark": "#ffffff",
+            "inverse-primary": "#c8c6c5",
+            "outline-variant": "#c4c7c7",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#484645",
+            "inverse-surface": "#2c3138",
+            "on-secondary-fixed-variant": "#004884",
+            "surface-container": "#ebeef7",
+            "on-surface-variant": "#444748",
+            "surface-tint": "#5f5e5e",
+            "text-muted": "#999999",
+            "surface-subtle": "#f0f0f3",
+            "tertiary-container": "#1c1b1a",
+            "cta-black-active": "#1a1a1a",
+            "semantic-churned-border": "#fecdd3",
+            "surface-variant": "#dfe2ec",
+            "surface-container-high": "#e5e8f1",
+            "semantic-active-border": "#bbf7d0",
+            "on-error": "#ffffff",
+            "on-primary-container": "#858383",
+            "tertiary": "#000000",
+            "semantic-churned-accent": "#eb8e90",
+            "text-body": "#60646c",
+            "primary-fixed": "#e5e2e1",
+            "semantic-risk-surface": "#fffbeb",
+            "semantic-risk-border": "#fde68a",
+            "surface-dim": "#d7dae3",
+            "on-tertiary-fixed": "#1c1b1a",
+            "secondary-fixed": "#d4e3ff",
+            "semantic-churned-surface": "#fff1f2",
+            "surface-container-highest": "#dfe2ec",
+            "semantic-risk": "#ab6400",
+            "surface-dark-elevated": "#1a1a1a",
+            "secondary-fixed-dim": "#a4c9ff",
+            "inverse-on-surface": "#eef1fa",
+            "secondary": "#005fad",
+            "on-secondary-fixed": "#001c39",
+            "tertiary-fixed-dim": "#cac6c4",
+            "on-secondary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#181c22",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#1c1b1b",
+            "on-secondary-container": "#003869",
+            "on-primary-fixed-variant": "#474746",
+            "hairline-default": "#f0f0f3",
+            "semantic-churned": "#e11d48",
+            "secondary-container": "#56a3ff",
+            "cta-black": "#000000",
+            "on-primary": "#ffffff",
+            "on-primary-fixed": "#1c1b1b",
+            "canvas-base": "#ffffff",
+            "canvas-soft": "#fafafa",
+            "primary": "#000000",
+            "text-ink": "#171717",
+            "on-error-container": "#93000a",
+            "on-tertiary-container": "#868382",
+            "tertiary-fixed": "#e6e2df",
+            "on-background": "#181c22",
+            "text-on-dark-muted": "#b0b4ba",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#c8c6c5",
+            "surface": "#f8f9ff",
+            "hairline-strong": "#dcdee0",
+            "text-disabled": "#cccccc",
+            "semantic-active": "#16a34a",
+            "semantic-risk-accent": "#f59e0b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "md": "16px",
+            "gutter-desktop": "24px",
+            "xxs": "4px",
+            "bottom-nav-height": "64px",
+            "sidebar-width": "240px",
+            "xs": "8px",
+            "container-max-width": "1200px",
+            "form-max-width": "540px",
+            "lg": "20px",
+            "xl": "24px",
+            "top-nav-height": "56px",
+            "xxl": "32px",
+            "gutter-mobile": "16px",
+            "sm": "12px"
+          },
+          "fontFamily": {
+            "display-hero": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "display-hero-mobile": ["Hanken Grotesk"],
+            "caption": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Hanken Grotesk"],
+            "numeric-stat": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption-uppercase": ["Inter"],
+            "body-strong": ["Inter"],
+            "button": ["Inter"],
+            "headline-lg": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "display-hero": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "21px", "letterSpacing": "0", "fontWeight": "400" }],
+            "display-hero-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "numeric-stat": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "caption-uppercase": ["11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "body-strong": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "600" }],
+            "button": ["14px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Hide scrollbar for clean filter horizontal scroll */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-canvas-soft text-text-ink min-h-screen flex flex-col font-body-md text-body-md antialiased selection:bg-surface-subtle selection:text-text-ink">
+<!-- Desktop Sidebar Navigation (From Shared Components: NavigationDrawer) -->
+<aside class="fixed top-0 left-0 h-full w-sidebar-width hidden md:flex flex-col bg-canvas-base border-r border-hairline-default z-40">
+<div class="h-full w-sidebar-width p-4 flex flex-col justify-between">
+<!-- Profile Header & Brand -->
+<div>
+<div class="flex items-center gap-3 px-2 py-3 mb-4 border-b border-hairline-default">
+<div class="w-10 h-10 rounded-lg bg-surface-dark flex items-center justify-center text-text-on-dark font-headline-sm text-headline-sm">
+            CS
+          </div>
+<div class="flex flex-col text-left">
+<span class="font-headline-sm text-headline-sm text-text-ink">Cabang Senopati</span>
+<span class="font-caption text-caption text-text-body">Store #04 - Active</span>
+<span class="font-caption text-caption text-text-muted">F&amp;B Counter Terminal</span>
+</div>
+</div>
+<!-- Vertical Navigation Links -->
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-body-md text-body-md">Input Order</span>
+</a>
+<!-- Active Tab: Customer List -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-subtle text-primary font-semibold transition-all duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-body-md text-body-md">Customer List</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Retention Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-body-md text-body-md">Daily Follow-up</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Quick Status Footer -->
+<div class="p-3 bg-hairline-soft rounded-lg border border-hairline-strong flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-semantic-active inline-block animate-pulse"></span>
+<span class="font-caption text-caption text-text-body font-medium">POS Synced</span>
+</div>
+<span class="font-caption-uppercase text-caption-uppercase text-text-muted">v2.4.1</span>
+</div>
+</div>
+</aside>
+<!-- Main Container -->
+<div class="flex-1 flex flex-col md:pl-sidebar-width">
+<!-- TopAppBar Component (Shared Anchors) -->
+<header class="sticky top-0 z-30 bg-canvas-base shadow-sm">
+<div class="flex justify-between items-center w-full px-4 h-top-nav-height max-w-container-max-width mx-auto">
+<!-- Leading / Store Identity -->
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-subtle flex items-center justify-center text-text-ink">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-semibold text-text-ink tracking-tight">Daftar Customer</h1>
+<p class="font-caption text-caption text-text-body hidden sm:block">Cabang Senopati • Terminal 04</p>
+</div>
+</div>
+<!-- Trailing Action: Status & Actions -->
+<div class="flex items-center gap-3">
+<div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-semantic-active-surface border border-semantic-active-border rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-semantic-active"></span>
+<span class="font-caption text-caption text-semantic-active font-medium">Online</span>
+</div>
+<button aria-label="Export Contact CSV" class="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-subtle hover:bg-hairline-strong transition-colors text-text-ink" type="button">
+<span class="material-symbols-outlined" data-icon="file_download">file_download</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-container-max-width mx-auto px-4 py-4 md:py-6 pb-24 md:pb-8">
+<!-- Search & Command Strip -->
+<section class="mb-4">
+<div class="relative w-full max-w-2xl">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-text-muted">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</div>
+<input class="w-full h-11 pl-11 pr-10 bg-canvas-base border border-hairline-strong rounded-lg text-text-ink font-body-md text-body-md placeholder:text-text-muted focus:outline-none focus:border-text-ink focus:ring-0 transition-all" placeholder="Cari nama customer atau no. telepon (08...)" type="text" value=""/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+<kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-text-muted bg-surface-subtle border border-hairline-strong rounded">⌘K</kbd>
+</div>
+</div>
+</section>
+<!-- Retention Filter Chips & Counter -->
+<section class="mb-5 space-y-3">
+<!-- Horizontal Scrollable Segment Filter Chips -->
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+<!-- Filter: Semua -->
+<button class="flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-text-ink text-text-on-dark font-caption-uppercase text-caption-uppercase tracking-wider transition-all duration-150 active:scale-[0.98]" type="button">
+<span>Semua</span>
+<span class="px-1.5 py-0.2 bg-surface-dark-elevated text-text-on-dark text-[10px] rounded-full font-mono">1,420</span>
+</button>
+<!-- Filter: Active (Green) -->
+<button class="flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-canvas-base text-text-body hover:bg-surface-subtle border border-hairline-strong font-caption-uppercase text-caption-uppercase tracking-wider transition-all duration-150 active:scale-[0.98]" type="button">
+<span class="w-2 h-2 rounded-full bg-semantic-active"></span>
+<span>Active</span>
+<span class="px-1.5 py-0.2 bg-semantic-active-surface text-semantic-active border border-semantic-active-border text-[10px] rounded-full font-mono font-semibold">850</span>
+</button>
+<!-- Filter: At Risk (Amber) -->
+<button class="flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-canvas-base text-text-body hover:bg-surface-subtle border border-hairline-strong font-caption-uppercase text-caption-uppercase tracking-wider transition-all duration-150 active:scale-[0.98]" type="button">
+<span class="w-2 h-2 rounded-full bg-semantic-risk"></span>
+<span>At Risk</span>
+<span class="px-1.5 py-0.2 bg-semantic-risk-surface text-semantic-risk border border-semantic-risk-border text-[10px] rounded-full font-mono font-semibold">320</span>
+</button>
+<!-- Filter: Churned (Coral/Red) -->
+<button class="flex-shrink-0 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-canvas-base text-text-body hover:bg-surface-subtle border border-hairline-strong font-caption-uppercase text-caption-uppercase tracking-wider transition-all duration-150 active:scale-[0.98]" type="button">
+<span class="w-2 h-2 rounded-full bg-semantic-churned"></span>
+<span>Churned</span>
+<span class="px-1.5 py-0.2 bg-semantic-churned-surface text-semantic-churned border border-semantic-churned-border text-[10px] rounded-full font-mono font-semibold">250</span>
+</button>
+</div>
+<!-- Counter Information Bar -->
+<div class="flex items-center justify-between pt-1">
+<p class="font-caption text-caption text-text-body">
+            Menampilkan <span class="font-body-strong text-body-strong text-text-ink">20</span> dari <span class="font-body-strong text-body-strong text-text-ink">1,420</span> customer
+          </p>
+<div class="flex items-center gap-1.5 text-text-muted hover:text-text-ink cursor-pointer font-caption text-caption">
+<span class="material-symbols-outlined text-[16px]" data-icon="swap_vert">swap_vert</span>
+<span>Order Terakhir</span>
+</div>
+</div>
+</section>
+<!-- Customer Cards Stack -->
+<section class="space-y-3">
+<!-- Card 1: Budi Santoso -->
+<article class="bg-canvas-base border border-hairline-strong rounded-xl p-4 sm:p-5 transition-shadow duration-150 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start gap-3.5">
+<!-- Avatar Token -->
+<div class="w-11 h-11 rounded-lg bg-hairline-soft border border-hairline-default flex items-center justify-center text-text-ink font-headline-sm text-headline-sm shrink-0">
+                BS
+              </div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink tracking-tight">Budi Santoso</h2>
+<!-- Loyalty Order Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-subtle border border-hairline-strong text-text-ink font-caption text-caption font-medium">
+                    8x Order
+                  </span>
+<!-- Active Status Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-semantic-active-surface border border-semantic-active-border text-semantic-active font-caption-uppercase text-caption-uppercase">
+                    Active
+                  </span>
+</div>
+<div class="flex items-center gap-2 text-text-body font-body-sm text-body-sm">
+<span class="font-mono text-text-ink font-medium">0812-3456-7890</span>
+<span class="text-hairline-strong">•</span>
+<span class="text-text-muted">Dine-in Loyal</span>
+</div>
+</div>
+</div>
+<!-- Meta & Channel Info -->
+<div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2.5 sm:pt-0 border-hairline-default gap-1 text-right">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-subtle text-text-ink font-caption text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-semantic-active" data-icon="delivery_dining">delivery_dining</span>
+<span>Sering: Gofood</span>
+</div>
+<span class="font-caption text-caption text-text-muted">
+                Order terakhir: <strong class="text-text-ink font-medium">2 hari lalu</strong>
+</span>
+</div>
+</div>
+</article>
+<!-- Card 2: Siti Rahmawati -->
+<article class="bg-canvas-base border border-hairline-strong rounded-xl p-4 sm:p-5 transition-shadow duration-150 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start gap-3.5">
+<!-- Avatar Token -->
+<div class="w-11 h-11 rounded-lg bg-semantic-risk-surface border border-semantic-risk-border flex items-center justify-center text-semantic-risk font-headline-sm text-headline-sm shrink-0">
+                SR
+              </div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink tracking-tight">Siti Rahmawati</h2>
+<!-- Loyalty Order Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-subtle border border-hairline-strong text-text-ink font-caption text-caption font-medium">
+                    3x Order
+                  </span>
+<!-- At Risk Status Badge with Days -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-semantic-risk-surface border border-semantic-risk-border text-semantic-risk font-caption-uppercase text-caption-uppercase">
+                    At Risk (38 hari)
+                  </span>
+</div>
+<div class="flex items-center gap-2 text-text-body font-body-sm text-body-sm">
+<span class="font-mono text-text-ink font-medium">0819-8765-4321</span>
+<span class="text-hairline-strong">•</span>
+<span class="text-text-muted">Takeaway Regular</span>
+</div>
+</div>
+</div>
+<!-- Meta & Channel Info -->
+<div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2.5 sm:pt-0 border-hairline-default gap-1 text-right">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-subtle text-text-ink font-caption text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-semantic-active" data-icon="moped">moped</span>
+<span>Sering: GrabFood</span>
+</div>
+<span class="font-caption text-caption text-text-muted">
+                Order terakhir: <strong class="text-semantic-risk font-medium">38 hari lalu</strong>
+</span>
+</div>
+</div>
+</article>
+<!-- Card 3: Dimas Anggara -->
+<article class="bg-canvas-base border border-hairline-strong rounded-xl p-4 sm:p-5 transition-shadow duration-150 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start gap-3.5">
+<!-- Avatar Token -->
+<div class="w-11 h-11 rounded-lg bg-hairline-soft border border-hairline-default flex items-center justify-center text-text-ink font-headline-sm text-headline-sm shrink-0">
+                DA
+              </div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink tracking-tight">Dimas Anggara</h2>
+<!-- Loyalty Order Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-subtle border border-hairline-strong text-text-ink font-caption text-caption font-medium">
+                    12x Order
+                  </span>
+<!-- Active Status Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-semantic-active-surface border border-semantic-active-border text-semantic-active font-caption-uppercase text-caption-uppercase">
+                    Active
+                  </span>
+</div>
+<div class="flex items-center gap-2 text-text-body font-body-sm text-body-sm">
+<span class="font-mono text-text-ink font-medium">0857-1122-3344</span>
+<span class="text-hairline-strong">•</span>
+<span class="text-text-muted">VIP Coffee Hunter</span>
+</div>
+</div>
+</div>
+<!-- Meta & Channel Info -->
+<div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2.5 sm:pt-0 border-hairline-default gap-1 text-right">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-subtle text-text-ink font-caption text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-text-ink" data-icon="restaurant">restaurant</span>
+<span>Sering: Dine-in</span>
+</div>
+<span class="font-caption text-caption text-text-muted">
+                Order terakhir: <strong class="text-text-ink font-medium">Kemarin</strong>
+</span>
+</div>
+</div>
+</article>
+<!-- Card 4: Maya Putri -->
+<article class="bg-canvas-base border border-hairline-strong rounded-xl p-4 sm:p-5 transition-shadow duration-150 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start gap-3.5">
+<!-- Avatar Token -->
+<div class="w-11 h-11 rounded-lg bg-semantic-churned-surface border border-semantic-churned-border flex items-center justify-center text-semantic-churned font-headline-sm text-headline-sm shrink-0">
+                MP
+              </div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink tracking-tight">Maya Putri</h2>
+<!-- Loyalty Order Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-subtle border border-hairline-strong text-text-ink font-caption text-caption font-medium">
+                    1x Order
+                  </span>
+<!-- Churned Status Badge with Days -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-semantic-churned-surface border border-semantic-churned-border text-semantic-churned font-caption-uppercase text-caption-uppercase">
+                    Churned (75 hari)
+                  </span>
+</div>
+<div class="flex items-center gap-2 text-text-body font-body-sm text-body-sm">
+<span class="font-mono text-text-ink font-medium">0821-9988-7766</span>
+<span class="text-hairline-strong">•</span>
+<span class="text-text-muted">Trial Promo User</span>
+</div>
+</div>
+</div>
+<!-- Meta & Channel Info -->
+<div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2.5 sm:pt-0 border-hairline-default gap-1 text-right">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-subtle text-text-ink font-caption text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-semantic-risk-accent" data-icon="shopping_bag">shopping_bag</span>
+<span>Sering: ShopeeFood</span>
+</div>
+<span class="font-caption text-caption text-text-muted">
+                Order terakhir: <strong class="text-semantic-churned font-medium">75 hari lalu</strong>
+</span>
+</div>
+</div>
+</article>
+<!-- Card 5: Hendra Wijaya -->
+<article class="bg-canvas-base border border-hairline-strong rounded-xl p-4 sm:p-5 transition-shadow duration-150 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start gap-3.5">
+<!-- Avatar Token -->
+<div class="w-11 h-11 rounded-lg bg-semantic-risk-surface border border-semantic-risk-border flex items-center justify-center text-semantic-risk font-headline-sm text-headline-sm shrink-0">
+                HW
+              </div>
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-text-ink tracking-tight">Hendra Wijaya</h2>
+<!-- Loyalty Order Badge -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-subtle border border-hairline-strong text-text-ink font-caption text-caption font-medium">
+                    4x Order
+                  </span>
+<!-- At Risk Status Badge with Days -->
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-semantic-risk-surface border border-semantic-risk-border text-semantic-risk font-caption-uppercase text-caption-uppercase">
+                    At Risk (45 hari)
+                  </span>
+</div>
+<div class="flex items-center gap-2 text-text-body font-body-sm text-body-sm">
+<span class="font-mono text-text-ink font-medium">0813-4455-6677</span>
+<span class="text-hairline-strong">•</span>
+<span class="text-text-muted">Catering &amp; Direct</span>
+</div>
+</div>
+</div>
+<!-- Meta & Channel Info -->
+<div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-t-0 pt-2.5 sm:pt-0 border-hairline-default gap-1 text-right">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-subtle text-text-ink font-caption text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-semantic-active" data-icon="chat">chat</span>
+<span>Sering: WhatsApp</span>
+</div>
+<span class="font-caption text-caption text-text-muted">
+                Order terakhir: <strong class="text-semantic-risk font-medium">45 hari lalu</strong>
+</span>
+</div>
+</div>
+</article>
+</section>
+<!-- Pagination Controls Bar -->
+<footer class="mt-6 pt-4 border-t border-hairline-default flex flex-col sm:flex-row items-center justify-between gap-4">
+<p class="font-caption text-caption text-text-body">
+          Halaman <strong class="text-text-ink font-semibold">1</strong> dari <strong class="text-text-ink font-semibold">71</strong>
+</p>
+<div class="flex items-center gap-2">
+<!-- Tombol Sebelumnya (Disabled on Page 1) -->
+<button class="px-4 py-2 rounded-lg border border-hairline-strong bg-canvas-base text-text-disabled font-button text-button flex items-center gap-1.5 cursor-not-allowed select-none" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_left">chevron_left</span>
+<span>Sebelumnya</span>
+</button>
+<!-- Tombol Selanjutnya -->
+<button class="px-4 py-2 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-surface-subtle text-text-ink font-button text-button flex items-center gap-1.5 transition-colors active:scale-[0.98]" type="button">
+<span>Selanjutnya</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</footer>
+</main>
+</div>
+<!-- Bottom Navigation Bar (Shared Components JSON: BottomNavBar - Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 h-bottom-nav-height bg-canvas-base md:hidden shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+<!-- Tab: Home -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 hover:text-primary transition-colors duration-150 active:scale-[0.96] flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-1">Home</span>
+</a>
+<!-- Tab: Customer (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-1 transition-colors duration-150 active:scale-[0.96] flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-1">Customer</span>
+</a>
+<!-- Tab: Dashboard -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 hover:text-primary transition-colors duration-150 active:scale-[0.96] flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="analytics">analytics</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-1">Dashboard</span>
+</a>
+<!-- Tab: Follow-up -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 hover:text-primary transition-colors duration-150 active:scale-[0.96] flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="checklist">checklist</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-1">Follow-up</span>
+</a>
+<!-- Tab: Settings -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 hover:text-primary transition-colors duration-150 active:scale-[0.96] flex-1" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="settings">settings</span>
+<span class="font-caption-uppercase text-caption-uppercase mt-1">Settings</span>
+</a>
+</nav>
+<!-- Interactive script for simple filter pill toggle -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterButtons = document.querySelectorAll('section button');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Microinteraction trigger
+          btn.style.transform = 'scale(0.96)';
+          setTimeout(() => {
+            btn.style.transform = '';
+          }, 120);
+        });
+      });
+    });
+  </script>
+</body></html>

@@ -1,0 +1,795 @@
+<!DOCTYPE html><html class="h-full bg-canvas-base" lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Retain-ly - Retention Dashboard</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Typography Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Config Verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "semantic-active-surface": "#f0fdf4",
+            "hairline-soft": "#f5f5f7",
+            "outline": "#747878",
+            "surface-card": "#ffffff",
+            "surface-dark": "#171717",
+            "background": "#f8f9ff",
+            "accent-preview": "#8145b5",
+            "surface-container-low": "#f0f3fd",
+            "text-on-dark": "#ffffff",
+            "inverse-primary": "#c8c6c5",
+            "outline-variant": "#c4c7c7",
+            "error-container": "#ffdad6",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#484645",
+            "inverse-surface": "#2c3138",
+            "on-secondary-fixed-variant": "#004884",
+            "surface-container": "#ebeef7",
+            "on-surface-variant": "#444748",
+            "surface-tint": "#5f5e5e",
+            "text-muted": "#999999",
+            "surface-subtle": "#f0f0f3",
+            "tertiary-container": "#1c1b1a",
+            "cta-black-active": "#1a1a1a",
+            "semantic-churned-border": "#fecdd3",
+            "surface-variant": "#dfe2ec",
+            "surface-container-high": "#e5e8f1",
+            "semantic-active-border": "#bbf7d0",
+            "on-error": "#ffffff",
+            "on-primary-container": "#858383",
+            "tertiary": "#000000",
+            "semantic-churned-accent": "#eb8e90",
+            "text-body": "#60646c",
+            "primary-fixed": "#e5e2e1",
+            "semantic-risk-surface": "#fffbeb",
+            "semantic-risk-border": "#fde68a",
+            "surface-dim": "#d7dae3",
+            "on-tertiary-fixed": "#1c1b1a",
+            "secondary-fixed": "#d4e3ff",
+            "semantic-churned-surface": "#fff1f2",
+            "surface-container-highest": "#dfe2ec",
+            "semantic-risk": "#ab6400",
+            "surface-dark-elevated": "#1a1a1a",
+            "secondary-fixed-dim": "#a4c9ff",
+            "inverse-on-surface": "#eef1fa",
+            "secondary": "#005fad",
+            "on-secondary-fixed": "#001c39",
+            "tertiary-fixed-dim": "#cac6c4",
+            "on-secondary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#181c22",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#1c1b1b",
+            "on-secondary-container": "#003869",
+            "on-primary-fixed-variant": "#474746",
+            "hairline-default": "#f0f0f3",
+            "semantic-churned": "#e11d48",
+            "secondary-container": "#56a3ff",
+            "cta-black": "#000000",
+            "on-primary": "#ffffff",
+            "on-primary-fixed": "#1c1b1b",
+            "canvas-base": "#ffffff",
+            "canvas-soft": "#fafafa",
+            "primary": "#000000",
+            "text-ink": "#171717",
+            "on-error-container": "#93000a",
+            "on-tertiary-container": "#868382",
+            "tertiary-fixed": "#e6e2df",
+            "on-background": "#181c22",
+            "text-on-dark-muted": "#b0b4ba",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#c8c6c5",
+            "surface": "#f8f9ff",
+            "hairline-strong": "#dcdee0",
+            "text-disabled": "#cccccc",
+            "semantic-active": "#16a34a",
+            "semantic-risk-accent": "#f59e0b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "md": "16px",
+            "gutter-desktop": "24px",
+            "xxs": "4px",
+            "bottom-nav-height": "64px",
+            "sidebar-width": "240px",
+            "xs": "8px",
+            "container-max-width": "1200px",
+            "form-max-width": "540px",
+            "lg": "20px",
+            "xl": "24px",
+            "top-nav-height": "56px",
+            "xxl": "32px",
+            "gutter-mobile": "16px",
+            "sm": "12px"
+          },
+          "fontFamily": {
+            "display-hero": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "display-hero-mobile": ["Hanken Grotesk"],
+            "caption": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Hanken Grotesk"],
+            "numeric-stat": ["Hanken Grotesk"],
+            "headline-md": ["Hanken Grotesk"],
+            "caption-uppercase": ["Inter"],
+            "body-strong": ["Inter"],
+            "button": ["Inter"],
+            "headline-lg": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "display-hero": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "21px", "letterSpacing": "0", "fontWeight": "400" }],
+            "display-hero-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "numeric-stat": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "caption-uppercase": ["11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "body-strong": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "600" }],
+            "button": ["14px", { "lineHeight": "16px", "letterSpacing": "0", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-canvas-soft text-text-ink min-h-screen flex flex-col antialiased font-body-md text-body-md selection:bg-surface-dark selection:text-text-on-dark">
+<!-- Desktop Navigation Drawer (Shared Components Anchor: NavigationDrawer) -->
+<aside class="fixed top-0 left-0 h-full w-sidebar-width hidden md:flex flex-col bg-canvas-base border-r border-hairline-default z-30 justify-between p-4">
+<div class="flex flex-col gap-6">
+<!-- Profile & Branch Info -->
+<div class="flex items-center gap-3 p-2 rounded-lg bg-surface-subtle">
+<div class="w-10 h-10 rounded-lg bg-primary text-text-on-dark flex items-center justify-center font-headline-md text-headline-md font-semibold">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="font-headline-sm text-headline-sm text-text-ink truncate font-semibold leading-tight">Cabang Senopati</span>
+<span class="font-caption text-caption text-text-body">Store #04 - Active</span>
+<span class="font-caption text-caption text-text-muted mt-0.5">F&amp;B Counter Terminal</span>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-body-md text-body-md">Input Order</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Customer List</span>
+</a>
+<!-- Active: Retention Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-subtle text-primary font-semibold transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="analytics" style="font-variation-settings: &quot;FILL&quot; 1;">analytics</span>
+<span class="font-body-md text-body-md">Retention Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="font-body-md text-body-md">Daily Follow-up</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-body hover:bg-surface-subtle hover:text-text-ink transition-colors duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Drawer Footer System Telemetry -->
+<div class="border-t border-hairline-default pt-3 flex flex-col gap-2">
+<div class="flex justify-between items-center text-text-muted">
+<span class="font-caption-uppercase text-caption-uppercase tracking-wider">SYNC ENGINE</span>
+<span class="inline-flex items-center gap-1.5 font-caption text-caption text-semantic-active font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-semantic-active"></span> Realtime
+        </span>
+</div>
+<div class="bg-surface-dark text-text-on-dark p-2.5 rounded-lg flex items-center justify-between">
+<div>
+<p class="font-caption text-caption text-text-on-dark-muted">Today's Captures</p>
+<p class="font-headline-sm text-headline-sm font-semibold">142 Leads</p>
+</div>
+<span class="material-symbols-outlined text-text-on-dark-muted" data-icon="cloud_done">cloud_done</span>
+</div>
+</div>
+</aside>
+<!-- Main Viewport Wrap -->
+<div class="flex-1 md:ml-[240px] flex flex-col pb-24 md:pb-12">
+<!-- Top App Bar (Shared Components Anchor: TopAppBar) -->
+<header class="sticky top-0 z-20 bg-canvas-base border-b border-hairline-default">
+<div class="flex justify-between items-center w-full px-4 md:px-gutter-desktop h-top-nav-height max-w-container-max-width mx-auto">
+<!-- Left: Brand / Title Identity -->
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary text-text-on-dark flex items-center justify-center md:hidden">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-md text-headline-md md:text-headline-lg font-semibold tracking-tight text-text-ink">
+                Ringkasan Retensi
+              </h1>
+<span class="hidden sm:inline-block px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase bg-surface-subtle text-text-ink border border-hairline-strong">
+                Cabang Senopati
+              </span>
+</div>
+<p class="text-text-body font-caption text-caption md:hidden">Cabang Senopati • F&amp;B Store #04</p>
+</div>
+</div>
+<!-- Right: Realtime status & period summary info -->
+<div class="flex items-center gap-2 sm:gap-3">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-semantic-active-surface border border-semantic-active-border text-semantic-active font-caption text-caption font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-semantic-active animate-pulse"></span>
+<span class="">Online</span>
+</div>
+<button class="p-2 text-text-body hover:text-text-ink hover:bg-surface-subtle rounded-lg transition-colors border border-hairline-strong sm:flex items-center gap-1.5 text-button font-button" type="button">
+<span class="material-symbols-outlined" data-icon="file_download">file_download</span>
+<span class="hidden lg:inline text-body-sm font-body-sm">Ekspor Data</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="w-full max-w-container-max-width mx-auto px-4 md:px-gutter-desktop pt-4 md:pt-6 flex flex-col gap-6">
+<!-- Period Filter Segmented Control Bar -->
+<section class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-canvas-base p-2 rounded-xl border border-hairline-strong">
+<div class="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg w-full sm:w-auto">
+<!-- Daily -->
+<button class="flex-1 sm:flex-none px-3 py-1.5 rounded text-button font-button font-caption text-text-body hover:text-text-ink transition-colors duration-150" type="button">
+            Harian
+          </button>
+<!-- Weekly -->
+<button class="flex-1 sm:flex-none px-3 py-1.5 rounded text-button font-button font-caption text-text-body hover:text-text-ink transition-colors duration-150" type="button">
+            Mingguan
+          </button>
+<!-- Monthly (Active per spec) -->
+<button class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-md bg-canvas-base text-text-ink font-body-strong text-body-strong shadow-sm border border-hairline-strong flex items-center justify-center gap-1.5" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-cta-black"></span>
+            Bulanan
+          </button>
+<!-- Yearly -->
+<button class="flex-1 sm:flex-none px-3 py-1.5 rounded text-button font-button font-caption text-text-body hover:text-text-ink transition-colors duration-150" type="button">
+            Tahunan
+          </button>
+</div>
+<!-- Date indicator & Quick Switcher -->
+<div class="flex items-center justify-between sm:justify-end gap-2 px-1">
+<span class="font-caption text-caption text-text-muted">Periode Terpilih:</span>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded bg-surface-subtle border border-hairline-strong font-body-strong text-body-strong text-text-ink">
+<span class="material-symbols-outlined text-[16px] text-text-body" data-icon="calendar_month">calendar_month</span>
+<span class="">Okt 2023 (01 Okt - 31 Okt)</span>
+</div>
+</div>
+</section>
+<!-- 4 Summary Cards (2x2 Grid per spec) -->
+<section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 grid-cols-2">
+<!-- Card 1: Total Customer Unik -->
+<div class="bg-canvas-base border border-hairline-strong rounded-xl p-4 flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all duration-150">
+<div class="flex items-start justify-between">
+<span class="font-caption-uppercase text-caption-uppercase text-text-muted">TOTAL CUSTOMER UNIK</span>
+<span class="material-symbols-outlined text-text-body" data-icon="groups">groups</span>
+</div>
+<div class="mt-3">
+<div class="font-numeric-stat text-numeric-stat text-text-ink font-semibold tracking-tight">1,420</div>
+<div class="mt-1 flex items-center gap-1.5">
+<span class="inline-flex items-center font-caption text-caption text-semantic-active font-medium bg-semantic-active-surface border border-semantic-active-border px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]" data-icon="arrow_upward">arrow_upward</span> +12%
+              </span>
+<span class="font-caption text-caption text-text-body">vs bln lalu</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Total Transaksi -->
+<div class="bg-canvas-base border border-hairline-strong rounded-xl p-4 flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all duration-150">
+<div class="flex items-start justify-between">
+<span class="font-caption-uppercase text-caption-uppercase text-text-muted">TOTAL TRANSAKSI</span>
+<span class="material-symbols-outlined text-text-body" data-icon="receipt_long">receipt_long</span>
+</div>
+<div class="mt-3">
+<div class="font-numeric-stat text-numeric-stat text-text-ink font-semibold tracking-tight">3,890</div>
+<div class="mt-1 flex items-center gap-1.5">
+<span class="inline-flex items-center font-caption text-caption text-text-body bg-surface-subtle border border-hairline-strong px-1.5 py-0.5 rounded">
+                Volume order
+              </span>
+<span class="font-caption text-caption text-text-muted">avg 2.7 order/cust</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Repeat Rate -->
+<div class="bg-canvas-base border border-hairline-strong rounded-xl p-4 flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all duration-150">
+<div class="flex items-start justify-between">
+<span class="font-caption-uppercase text-caption-uppercase text-text-muted">REPEAT RATE</span>
+<span class="material-symbols-outlined text-text-body" data-icon="autorenew">autorenew</span>
+</div>
+<div class="mt-3">
+<div class="font-numeric-stat text-numeric-stat text-text-ink font-semibold tracking-tight">68.4%</div>
+<div class="mt-1 flex items-center gap-1.5">
+<span class="inline-flex items-center font-caption text-caption text-semantic-active font-medium bg-semantic-active-surface border border-semantic-active-border px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> +4.1%
+              </span>
+<span class="font-caption text-caption text-text-body">customer repeat &gt;1x</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Customer At Risk -->
+<div class="bg-canvas-base border border-hairline-strong rounded-xl p-4 flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all duration-150">
+<div class="flex items-start justify-between">
+<span class="font-caption-uppercase text-caption-uppercase text-text-muted">CUSTOMER AT RISK</span>
+<span class="material-symbols-outlined text-semantic-risk" data-icon="warning">warning</span>
+</div>
+<div class="mt-3">
+<div class="font-numeric-stat text-numeric-stat text-text-ink font-semibold tracking-tight">320</div>
+<div class="mt-1 flex items-center gap-1.5">
+<span class="inline-flex items-center font-caption text-caption text-semantic-risk font-semibold bg-semantic-risk-surface border border-semantic-risk-border px-1.5 py-0.5 rounded">
+                Butuh perhatian segera
+              </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Split Grid: Grafik Tren & Breakdown Channel Order -->
+<section class="grid lg:grid-cols-12 gap-4">
+<!-- Grafik Sederhana: Tren Repeat Customer & Transaksi Per Minggu (8 cols) -->
+<div class="lg:col-span-8 bg-canvas-base border border-hairline-strong rounded-xl p-4 md:p-5 flex flex-col justify-between">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-hairline-default">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Tren Repeat Customer &amp; Transaksi</h2>
+<p class="font-caption text-caption text-text-body">Aktivitas volume mingguan selama Oktober 2023</p>
+</div>
+<!-- Legend -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 font-caption text-caption text-text-body">
+<span class="w-3 h-3 rounded-sm bg-primary"></span>
+<span class="">Transaksi Total</span>
+</div>
+<div class="flex items-center gap-1.5 font-caption text-caption text-text-body">
+<span class="w-3 h-3 rounded-sm bg-secondary-container"></span>
+<span class="">Repeat Order</span>
+</div>
+</div>
+</div>
+<!-- Bar Visual Representation (Weekly) -->
+<div class="mt-6 flex flex-col gap-4">
+<!-- Week 1 -->
+<div class="grid grid-cols-12 items-center gap-2">
+<span class="col-span-3 sm:col-span-2 font-caption text-caption font-medium text-text-body">Mg 1 (1-7)</span>
+<div class="col-span-7 sm:col-span-8 flex flex-col gap-1">
+<!-- Bar Total -->
+<div class="w-full bg-surface-subtle h-3 rounded-full overflow-hidden flex">
+<div class="bg-primary h-full rounded-full" style="width: 72%;"></div>
+</div>
+<!-- Bar Repeat -->
+<div class="w-full bg-surface-subtle h-2 rounded-full overflow-hidden flex">
+<div class="bg-secondary-container h-full rounded-full" style="width: 48%;"></div>
+</div>
+</div>
+<span class="col-span-2 text-right font-caption text-caption font-semibold text-text-ink">840 tx</span>
+</div>
+<!-- Week 2 -->
+<div class="grid grid-cols-12 items-center gap-2">
+<span class="col-span-3 sm:col-span-2 font-caption text-caption font-medium text-text-body">Mg 2 (8-14)</span>
+<div class="col-span-7 sm:col-span-8 flex flex-col gap-1">
+<div class="w-full bg-surface-subtle h-3 rounded-full overflow-hidden flex">
+<div class="bg-primary h-full rounded-full" style="width: 80%;"></div>
+</div>
+<div class="w-full bg-surface-subtle h-2 rounded-full overflow-hidden flex">
+<div class="bg-secondary-container h-full rounded-full" style="width: 55%;"></div>
+</div>
+</div>
+<span class="col-span-2 text-right font-caption text-caption font-semibold text-text-ink">920 tx</span>
+</div>
+<!-- Week 3 -->
+<div class="grid grid-cols-12 items-center gap-2">
+<span class="col-span-3 sm:col-span-2 font-caption text-caption font-medium text-text-body">Mg 3 (15-21)</span>
+<div class="col-span-7 sm:col-span-8 flex flex-col gap-1">
+<div class="w-full bg-surface-subtle h-3 rounded-full overflow-hidden flex">
+<div class="bg-primary h-full rounded-full" style="width: 88%;"></div>
+</div>
+<div class="w-full bg-surface-subtle h-2 rounded-full overflow-hidden flex">
+<div class="bg-secondary-container h-full rounded-full" style="width: 62%;"></div>
+</div>
+</div>
+<span class="col-span-2 text-right font-caption text-caption font-semibold text-text-ink">1,010 tx</span>
+</div>
+<!-- Week 4 -->
+<div class="grid grid-cols-12 items-center gap-2">
+<span class="col-span-3 sm:col-span-2 font-caption text-caption font-medium text-text-body">Mg 4 (22-31)</span>
+<div class="col-span-7 sm:col-span-8 flex flex-col gap-1">
+<div class="w-full bg-surface-subtle h-3 rounded-full overflow-hidden flex">
+<div class="bg-primary h-full rounded-full" style="width: 98%;"></div>
+</div>
+<div class="w-full bg-surface-subtle h-2 rounded-full overflow-hidden flex">
+<div class="bg-secondary-container h-full rounded-full" style="width: 71%;"></div>
+</div>
+</div>
+<span class="col-span-2 text-right font-caption text-caption font-semibold text-text-ink">1,120 tx</span>
+</div>
+</div>
+</div>
+<!-- Bottom Velocity Signal -->
+<div class="mt-6 pt-3 border-t border-hairline-default flex items-center justify-between text-caption text-text-body">
+<span class="flex items-center gap-1 text-semantic-active font-medium">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+              Kenaikan retensi +14.2% pada akhir pekan
+            </span>
+<span class="font-caption text-text-muted">Target bulanan tercapai 104%</span>
+</div>
+</div>
+<!-- Breakdown Channel Order (4 cols) -->
+<div class="lg:col-span-4 bg-canvas-base border border-hairline-strong rounded-xl p-4 md:p-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-hairline-default">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Channel Order</h2>
+<p class="font-caption text-caption text-text-body">Proporsi channel transaksi</p>
+</div>
+<span class="font-caption-uppercase text-caption-uppercase px-2 py-0.5 rounded bg-surface-subtle border border-hairline-strong text-text-ink">5 Saluran</span>
+</div>
+<!-- Stacked Proportion Bar -->
+<div class="mt-4">
+<div class="h-3 w-full rounded-full overflow-hidden flex border border-hairline-default">
+<div class="h-full bg-semantic-active" style="width: 38%;" title="GoFood 38%"></div>
+<div class="h-full bg-secondary" style="width: 24%;" title="GrabFood 24%"></div>
+<div class="h-full bg-semantic-risk-accent" style="width: 16%;" title="ShopeeFood 16%"></div>
+<div class="h-full bg-primary" style="width: 14%;" title="Dine-in 14%"></div>
+<div class="h-full bg-semantic-churned-accent" style="width: 8%;" title="WhatsApp 8%"></div>
+</div>
+</div>
+<!-- Detailed Channel Rows -->
+<div class="mt-4 flex flex-col gap-2.5">
+<!-- GoFood -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-semantic-active"></span>
+<span class="font-body-md text-body-md text-text-ink">GoFood</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-caption text-caption text-text-body">1,478 tx</span>
+<span class="font-body-strong text-body-strong text-text-ink w-9 text-right">38%</span>
+</div>
+</div>
+<!-- GrabFood -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-body-md text-body-md text-text-ink">GrabFood</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-caption text-caption text-text-body">933 tx</span>
+<span class="font-body-strong text-body-strong text-text-ink w-9 text-right">24%</span>
+</div>
+</div>
+<!-- ShopeeFood -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-semantic-risk-accent"></span>
+<span class="font-body-md text-body-md text-text-ink">ShopeeFood</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-caption text-caption text-text-body">622 tx</span>
+<span class="font-body-strong text-body-strong text-text-ink w-9 text-right">16%</span>
+</div>
+</div>
+<!-- Dine-in -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span class="font-body-md text-body-md text-text-ink">Dine-in</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-caption text-caption text-text-body">544 tx</span>
+<span class="font-body-strong text-body-strong text-text-ink w-9 text-right">14%</span>
+</div>
+</div>
+<!-- WhatsApp Direct -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-semantic-churned-accent"></span>
+<span class="font-body-md text-body-md text-text-ink">WhatsApp</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-caption text-caption text-text-body">313 tx</span>
+<span class="font-body-strong text-body-strong text-text-ink w-9 text-right">8%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hairline-default">
+<span class="font-caption text-caption text-text-muted">Total Gross Volume: 3,890 Transaksi</span>
+</div>
+</div>
+</section>
+<!-- Section Segmentasi Customer -->
+<section class="bg-canvas-base border border-hairline-strong rounded-xl p-4 md:p-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-hairline-default">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Segmentasi Status Retensi</h2>
+<p class="font-caption text-caption text-text-body">Klasifikasi otomatis siklus churn pelanggan aktif toko</p>
+</div>
+<span class="font-caption text-caption text-text-muted">Basis: 1,420 total customer</span>
+</div>
+<!-- Horizontal Multi-segment Bar Indicator -->
+<div class="w-full h-3 rounded-full bg-surface-subtle overflow-hidden flex gap-0.5 border border-hairline-default">
+<div class="bg-semantic-active h-full" style="width: 60%;" title="Active: 60%"></div>
+<div class="bg-semantic-risk-accent h-full" style="width: 22.5%;" title="At Risk: 22.5%"></div>
+<div class="bg-semantic-churned h-full" style="width: 17.5%;" title="Churned: 17.5%"></div>
+</div>
+<!-- Segmentation Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+<!-- Active Card -->
+<div class="p-3.5 rounded-lg border border-semantic-active-border bg-semantic-active-surface flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase font-semibold text-semantic-active bg-canvas-base border border-semantic-active-border">
+                ACTIVE
+              </span>
+<span class="font-body-strong text-body-strong text-semantic-active">60%</span>
+</div>
+<div class="mt-3">
+<div class="font-headline-lg text-headline-lg font-semibold text-text-ink">850 <span class="font-body-md text-body-md font-normal text-text-body">customer</span></div>
+<p class="font-caption text-caption text-text-body mt-1">Order dalam &lt;= 30 hari terakhir</p>
+</div>
+</div>
+<!-- At Risk Card -->
+<div class="p-3.5 rounded-lg border border-semantic-risk-border bg-semantic-risk-surface flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase font-semibold text-semantic-risk bg-canvas-base border border-semantic-risk-border">
+                AT RISK
+              </span>
+<span class="font-body-strong text-body-strong text-semantic-risk">22.5%</span>
+</div>
+<div class="mt-3">
+<div class="font-headline-lg text-headline-lg font-semibold text-text-ink">320 <span class="font-body-md text-body-md font-normal text-text-body">customer</span></div>
+<p class="font-caption text-caption text-text-body mt-1">Tidak repeat order 31 - 60 hari</p>
+</div>
+</div>
+<!-- Churned Card -->
+<div class="p-3.5 rounded-lg border border-semantic-churned-border bg-semantic-churned-surface flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase font-semibold text-semantic-churned bg-canvas-base border border-semantic-churned-border">
+                CHURNED
+              </span>
+<span class="font-body-strong text-body-strong text-semantic-churned">17.5%</span>
+</div>
+<div class="mt-3">
+<div class="font-headline-lg text-headline-lg font-semibold text-text-ink">250 <span class="font-body-md text-body-md font-normal text-text-body">customer</span></div>
+<p class="font-caption text-caption text-text-body mt-1">Lebih dari 60 hari tanpa pesanan</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 'Perlu Follow-up Segera' -->
+<section class="bg-canvas-base border border-hairline-strong rounded-xl overflow-hidden">
+<!-- Header -->
+<div class="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-hairline-default">
+<div class="flex items-center gap-2.5">
+<span class="p-1.5 rounded-md bg-semantic-risk-surface text-semantic-risk border border-semantic-risk-border">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-text-ink font-semibold">Perlu Follow-up Segera</h2>
+<p class="font-caption text-caption text-text-body">4 Pelanggan At Risk paling lama tidak melakukan order kembali</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-button font-button px-3 py-1.5 rounded-lg border border-hairline-strong bg-canvas-base hover:bg-surface-subtle text-text-ink transition-colors flex items-center gap-1 text-body-sm font-body-sm" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="mark_chat_unread">mark_chat_unread</span>
+              Bulk Follow-up
+            </button>
+</div>
+</div>
+<!-- Customer Rows List -->
+<div class="divide-y divide-hairline-default">
+<!-- Row 1: Siti Rahmawati -->
+<div class="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-subtle transition-colors duration-150">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-subtle border border-hairline-strong flex items-center justify-center font-headline-sm text-headline-sm text-text-ink font-semibold">
+                SR
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-body-strong text-body-strong text-text-ink">Siti Rahmawati</span>
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase text-semantic-risk bg-semantic-risk-surface border border-semantic-risk-border">
+                    At Risk
+                  </span>
+<span class="px-2 py-0.5 rounded font-caption text-caption text-text-ink bg-surface-subtle border border-hairline-strong">
+                    3x order
+                  </span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-text-body font-caption text-caption">
+<span class="flex items-center gap-1 text-semantic-risk font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 38 hari lalu
+                  </span>
+<span class="">•</span>
+<span class="">WhatsApp: 0812-9843-xxxx</span>
+<span class="hidden md:inline">•</span>
+<span class="hidden md:inline">Favorit: Nasi Goreng Sei Sapi</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<button class="h-9 px-3.5 rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-text-on-dark text-button font-button flex items-center gap-1.5 transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat">chat</span>
+<span class="">Kirim WA</span>
+</button>
+</div>
+</div>
+<!-- Row 2: Hendra Wijaya -->
+<div class="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-subtle transition-colors duration-150">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-subtle border border-hairline-strong flex items-center justify-center font-headline-sm text-headline-sm text-text-ink font-semibold">
+                HW
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-body-strong text-body-strong text-text-ink">Hendra Wijaya</span>
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase text-semantic-risk bg-semantic-risk-surface border border-semantic-risk-border">
+                    At Risk
+                  </span>
+<span class="px-2 py-0.5 rounded font-caption text-caption text-text-ink bg-surface-subtle border border-hairline-strong">
+                    4x order
+                  </span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-text-body font-caption text-caption">
+<span class="flex items-center gap-1 text-semantic-risk font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 45 hari lalu
+                  </span>
+<span class="">•</span>
+<span class="">WhatsApp: 0818-4521-xxxx</span>
+<span class="hidden md:inline">•</span>
+<span class="hidden md:inline">Favorit: Espresso Double &amp; Toast</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<button class="h-9 px-3.5 rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-text-on-dark text-button font-button flex items-center gap-1.5 transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat">chat</span>
+<span class="">Kirim WA</span>
+</button>
+</div>
+</div>
+<!-- Row 3: Rian Pratama -->
+<div class="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-subtle transition-colors duration-150">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-subtle border border-hairline-strong flex items-center justify-center font-headline-sm text-headline-sm text-text-ink font-semibold">
+                RP
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-body-strong text-body-strong text-text-ink">Rian Pratama</span>
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase text-semantic-risk bg-semantic-risk-surface border border-semantic-risk-border">
+                    At Risk
+                  </span>
+<span class="px-2 py-0.5 rounded font-caption text-caption text-text-ink bg-surface-subtle border border-hairline-strong">
+                    5x order
+                  </span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-text-body font-caption text-caption">
+<span class="flex items-center gap-1 text-semantic-risk font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 52 hari lalu
+                  </span>
+<span class="">•</span>
+<span class="">WhatsApp: 0877-3312-xxxx</span>
+<span class="hidden md:inline">•</span>
+<span class="hidden md:inline">Favorit: Truffle Gyudon</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<button class="h-9 px-3.5 rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-text-on-dark text-button font-button flex items-center gap-1.5 transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat">chat</span>
+<span class="">Kirim WA</span>
+</button>
+</div>
+</div>
+<!-- Row 4: Linda Kusuma -->
+<div class="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-subtle transition-colors duration-150">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-subtle border border-hairline-strong flex items-center justify-center font-headline-sm text-headline-sm text-text-ink font-semibold">
+                LK
+              </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-body-strong text-body-strong text-text-ink">Linda Kusuma</span>
+<span class="px-2 py-0.5 rounded-full font-caption-uppercase text-caption-uppercase text-semantic-risk bg-semantic-risk-surface border border-semantic-risk-border">
+                    At Risk
+                  </span>
+<span class="px-2 py-0.5 rounded font-caption text-caption text-text-ink bg-surface-subtle border border-hairline-strong">
+                    2x order
+                  </span>
+</div>
+<div class="flex items-center gap-3 mt-1 text-text-body font-caption text-caption">
+<span class="flex items-center gap-1 text-semantic-risk font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 58 hari lalu
+                  </span>
+<span class="">•</span>
+<span class="">WhatsApp: 0856-1190-xxxx</span>
+<span class="hidden md:inline">•</span>
+<span class="hidden md:inline">Favorit: Iced Latte Gula Aren</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<button class="h-9 px-3.5 rounded-lg bg-[#16a34a] hover:bg-[#15803d] text-text-on-dark text-button font-button flex items-center gap-1.5 transition-colors duration-150 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="chat">chat</span>
+<span class="">Kirim WA</span>
+</button>
+</div>
+</div>
+</div>
+<!-- List Footer Link -->
+<div class="p-3 bg-surface-subtle border-t border-hairline-default flex items-center justify-between">
+<span class="font-caption text-caption text-text-body">Menampilkan 4 dari 320 pelanggan At Risk</span>
+<a class="font-button text-button text-text-ink hover:underline flex items-center gap-1 text-body-sm" href="#">
+<span class="">Buka Daftar Follow-up Harian</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</section>
+</main>
+</div>
+<!-- Mobile Bottom Navigation (Shared Components Anchor: BottomNavBar) -->
+<!-- Contextual Lock: Screen intent is Dashboard, so index 2 'Dashboard' is ACTIVE -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 h-bottom-nav-height bg-canvas-base border-t border-hairline-default md:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+<!-- Tab 1: Home (Inactive) -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 active:scale-[0.96] transition-transform duration-100 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-caption-uppercase font-caption-uppercase mt-1">Home</span>
+</a>
+<!-- Tab 2: Customer (Inactive) -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 active:scale-[0.96] transition-transform duration-100 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-caption-uppercase font-caption-uppercase mt-1">Customer</span>
+</a>
+<!-- Tab 3: Dashboard (ACTIVE PER INTENT) -->
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-1 active:scale-[0.96] transition-transform duration-100 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="analytics" style="font-variation-settings: &quot;FILL&quot; 1;">analytics</span>
+<span class="text-caption-uppercase font-caption-uppercase mt-1 text-text-ink font-bold">Dashboard</span>
+</a>
+<!-- Tab 4: Follow-up (Inactive) -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 active:scale-[0.96] transition-transform duration-100 flex-1 relative" href="#">
+<span class="material-symbols-outlined" data-icon="checklist">checklist</span>
+<span class="text-caption-uppercase font-caption-uppercase mt-1">Follow-up</span>
+<span class="absolute top-1 right-5 w-2 h-2 rounded-full bg-semantic-risk"></span>
+</a>
+<!-- Tab 5: Settings (Inactive) -->
+<a class="flex flex-col items-center justify-center text-text-muted py-1 active:scale-[0.96] transition-transform duration-100 flex-1" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-caption-uppercase font-caption-uppercase mt-1">Settings</span>
+</a>
+</nav>
+
+
+</body></html>
