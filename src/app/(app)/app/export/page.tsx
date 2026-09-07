@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Download, Users, Receipt } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { DownloadSimple, UsersThree, Receipt, ArrowDown } from '@phosphor-icons/react'
 import { getCustomersWithStats } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
 import { DEFAULT_THRESHOLDS } from '@/constants'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
+import { fadeUp, FLUID_EASE } from '@/lib/motion'
 
 export default function ExportPage() {
   const [loading, setLoading] = useState(false)
@@ -70,90 +72,87 @@ export default function ExportPage() {
     URL.revokeObjectURL(url)
   }
 
+  const options = [
+    { key: 'customers' as const, label: 'Data Customer', desc: 'Daftar semua customer unik', icon: UsersThree },
+    { key: 'orders' as const, label: 'Data Order', desc: 'Riwayat semua transaksi', icon: Receipt },
+  ]
+
   return (
-    <>
-      <header className="sticky top-0 z-30 border-b border-zinc-100 bg-white">
-        <div className="mx-auto flex h-14 w-full max-w-3xl items-center justify-between px-6">
-          <div>
-            <h1 className="text-base font-semibold text-zinc-900">Export Data</h1>
-            <p className="text-xs text-zinc-400">Backup data ke CSV</p>
-          </div>
-        </div>
-      </header>
+    <main className="mx-auto w-full max-w-3xl px-5 py-8 sm:px-6 md:py-12">
+      {/* Heading */}
+      <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-10">
+        <span className="eyebrow">Backup</span>
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Export Data</h1>
+        <p className="mt-2 text-sm text-ash">Backup data ke CSV</p>
+      </motion.div>
 
-      <main className="mx-auto w-full max-w-3xl space-y-5 px-6 py-6 pb-24 md:pb-8">
-        <div className="space-y-5 rounded-2xl border border-zinc-100 bg-white p-5 md:p-6">
-          <div>
-            <h2 className="text-base font-semibold text-zinc-900">Pilih Data Export</h2>
-            <p className="mt-0.5 text-xs text-zinc-400">Pilih jenis data yang ingin di-export ke CSV</p>
-          </div>
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate="show">
+        <div className="doppel-outer">
+          <div className="doppel-inner p-5 sm:p-7">
+            <h2 className="text-base font-semibold text-ink">Pilih Data Export</h2>
+            <p className="mt-0.5 text-xs text-ash">Pilih jenis data yang ingin di-export ke CSV</p>
 
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setExportType('customers')}
-              className={`rounded-xl border-2 p-4 text-left transition-all ${
-                exportType === 'customers'
-                  ? 'border-zinc-900 bg-zinc-50'
-                  : 'border-zinc-200 hover:border-zinc-300'
-              }`}
-            >
-              <Users className="mb-2 h-5 w-5 text-zinc-700" />
-              <div className="text-sm font-semibold text-zinc-900">Data Customer</div>
-              <div className="mt-0.5 text-xs text-zinc-400">Daftar semua customer unik</div>
-            </button>
-            <button
-              onClick={() => setExportType('orders')}
-              className={`rounded-xl border-2 p-4 text-left transition-all ${
-                exportType === 'orders'
-                  ? 'border-zinc-900 bg-zinc-50'
-                  : 'border-zinc-200 hover:border-zinc-300'
-              }`}
-            >
-              <Receipt className="mb-2 h-5 w-5 text-zinc-700" />
-              <div className="text-sm font-semibold text-zinc-900">Data Order</div>
-              <div className="mt-0.5 text-xs text-zinc-400">Riwayat semua transaksi</div>
-            </button>
-          </div>
-
-          {exportType === 'orders' && (
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-zinc-700">Dari Tanggal</label>
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-0 transition-colors"
-                />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-zinc-700">Sampai Tanggal</label>
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-0 transition-colors"
-                />
-              </div>
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
+              {options.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setExportType(opt.key)}
+                  className={`group rounded-3xl p-4 text-left transition-all duration-500 sm:p-5 ${
+                    exportType === opt.key
+                      ? 'border-2 border-accent bg-accent-wash/50'
+                      : 'border border-hairline bg-white hover:bg-sunken/60'
+                  }`}
+                >
+                  <span className={`mb-3 flex h-11 w-11 items-center justify-center rounded-2xl transition-all duration-500 ${
+                    exportType === opt.key ? 'bg-accent text-white shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]' : 'bg-accent-wash text-accent'
+                  }`}>
+                    <opt.icon size={22} weight="duotone" />
+                  </span>
+                  <div className="text-sm font-semibold text-ink">{opt.label}</div>
+                  <div className="mt-0.5 text-xs text-ash">{opt.desc}</div>
+                </button>
+              ))}
             </div>
-          )}
 
-          <button
-            onClick={handleExport}
-            disabled={loading}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-zinc-900 text-sm font-medium text-white transition-all hover:bg-zinc-800 active:scale-[0.98] disabled:opacity-50"
-          >
-            {loading ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            ) : (
-              <>
-                <Download className="h-4 w-4" />
-                Export ke CSV
-              </>
+            {exportType === 'orders' && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: FLUID_EASE }}
+                className="mt-6 grid grid-cols-2 gap-3 sm:gap-4"
+              >
+                <div>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Dari Tanggal</label>
+                  <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="field h-11" />
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Sampai Tanggal</label>
+                  <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="field h-11" />
+                </div>
+              </motion.div>
             )}
-          </button>
+
+            <button
+              onClick={handleExport}
+              disabled={loading}
+              className="group flex h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-700 hover:-translate-y-px active:scale-[0.98] disabled:opacity-50"
+              style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
+            >
+              {loading ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              ) : (
+                <>
+                  <DownloadSimple size={18} weight="bold" />
+                  <span>Export ke CSV</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 transition-transform duration-500 group-hover:translate-y-0.5">
+                    <ArrowDown size={15} weight="bold" />
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
-      </main>
-    </>
+      </motion.div>
+    </main>
   )
 }

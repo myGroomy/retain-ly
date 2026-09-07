@@ -1,16 +1,17 @@
+'use client'
+
 import Link from 'next/link'
 import {
-  Store,
+  Storefront,
   ArrowRight,
+  ArrowUpRight,
   Receipt,
-  Users,
-  BarChart3,
-  MessageCircle,
-  ChevronRight,
-  CheckCircle2,
-  Zap,
-  Shield,
-} from 'lucide-react'
+  UsersThree,
+  ChartBar,
+  WhatsappLogo,
+  Lightning,
+  ShieldCheck,
+} from '@phosphor-icons/react'
 
 const FEATURES = [
   {
@@ -19,17 +20,17 @@ const FEATURES = [
     desc: 'Rekam transaksi dari semua channel — dine-in, takeaway, Gofood, Grab, Shopee — dalam satu layar.',
   },
   {
-    icon: Users,
+    icon: UsersThree,
     title: 'Database Customer Otomatis',
     desc: 'Setiap order otomatis membangun profil customer. Nomor WhatsApp ter-normalize, siap dihubungi.',
   },
   {
-    icon: BarChart3,
+    icon: ChartBar,
     title: 'Retensi Real-Time',
     desc: 'Lihat siapa yang aktif, siapa yang mulai jarang, dan siapa yang sudah hilang — semua tersegmentasi otomatis.',
   },
   {
-    icon: MessageCircle,
+    icon: WhatsappLogo,
     title: 'Follow-up via WhatsApp',
     desc: 'Satu ketik untuk kirim pesan WhatsApp. Tanpa copy-paste, tanpa aplikasi tambahan.',
   },
@@ -50,137 +51,136 @@ const METRICS = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
-
+    <div className="min-h-dvh bg-canvas">
       {/* Navigation */}
-      <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-hairline bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-              <Store className="h-4 w-4 text-white" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-[0.9rem] bg-accent text-white" style={{ boxShadow: '0 6px 16px -6px rgba(47, 108, 255, 0.55)' }}>
+              <Storefront size={18} weight="fill" />
             </div>
-            <span className="text-lg font-semibold tracking-tight">Retain-ly</span>
+            <span className="text-lg font-semibold tracking-tight text-ink">Retain-ly</span>
           </Link>
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#features" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">
-              Fitur
-            </a>
-            <a href="#how-it-works" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">
-              Cara Kerja
-            </a>
-            <a href="#pricing" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">
-              Harga
-            </a>
+            {[
+              ['Fitur', '#features'],
+              ['Cara Kerja', '#how-it-works'],
+              ['Harga', '#pricing'],
+            ].map(([label, href]) => (
+              <a key={href} href={href} className="text-sm font-medium text-ash transition-colors duration-300 hover:text-ink">
+                {label}
+              </a>
+            ))}
           </nav>
           <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors sm:inline-flex"
-            >
+            <Link href="/login" className="hidden text-sm font-semibold text-ink-soft transition-colors duration-300 hover:text-ink sm:inline-flex">
               Masuk
             </Link>
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 active:scale-[0.98] transition-all"
-            >
+            <Link href="/login" className="btn-primary group">
               Daftar
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight size={15} weight="bold" className="transition-transform duration-500 group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="px-4 pt-20 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:px-8">
+      <section className="sky-hero px-4 pb-16 pt-20 sm:px-6 sm:pb-20 sm:pt-28 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-            Sudah dipakai oleh 120+ outlet F&B
-          </div>
+          <span className="eyebrow mb-6">
+            <span className="mr-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-emerald" />
+            Dipakai oleh 120+ outlet F&B
+          </span>
 
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-ink sm:text-5xl lg:text-6xl">
             Jangan sampai pelanggan{' '}
-            <span className="text-green-600">lupa</span> balik lagi.
+            <span className="text-accent">lupa</span> balik lagi.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base text-zinc-500 sm:text-lg leading-relaxed">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ash sm:text-lg">
             Retain-ly membantu bisnis F&B melacak repeat order dan menghubungi
             pelanggan yang mulai jarang datang — lewat WhatsApp.
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-6 py-3 text-base font-medium text-white shadow-lg shadow-zinc-900/10 hover:bg-zinc-800 active:scale-[0.98] transition-all"
-            >
+            <Link href="/login" className="btn-primary group px-8 py-3.5 text-base">
               Mulai Sekarang
-              <ArrowRight className="h-4 w-4" />
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 transition-transform duration-500 group-hover:translate-x-0.5">
+                <ArrowRight size={14} weight="bold" />
+              </span>
             </Link>
-            <a
-              href="#features"
-              className="inline-flex items-center gap-2 px-6 py-3 text-base font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
-            >
+            <a href="#features" className="btn-ghost group px-6 py-3.5 text-base">
               Lihat Fitur
-              <ChevronRight className="h-4 w-4" />
+              <ArrowUpRight size={16} weight="bold" className="transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </div>
 
           {/* Product Preview */}
           <div className="mt-16 sm:mt-20">
-            <div className="relative mx-auto max-w-4xl overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-2xl shadow-zinc-200/50">
-              <div className="flex items-center gap-2 border-b border-zinc-200 bg-white px-4 py-3">
-                <div className="h-3 w-3 rounded-full bg-zinc-200" />
-                <div className="h-3 w-3 rounded-full bg-zinc-200" />
-                <div className="h-3 w-3 rounded-full bg-zinc-200" />
-                <div className="ml-4 flex-1 rounded-md bg-zinc-100 px-3 py-1.5 text-xs text-zinc-400">
-                  retainly.app/app
-                </div>
-              </div>
-              <div className="grid grid-cols-12 gap-4 p-4 sm:gap-6 sm:p-6">
-                <div className="col-span-3 hidden border-r border-zinc-200 pr-4 sm:block">
-                  <div className="space-y-2">
-                    {['Input Order', 'Customer', 'Dashboard', 'Follow-up', 'Settings'].map((item, i) => (
-                      <div
-                        key={item}
-                        className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${
-                          i === 2 ? 'bg-zinc-900 text-white font-medium' : 'text-zinc-500'
-                        }`}
-                      >
-                        {item}
-                      </div>
-                    ))}
+            <div className="doppel-outer mx-auto max-w-4xl rounded-[2.25rem] p-2.5">
+              <div className="overflow-hidden rounded-[calc(2.25rem-0.75rem)] border border-hairline bg-white">
+                <div className="flex items-center gap-2 border-b border-hairline bg-white px-5 py-3.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-rose/40" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber/40" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald/40" />
+                  <div className="ml-4 flex-1 rounded-lg bg-sunken px-3 py-1.5 text-left font-mono text-xs text-ash">
+                    retainly.app/app
                   </div>
                 </div>
-                <div className="col-span-12 sm:col-span-9">
-                  <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    {['Total Customer', 'Repeat Rate', 'At Risk', 'Churned'].map((label) => (
-                      <div key={label} className="rounded-xl border border-zinc-200 bg-white p-3 sm:p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400 sm:text-xs">
-                          {label}
-                        </div>
-                        <div className="mt-1 text-xl font-bold sm:text-2xl">
-                          {label === 'Total Customer' ? '1,247' : label === 'Repeat Rate' ? '73%' : label === 'At Risk' ? '89' : '34'}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="rounded-xl border border-zinc-200 bg-white p-4">
-                    <div className="mb-3 text-sm font-semibold">Segmentasi Customer</div>
-                    <div className="space-y-3">
+                <div className="grid grid-cols-12 gap-5 bg-canvas p-5 sm:p-7">
+                  <div className="col-span-3 hidden border-r border-hairline pr-5 sm:block">
+                    <div className="space-y-2">
                       {[
-                        { label: 'Active', color: 'bg-green-500', width: '65%' },
-                        { label: 'At Risk', color: 'bg-amber-500', width: '25%' },
-                        { label: 'Churned', color: 'bg-red-400', width: '10%' },
-                      ].map((seg) => (
-                        <div key={seg.label}>
-                          <div className="mb-1 flex items-center justify-between text-xs">
-                            <span className="text-zinc-500">{seg.label}</span>
-                          </div>
-                          <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-100">
-                            <div className={`h-full rounded-full ${seg.color}`} style={{ width: seg.width }} />
-                          </div>
+                        ['Input Order', false],
+                        ['Customer', false],
+                        ['Dashboard', true],
+                        ['Follow-up', false],
+                        ['Settings', false],
+                      ].map(([item, active]) => (
+                        <div
+                          key={item as string}
+                          className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm transition-colors duration-300 ${
+                            active ? 'bg-accent text-white font-semibold shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]' : 'text-ash'
+                          }`}
+                        >
+                          <span className={`h-1.5 w-1.5 rounded-full ${active ? 'bg-white/60' : 'bg-mist/50'}`} />
+                          {item as string}
                         </div>
                       ))}
+                    </div>
+                  </div>
+                  <div className="col-span-12 sm:col-span-9">
+                    <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                      {[
+                        ['Total Customer', '1,247', 'text-ink'],
+                        ['Repeat Rate', '73%', 'text-accent'],
+                        ['At Risk', '89', 'text-amber-600'],
+                        ['Churned', '34', 'text-rose-600'],
+                      ].map(([label, value, hue]) => (
+                        <div key={label as string} className="rounded-2xl border border-hairline bg-white p-3 sm:p-4">
+                          <div className="text-[10px] font-semibold uppercase tracking-wider text-ash sm:text-xs">{label as string}</div>
+                          <div className={`mt-1 text-xl font-semibold tracking-tight sm:text-2xl ${hue as string}`}>{value as string}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="rounded-2xl border border-hairline bg-white p-4">
+                      <div className="mb-3 text-sm font-semibold text-ink">Segmentasi Customer</div>
+                      <div className="space-y-3">
+                        {[
+                          { label: 'Active', color: 'bg-emerald', width: '65%' },
+                          { label: 'At Risk', color: 'bg-amber', width: '25%' },
+                          { label: 'Churned', color: 'bg-rose', width: '10%' },
+                        ].map((seg) => (
+                          <div key={seg.label}>
+                            <div className="mb-1 flex items-center justify-between text-xs">
+                              <span className="text-ash">{seg.label}</span>
+                            </div>
+                            <div className="h-2 w-full overflow-hidden rounded-full bg-sunken">
+                              <div className={`h-full rounded-full ${seg.color}`} style={{ width: seg.width }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -191,12 +191,12 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="border-y border-zinc-100 bg-zinc-50/50">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 lg:px-8">
+      <section className="border-y border-hairline bg-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
           {METRICS.map((m) => (
             <div key={m.label} className="text-center">
-              <div className="text-3xl font-bold tracking-tight sm:text-4xl">{m.value}</div>
-              <div className="mt-1 text-sm text-zinc-500">{m.label}</div>
+              <div className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">{m.value}</div>
+              <div className="mt-1 text-sm text-ash">{m.label}</div>
             </div>
           ))}
         </div>
@@ -206,10 +206,11 @@ export default function LandingPage() {
       <section id="features" className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center sm:mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <span className="eyebrow">Fitur</span>
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
               Satu layar, semua data pelanggan.
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-base text-zinc-500 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-xl text-base text-ash sm:text-lg">
               Tidak perlu Excel, tidak perlu catatan manual. Semua tersimpan otomatis.
             </p>
           </div>
@@ -220,13 +221,13 @@ export default function LandingPage() {
               return (
                 <div
                   key={f.title}
-                  className="group rounded-2xl border border-zinc-100 p-5 transition-all duration-300 hover:border-zinc-200 hover:shadow-lg hover:shadow-zinc-100/50 sm:p-6"
+                  className="group rounded-3xl border border-hairline bg-white p-6 transition-all duration-500 hover:-translate-y-1 hover:border-accent/25 hover:shadow-[0_16px_40px_-20px_rgba(47,108,255,0.3)]"
                 >
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 transition-transform group-hover:scale-110">
-                    <Icon className="h-5 w-5 text-white" />
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-wash text-accent transition-all duration-500 group-hover:bg-accent group-hover:text-white group-hover:shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]">
+                    <Icon size={22} weight="duotone" />
                   </div>
-                  <h3 className="mb-2 text-base font-semibold sm:text-lg">{f.title}</h3>
-                  <p className="text-sm leading-relaxed text-zinc-500 sm:text-base">{f.desc}</p>
+                  <h3 className="mb-2 text-base font-semibold text-ink sm:text-lg">{f.title}</h3>
+                  <p className="text-sm leading-relaxed text-ash sm:text-base">{f.desc}</p>
                 </div>
               )
             })}
@@ -235,25 +236,24 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works */}
-      <section id="how-it-works" className="bg-zinc-50 px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
+      <section id="how-it-works" className="bg-white px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center sm:mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <span className="eyebrow">Cara Kerja</span>
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
               Tiga langkah, selesai.
             </h2>
-            <p className="mt-4 text-base text-zinc-500 sm:text-lg">
+            <p className="mt-4 text-base text-ash sm:text-lg">
               Tidak perlu training panjang. Tim Anda bisa langsung pakai.
             </p>
           </div>
 
           <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
             {STEPS.map((s) => (
-              <div key={s.num}>
-                <div className="mb-4 text-5xl font-bold text-zinc-100 select-none sm:text-6xl">
-                  {s.num}
-                </div>
-                <h3 className="mb-2 text-lg font-semibold sm:text-xl">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-zinc-500 sm:text-base">{s.desc}</p>
+              <div key={s.num} className="text-center md:text-left">
+                <div className="mb-4 text-5xl font-bold text-accent/15 select-none sm:text-6xl">{s.num}</div>
+                <h3 className="mb-2 text-lg font-semibold text-ink sm:text-xl">{s.title}</h3>
+                <p className="text-sm leading-relaxed text-ash sm:text-base">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -264,28 +264,29 @@ export default function LandingPage() {
       <section className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center sm:mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <span className="eyebrow">Keunggulan</span>
+            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
               Kenapa Retain-ly?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-base text-zinc-500 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-xl text-base text-ash sm:text-lg">
               Dirancang khusus untuk bisnis F&B Indonesia.
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                icon: Zap,
+                icon: Lightning,
                 title: 'Setup 2 Menit',
                 desc: 'Tanpa install aplikasi. Langsung buka dari browser HP kasir Anda.',
               },
               {
-                icon: Shield,
+                icon: ShieldCheck,
                 title: 'Data Aman',
                 desc: 'Semua data tersimpan di cloud dengan enkripsi. Tidak perlu khawatir kehilangan.',
               },
               {
-                icon: MessageCircle,
+                icon: WhatsappLogo,
                 title: 'Follow-up Otomatis',
                 desc: 'Kirim pesan WhatsApp personal ke pelanggan yang mulai jarang datang.',
               },
@@ -294,11 +295,15 @@ export default function LandingPage() {
               return (
                 <div
                   key={f.title}
-                  className="rounded-2xl border border-zinc-100 p-6 transition-all hover:border-zinc-200 hover:shadow-md sm:p-8"
+                  className="doppel-outer transition-all duration-500 hover:-translate-y-1"
                 >
-                  <Icon className="mb-4 h-6 w-6 text-zinc-900" />
-                  <h3 className="mb-2 text-lg font-semibold">{f.title}</h3>
-                  <p className="text-sm leading-relaxed text-zinc-500 sm:text-base">{f.desc}</p>
+                  <div className="doppel-inner flex flex-col gap-3 p-6 sm:p-8">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-wash text-accent">
+                      <Icon size={22} weight="duotone" />
+                    </span>
+                    <h3 className="mb-1 mt-2 text-lg font-semibold text-ink">{f.title}</h3>
+                    <p className="text-sm leading-relaxed text-ash sm:text-base">{f.desc}</p>
+                  </div>
                 </div>
               )
             })}
@@ -307,34 +312,36 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section id="pricing" className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Siap mempertahankan pelanggan Anda?
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg text-base text-zinc-500 sm:text-lg">
-            Mulai gratis. Tidak perlu kartu kredit. Setup dalam 2 menit.
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-8 py-4 text-lg font-medium text-white shadow-xl shadow-zinc-900/10 hover:bg-zinc-800 active:scale-[0.98] transition-all"
-            >
-              Mulai Sekarang
-              <ArrowRight className="h-5 w-5" />
-            </Link>
+      <section id="pricing" className="px-4 pb-24 pt-8 sm:px-6 sm:pb-28 lg:px-8">
+        <div className="doppel-outer mx-auto max-w-4xl rounded-[2.5rem]">
+          <div className="doppel-inner rounded-[calc(2.5rem-0.375rem)] px-6 py-14 text-center sm:py-16">
+            <span className="eyebrow">Mulai Sekarang</span>
+            <h2 className="mx-auto mt-5 max-w-2xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              Siap mempertahankan pelanggan Anda?
+            </h2>
+            <p className="mx-auto mt-4 max-w-lg text-base text-ash sm:text-lg">
+              Mulai gratis. Tidak perlu kartu kredit. Setup dalam 2 menit.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href="/login" className="btn-primary group px-8 py-4 text-lg">
+                Mulai Sekarang
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 transition-transform duration-500 group-hover:translate-x-0.5">
+                  <ArrowRight size={15} weight="bold" />
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-100 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-zinc-400 sm:flex-row">
+      <footer className="border-t border-hairline px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-ash sm:flex-row">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-zinc-200">
-              <Store className="h-3.5 w-3.5 text-zinc-500" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-wash text-accent">
+              <Storefront size={14} weight="fill" />
             </div>
-            <span>Retain-ly</span>
+            <span className="font-medium text-ink-soft">Retain-ly</span>
           </div>
           <div>&copy; {new Date().getFullYear()} Retain-ly. Semua hak dilindungi.</div>
         </div>

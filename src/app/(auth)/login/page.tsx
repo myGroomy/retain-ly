@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Store, ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Storefront, ArrowRight, ArrowLeft } from '@phosphor-icons/react'
 import { supabase } from '@/services/supabaseClient'
+import { fadeUp, FLUID_EASE } from '@/lib/motion'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
@@ -17,15 +19,13 @@ export default function LoginPage() {
     newPin[index] = value
     setPin(newPin)
     if (value && index < 5) {
-      const next = document.getElementById(`pin-${index + 1}`)
-      next?.focus()
+      document.getElementById(`pin-${index + 1}`)?.focus()
     }
   }
 
   const handlePinKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !pin[index] && index > 0) {
-      const prev = document.getElementById(`pin-${index - 1}`)
-      prev?.focus()
+      document.getElementById(`pin-${index - 1}`)?.focus()
     }
   }
 
@@ -35,7 +35,6 @@ export default function LoginPage() {
     setError(null)
 
     const pinCode = pin.join('')
-
     const { data, error: queryError } = await supabase
       .from('users')
       .select('*')
@@ -53,91 +52,142 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
-      <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white/80 backdrop-blur-lg">
-        <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900">
-              <Store className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-lg font-semibold tracking-tight">Retain-ly</span>
+    <div className="sky-hero grain relative flex min-h-[100dvh] flex-col overflow-hidden">
+      {/* Ambient orbs */}
+      <div className="pointer-events-none absolute -top-40 right-[-10%] h-[40rem] w-[40rem] rounded-full bg-accent/15 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-[-20%] left-[-8%] h-[32rem] w-[32rem] rounded-full bg-accent-soft/15 blur-[120px]" />
+
+      <header className="relative z-10">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <Link href="/" className="group flex items-center gap-2.5">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: FLUID_EASE }}
+              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] ring-1 ring-hairline"
+            >
+              <Storefront size={20} weight="fill" className="text-accent" />
+            </motion.div>
+            <span className="text-lg font-semibold tracking-tight text-ink">
+              Retain<span className="text-accent">ly</span>
+            </span>
           </Link>
         </div>
       </header>
 
-      <main className="flex flex-1 items-center justify-center px-4 pt-16">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold tracking-tight">Masuk ke Terminal Kasir</h1>
-            <p className="mt-2 text-sm text-zinc-500">Gunakan akun kasir Anda</p>
+      <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 32, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1, ease: FLUID_EASE }}
+          className="w-full max-w-[26rem]"
+        >
+          <div className="mb-10 text-center">
+            <motion.div variants={fadeUp} custom={0} initial="hidden" animate="show" className="mb-5 flex justify-center">
+              <span className="eyebrow">Terminal Kasir</span>
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              custom={1}
+              initial="hidden"
+              animate="show"
+              className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
+            >
+              Selamat datang kembali
+            </motion.h1>
+            <motion.p variants={fadeUp} custom={2} initial="hidden" animate="show" className="mt-3 text-sm text-ash">
+              Login untuk merekam order & follow-up pelanggan
+            </motion.p>
           </div>
 
-          <div className="rounded-2xl border border-zinc-200 p-6 shadow-sm">
-            <form className="space-y-5" onSubmit={handleLogin}>
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-zinc-700" htmlFor="username">
-                  Username
-                </label>
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan username"
-                  className="h-11 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none focus:ring-0 transition-colors"
-                  required
-                />
-              </div>
+          <div className="doppel-outer">
+            <div className="doppel-inner p-6 sm:p-8">
+              <form className="space-y-6" onSubmit={handleLogin}>
+                <motion.div variants={fadeUp} custom={3} initial="hidden" animate="show">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash" htmlFor="username">
+                    Username
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Masukkan username kasir"
+                    autoComplete="username"
+                    className="field h-12"
+                    required
+                  />
+                </motion.div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-zinc-700">PIN (6 Digit)</label>
-                <div className="flex items-center justify-between gap-2">
-                  {pin.map((digit, i) => (
-                    <input
-                      key={i}
-                      id={`pin-${i}`}
-                      type="password"
-                      maxLength={1}
-                      inputMode="numeric"
-                      pattern="[0-9]"
-                      value={digit}
-                      onChange={(e) => handlePinChange(i, e.target.value)}
-                      onKeyDown={(e) => handlePinKeyDown(i, e)}
-                      className="h-12 w-12 rounded-lg border border-zinc-200 bg-zinc-50 text-center text-lg font-semibold text-zinc-900 focus:border-zinc-900 focus:outline-none focus:ring-0 transition-colors"
-                    />
-                  ))}
-                </div>
-              </div>
+                <motion.div variants={fadeUp} custom={4} initial="hidden" animate="show">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">PIN (6 Digit)</label>
+                  <div className="flex items-center justify-between gap-2">
+                    {pin.map((digit, i) => (
+                      <input
+                        key={i}
+                        id={`pin-${i}`}
+                        type="password"
+                        maxLength={1}
+                        inputMode="numeric"
+                        pattern="[0-9]"
+                        value={digit}
+                        onChange={(e) => handlePinChange(i, e.target.value)}
+                        onKeyDown={(e) => handlePinKeyDown(i, e)}
+                        className="h-14 w-12 rounded-2xl border border-hairline bg-white text-center text-xl font-semibold text-ink transition-all duration-300 focus:border-accent/50 focus:outline-none focus:ring-4 focus:ring-accent/10"
+                      />
+                    ))}
+                  </div>
+                </motion.div>
 
-              {error && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-zinc-900 text-sm font-medium text-white hover:bg-zinc-800 active:scale-[0.98] transition-all disabled:opacity-50"
-              >
-                {loading ? (
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                ) : (
-                  <>
-                    <span>Masuk</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl border border-rose/20 bg-rose/10 p-3.5 text-sm text-rose-600"
+                  >
+                    {error}
+                  </motion.div>
                 )}
-              </button>
-            </form>
+
+                <motion.div variants={fadeUp} custom={5} initial="hidden" animate="show">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="group flex h-12 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-700 hover:-translate-y-px active:scale-[0.98] disabled:opacity-50"
+                    style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
+                  >
+                    {loading ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    ) : (
+                      <>
+                        <span>Masuk ke Kasir</span>
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-px">
+                          <ArrowRight size={16} weight="bold" className="text-white" />
+                        </span>
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              </form>
+            </div>
           </div>
 
-          <p className="mt-6 text-center text-sm text-zinc-400">
-            <Link href="/" className="text-zinc-500 hover:text-zinc-700 transition-colors">
-              &larr; Kembali ke beranda
+          <motion.div
+            variants={fadeUp}
+            custom={6}
+            initial="hidden"
+            animate="show"
+            className="mt-8 text-center"
+          >
+            <Link
+              href="/"
+              className="group inline-flex items-center gap-2 text-sm text-ash transition-colors duration-300 hover:text-accent"
+            >
+              <ArrowLeft size={15} weight="bold" className="transition-transform duration-300 group-hover:-translate-x-0.5" />
+              Kembali ke beranda
             </Link>
-          </p>
-        </div>
+          </motion.div>
+        </motion.div>
       </main>
     </div>
   )
