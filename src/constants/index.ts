@@ -11,8 +11,8 @@ export const CHANNELS: Channel[] = [
 ]
 
 export const DEFAULT_THRESHOLDS: RetentionThresholds = {
-  activeDays: Number(import.meta.env.VITE_DEFAULT_CHURN_ACTIVE_DAYS) || 30,
-  atRiskDays: Number(import.meta.env.VITE_DEFAULT_CHURN_AT_RISK_DAYS) || 60,
+  activeDays: Number(process.env.NEXT_PUBLIC_DEFAULT_CHURN_ACTIVE_DAYS) || 30,
+  atRiskDays: Number(process.env.NEXT_PUBLIC_DEFAULT_CHURN_AT_RISK_DAYS) || 60,
 }
 
 export const PAGE_SIZE = 20

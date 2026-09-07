@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo } from 'react'
 import type { CustomerWithStats, RetentionStatus } from '@/types'
 import { getRetentionStatus } from '@/utils/churnStatus'

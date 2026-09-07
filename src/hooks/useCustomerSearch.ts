@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useRef, useState } from 'react'
 import { supabase } from '@/services/supabaseClient'
 import type { Customer } from '@/types'
