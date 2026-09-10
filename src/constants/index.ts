@@ -16,8 +16,3 @@ export const DEFAULT_THRESHOLDS: RetentionThresholds = {
 }
 
 export const PAGE_SIZE = 20
-
-export const WHATSAPP_TEMPLATE =
-  'Halo {nama}, terima kasih sudah order di toko kami! 😊 Ada yang bisa kami bantu?'
-
-export const APP_NAME = 'Retain-ly'

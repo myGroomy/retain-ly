@@ -1,4 +1,4 @@
-import { getAppSettings } from '@/utils/appSettings'
+import { getAppSettings } from '@/services/settingsService'
 
 export function buildWaLink(phone: string, name?: string): string {
   const digits = phone.replace(/\D/g, '')

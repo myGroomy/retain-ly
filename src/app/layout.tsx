@@ -4,8 +4,28 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Retain-ly',
-  description: 'Customer Retention & Order Logger F&B',
+  title: 'Retain-ly — Jangan sampai pelanggan lupa balik lagi',
+  description: 'Catatan kasir yang jadi database pelanggan & pelacak retensi bisnis F&B.',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png',
+    apple: '/brand-assets/logo-icon.png',
+  },
+  openGraph: {
+    title: 'Retain-ly — Pelacak Retensi Bisnis F&B',
+    description: 'Jangan sampai pelanggan lupa balik lagi. Rekam transaksi kasir jadi database pelanggan otomatis.',
+    images: [
+      {
+        url: '/brand-assets/logo-full.png',
+        width: 1200,
+        height: 600,
+        alt: 'Retain-ly Logo',
+      },
+    ],
+  },
 }
 
 export default function RootLayout({

@@ -14,7 +14,7 @@ import {
 import { getCustomersWithStats } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
-import { getAppSettings } from '@/utils/appSettings'
+import { getAppSettings } from '@/services/settingsService'
 import { CHANNELS } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'

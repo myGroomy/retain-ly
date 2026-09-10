@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import {
-  Storefront,
   ArrowRight,
   ArrowUpRight,
   Receipt,
@@ -56,10 +56,14 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-hairline bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-[0.9rem] bg-accent text-white" style={{ boxShadow: '0 6px 16px -6px rgba(47, 108, 255, 0.55)' }}>
-              <Storefront size={18} weight="fill" />
-            </div>
-            <span className="text-lg font-semibold tracking-tight text-ink">Retain-ly</span>
+            <Image
+              src="/brand-assets/logo-full.png"
+              alt="Retain-ly Logo"
+              width={160}
+              height={44}
+              className="h-9 w-auto object-contain"
+              priority
+            />
           </Link>
           <nav className="hidden items-center gap-8 md:flex">
             {[
@@ -337,11 +341,15 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-hairline px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-ash sm:flex-row">
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-wash text-accent">
-              <Storefront size={14} weight="fill" />
-            </div>
-            <span className="font-medium text-ink-soft">Retain-ly</span>
+          <div className="flex items-center gap-2.5">
+            <Image
+              src="/brand-assets/logo-icon.png"
+              alt="Retain-ly Icon"
+              width={26}
+              height={26}
+              className="h-6 w-6 object-contain"
+            />
+            <span className="font-semibold text-ink-soft">Retain-ly</span>
           </div>
           <div>&copy; {new Date().getFullYear()} Retain-ly. Semua hak dilindungi.</div>
         </div>

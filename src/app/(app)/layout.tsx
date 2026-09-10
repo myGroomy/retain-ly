@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Storefront,
   Basket,
   Users as UsersIcon,
   ChartBar,
@@ -18,7 +18,8 @@ import {
   FileCsv,
   DownloadSimple,
 } from '@phosphor-icons/react'
-import { getAppSettings } from '@/utils/appSettings'
+import { getAppSettings, syncSettingsFromSheets } from '@/services/settingsService'
+import { syncStaging } from '@/services/sheetsService'
 import type { ReactNode } from 'react'
 
 interface User {
@@ -64,9 +65,14 @@ function Sidebar({ user, storeName, onLogout }: { user: User | null; storeName: 
         <div className="doppel-inner flex h-full flex-col justify-between rounded-[calc(2rem-0.375rem)]">
           <div className="flex flex-col gap-6 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent text-white shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]">
-                <Storefront size={22} weight="fill" />
-              </div>
+              <Image
+                src="/brand-assets/logo-icon.png"
+                alt="Retain-ly Icon"
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain drop-shadow-sm"
+                priority
+              />
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-semibold text-ink">{storeName}</div>
                 <div className="mt-0.5 flex items-center gap-1.5">
@@ -174,6 +180,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     setUser(JSON.parse(stored))
     syncSettings()
 
+    // Sync settings from Sheets in background
+    syncSettingsFromSheets().then(s => {
+      setStoreName(s.storeName)
+    }).catch(() => {})
+
+    // Auto-sync staging data
+    syncStaging().catch(() => {})
+
     const handleSettingsEvent = () => syncSettings()
     window.addEventListener('retainly_settings_changed', handleSettingsEvent)
     return () => window.removeEventListener('retainly_settings_changed', handleSettingsEvent)
@@ -190,9 +204,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b border-hairline bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent text-white md:hidden">
-              <Storefront size={18} weight="fill" />
-            </div>
+            <Image
+              src="/brand-assets/logo-icon.png"
+              alt="Retain-ly Icon"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain md:hidden drop-shadow-sm"
+            />
             <div>
               <span className="text-sm font-semibold text-ink">{storeName}</span>
               <div className="flex items-center gap-1">

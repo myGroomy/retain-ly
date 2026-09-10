@@ -1,6 +1,6 @@
 import { differenceInDays } from 'date-fns'
 import type { RetentionStatus, RetentionThresholds } from '@/types'
-import { getAppSettings } from '@/utils/appSettings'
+import { getAppSettings } from '@/services/settingsService'
 
 export function getRetentionStatus(
   lastOrderDate: string | Date,
@@ -32,13 +32,4 @@ export function getRetentionLabel(status: RetentionStatus): string {
     churned: 'Churned',
   }
   return labels[status]
-}
-
-export function getRetentionColor(status: RetentionStatus): string {
-  const colors: Record<RetentionStatus, string> = {
-    active: '#16a34a',
-    at_risk: '#d97706',
-    churned: '#dc2626',
-  }
-  return colors[status]
 }

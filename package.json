@@ -11,21 +11,22 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
-    "@supabase/supabase-js": "^2.115.0",
     "@tailwindcss/postcss": "^4.3.3",
     "date-fns": "^4.4.0",
     "framer-motion": "^13.2.0",
     "geist": "^1.7.2",
-    "lucide-react": "^1.42.0",
+    "googleapis": "^178.1.1",
     "next": "^16.3.4",
     "postcss": "^8.5.28",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@types/uuid": "^10.0.0",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2"

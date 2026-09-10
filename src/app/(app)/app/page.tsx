@@ -18,7 +18,6 @@ import {
   ArrowSquareOut,
   UserCheck,
 } from '@phosphor-icons/react'
-import { supabase } from '@/services/supabaseClient'
 import { findCustomerByPhone, createCustomer, searchCustomers } from '@/services/customerService'
 import { createOrder } from '@/services/orderService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
@@ -63,6 +62,15 @@ export default function InputOrderPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showToast, setShowToast] = useState(false)
+
+  // Get user branch from localStorage
+  const [userBranch, setUserBranch] = useState('')
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('retainly_user') || '{}')
+      setUserBranch(user.branch || '')
+    } catch {}
+  }, [])
 
   useEffect(() => () => { if (debounceTimer) clearTimeout(debounceTimer) }, [debounceTimer])
 
@@ -160,6 +168,7 @@ export default function InputOrderPage() {
         order_date: orderDate,
         channel: channel === 'custom' ? 'custom' : channel,
         raw_phone_input: newPhone || selectedCustomer?.phone_normalized || '',
+        branch: userBranch,
       })
       setShowToast(true)
       setTimeout(() => { setShowToast(false); handleReset() }, 2200)

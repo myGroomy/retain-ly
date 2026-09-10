@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Storefront, ArrowRight, ArrowLeft } from '@phosphor-icons/react'
-import { supabase } from '@/services/supabaseClient'
+import { ArrowRight, ArrowLeft } from '@phosphor-icons/react'
+import { getSheetData } from '@/services/sheetsService'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 
@@ -37,19 +38,29 @@ export default function LoginPage() {
     setError(null)
 
     const pinCode = pin.join('')
-    const { data, error: queryError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .eq('pin', pinCode)
-      .single()
 
-    if (queryError || !data) {
-      setError('Username atau PIN salah')
-    } else {
-      localStorage.setItem('retainly_user', JSON.stringify(data))
-      window.location.href = '/app'
+    try {
+      const users = await getSheetData('users')
+      const user = users.find(u => u.username === username && u.pin === pinCode)
+
+      if (!user) {
+        setError('Username atau PIN salah')
+      } else {
+        localStorage.setItem(
+          'retainly_user',
+          JSON.stringify({
+            id: user.id,
+            username: user.username,
+            role: user.role,
+            branch: user.branch || '',
+          }),
+        )
+        window.location.href = '/app'
+      }
+    } catch {
+      setError('Terjadi kesalahan saat login')
     }
+
     setLoading(false)
   }
 
@@ -66,13 +77,16 @@ export default function LoginPage() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.6, ease: FLUID_EASE }}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] ring-1 ring-hairline"
             >
-              <Storefront size={20} weight="fill" className="text-accent" />
+              <Image
+                src="/brand-assets/logo-full.png"
+                alt="Retain-ly Logo"
+                width={160}
+                height={48}
+                className="h-10 w-auto object-contain"
+                priority
+              />
             </motion.div>
-            <span className="text-lg font-semibold tracking-tight text-ink">
-              Retain<span className="text-accent">ly</span>
-            </span>
           </Link>
         </div>
       </header>

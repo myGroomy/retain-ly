@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   FloppyDisk,
@@ -11,42 +12,65 @@ import {
   Plus,
   Trash,
   Check,
+  DownloadSimple,
+  Spinner,
 } from '@phosphor-icons/react'
-import { getAppSettings, saveAppSettings, type AppSettings } from '@/utils/appSettings'
+import { getAppSettings, saveAppSettings, type AppSettings, DEFAULT_APP_SETTINGS } from '@/services/settingsService'
 import { fadeUp } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 
 export default function SettingsPage() {
   const ready = useMounted()
-  const [settings, setSettings] = useState<AppSettings>(getAppSettings())
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_APP_SETTINGS)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
   const [newChannelInput, setNewChannelInput] = useState('')
   const [savedToast, setSavedToast] = useState(false)
 
   useEffect(() => {
-    setSettings(getAppSettings())
+    loadSettings()
   }, [])
 
-  const handleSave = () => {
-    saveAppSettings(settings)
-    setSavedToast(true)
-    setTimeout(() => setSavedToast(false), 2500)
+  const loadSettings = async () => {
+    setLoading(true)
+    try {
+      const s = await getAppSettings()
+      setSettings(s)
+    } catch {
+      // Use defaults
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await saveAppSettings(settings)
+      setSavedToast(true)
+      setTimeout(() => setSavedToast(false), 2500)
+    } catch {
+      // Handle error
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleAddChannel = () => {
     if (!newChannelInput.trim()) return
-    if (settings.customChannels.includes(newChannelInput.trim())) return
-    setSettings((prev) => ({
-      ...prev,
-      customChannels: [...prev.customChannels, newChannelInput.trim()],
-    }))
     setNewChannelInput('')
   }
 
   const handleRemoveChannel = (channelName: string) => {
-    setSettings((prev) => ({
-      ...prev,
-      customChannels: prev.customChannels.filter((c) => c !== channelName),
-    }))
+    // Channels are now fixed in the app, this is just for display
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[70dvh] items-center justify-center">
+        <span className="h-8 w-8 animate-spin rounded-full border-2 border-ink/15 border-t-accent" />
+      </div>
+    )
   }
 
   return (
@@ -60,7 +84,7 @@ export default function SettingsPage() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-white shadow-xl shadow-emerald/30"
           >
-            <Check size={18} weight="bold" /> Pengaturan Berhasil Disimpan & Diterapkan!
+            <Check size={18} weight="bold" /> Pengaturan Berhasil Disimpan!
           </motion.div>
         )}
       </AnimatePresence>
@@ -69,7 +93,7 @@ export default function SettingsPage() {
       <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-8">
         <span className="eyebrow">Preferensi</span>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Pengaturan Aplikasi</h1>
-        <p className="mt-1.5 text-xs text-ash sm:text-sm">Kustomisasi identitas toko, ambang retensi, channel order, dan template WhatsApp</p>
+        <p className="mt-1.5 text-xs text-ash sm:text-sm">Kustomisasi identitas toko, ambang retensi, dan template WhatsApp (tersimpan di cloud)</p>
       </motion.div>
 
       <div className="space-y-5">
@@ -83,7 +107,7 @@ export default function SettingsPage() {
                 </span>
                 <div>
                   <h2 className="text-base font-semibold text-ink">Identitas Cabang / Toko</h2>
-                  <p className="mt-0.5 text-xs text-ash">Nama toko yang akan tampil pada resi, sidebar, dan template WA</p>
+                  <p className="mt-0.5 text-xs text-ash">Nama toko yang akan tampil pada sidebar dan template WA</p>
                 </div>
               </div>
 
@@ -179,50 +203,12 @@ export default function SettingsPage() {
           </div>
         </motion.div>
 
-        {/* Custom Order Channels */}
+        {/* Info about sync */}
         <motion.div variants={fadeUp} custom={4} initial="hidden" animate={ready ? 'show' : 'hidden'}>
-          <div className="doppel-outer">
-            <div className="doppel-inner p-5 sm:p-7">
-              <h2 className="text-base font-semibold text-ink">Channel Order Transaksi</h2>
-              <p className="mt-0.5 text-xs text-ash">Tambah atau hapus channel platform pemesanan F&B Anda</p>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {settings.customChannels.map((ch) => (
-                  <span
-                    key={ch}
-                    className="flex items-center gap-2 rounded-full border border-hairline bg-white px-3.5 py-1.5 text-xs font-semibold text-ink"
-                  >
-                    <span>{ch}</span>
-                    <button
-                      onClick={() => handleRemoveChannel(ch)}
-                      className="text-mist hover:text-rose-600 transition-colors"
-                      title={`Hapus ${ch}`}
-                    >
-                      <Trash size={13} weight="bold" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-4 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={newChannelInput}
-                  onChange={(e) => setNewChannelInput(e.target.value)}
-                  placeholder="Tambah channel baru (misal: TikTok Shop)..."
-                  className="field h-10 text-xs flex-1"
-                  onKeyDown={(e) => { if (e.key === 'Enter') handleAddChannel() }}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddChannel}
-                  className="flex h-10 items-center gap-1.5 rounded-2xl bg-accent px-4 text-xs font-semibold text-white transition-all hover:bg-accent-deep"
-                >
-                  <Plus size={14} weight="bold" />
-                  <span>Tambah</span>
-                </button>
-              </div>
-            </div>
+          <div className="rounded-2xl border border-accent/20 bg-accent/5 p-4">
+            <p className="text-xs text-ash">
+              <strong className="text-accent">☁️ Tersimpan di Cloud</strong> — Pengaturan ini disimpan di Google Sheets dan akan sync ke semua perangkat yang login dengan akun yang sama.
+            </p>
           </div>
         </motion.div>
 
@@ -230,11 +216,18 @@ export default function SettingsPage() {
         <motion.div variants={fadeUp} custom={5} initial="hidden" animate={ready ? 'show' : 'hidden'}>
           <button
             onClick={handleSave}
-            className="group flex min-h-[50px] h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98]"
+            disabled={saving}
+            className="group flex min-h-[50px] h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98] disabled:opacity-50"
             style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
           >
-            <FloppyDisk size={18} weight="bold" />
-            <span>Simpan Semua Pengaturan</span>
+            {saving ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            ) : (
+              <>
+                <FloppyDisk size={18} weight="bold" />
+                <span>Simpan Semua Pengaturan</span>
+              </>
+            )}
           </button>
         </motion.div>
       </div>

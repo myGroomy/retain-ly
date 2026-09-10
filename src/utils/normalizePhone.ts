@@ -19,8 +19,3 @@ export function normalizePhone(raw: string): string {
 
   return digits
 }
-
-export function isValidPhone(raw: string): boolean {
-  const normalized = normalizePhone(raw)
-  return /^08\d{8,13}$/.test(normalized)
-}

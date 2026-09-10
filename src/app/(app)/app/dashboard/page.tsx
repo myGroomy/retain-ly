@@ -18,6 +18,7 @@ import {
   Calendar,
   Funnel,
   TrendUp,
+  House,
 } from '@phosphor-icons/react'
 import { getCustomersWithStats } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
@@ -26,13 +27,35 @@ import { downloadVCard } from '@/utils/vcardGenerator'
 import { CHANNELS, DEFAULT_THRESHOLDS } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
-import type { CustomerWithStats, RetentionStatus } from '@/types'
+import type { CustomerWithStats, RetentionStatus, BranchType } from '@/types'
+
+const BRANCHES: { id: BranchType | 'ALL'; label: string }[] = [
+  { id: 'ALL', label: 'Semua Cabang' },
+  { id: 'CMH', label: 'Cimahi (CMH)' },
+  { id: 'BDG', label: 'Bandung (BDG)' },
+]
 
 export default function DashboardPage() {
   const ready = useMounted()
   const [customers, setCustomers] = useState<CustomerWithStats[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<RetentionStatus | 'all'>('all')
+  const [branchFilter, setBranchFilter] = useState<BranchType | 'ALL'>('ALL')
+
+  // Get user info
+  const [userRole, setUserRole] = useState('')
+  const [userBranch, setUserBranch] = useState('')
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('retainly_user') || '{}')
+      setUserRole(user.role || '')
+      setUserBranch(user.branch || '')
+      // If kasir, lock to their branch
+      if (user.role === 'kasir' && user.branch) {
+        setBranchFilter(user.branch as BranchType)
+      }
+    } catch {}
+  }, [])
 
   useEffect(() => {
     (async () => {
@@ -51,23 +74,37 @@ export default function DashboardPage() {
     )
   }
 
+  // Filter by branch
+  const branchCustomers = branchFilter === 'ALL'
+    ? customers
+    : customers.filter(c => {
+        // Check if customer has orders in this branch
+        const hasOrdersInBranch = c.orders?.some(o => o.branch === branchFilter)
+        // Or customer's primary branch matches
+        return hasOrdersInBranch || c.branch === branchFilter
+      })
+
   const counts = { active: 0, at_risk: 0, churned: 0 }
   const channelCounts: Record<string, number> = {}
+  const branchCounts: Record<string, number> = {}
   let totalOrdersAll = 0
 
-  customers.forEach((c) => {
+  branchCustomers.forEach((c) => {
     counts[c.retention_status as keyof typeof counts]++
     totalOrdersAll += c.order_count || 0
 
     if (c.orders && Array.isArray(c.orders)) {
       c.orders.forEach((o) => {
         channelCounts[o.channel] = (channelCounts[o.channel] || 0) + 1
+        if (o.branch) {
+          branchCounts[o.branch] = (branchCounts[o.branch] || 0) + 1
+        }
       })
     }
   })
 
-  const total = customers.length
-  const repeatCount = customers.filter((c) => c.order_count > 1).length
+  const total = branchCustomers.length
+  const repeatCount = branchCustomers.filter((c) => c.order_count > 1).length
   const repeatRate = total > 0 ? Math.round((repeatCount / total) * 100) : 0
   const churnRate = total > 0 ? Math.round((counts.churned / total) * 100) : 0
   const avgOrder = total > 0 ? (totalOrdersAll / total).toFixed(1) : '0'
@@ -78,8 +115,8 @@ export default function DashboardPage() {
 
   // Filtered List for Categories Tab
   const categoryCustomers = activeTab === 'all'
-    ? customers
-    : customers.filter((c) => c.retention_status === activeTab)
+    ? branchCustomers
+    : branchCustomers.filter((c) => c.retention_status === activeTab)
 
   const statsGrid = [
     {
@@ -149,13 +186,47 @@ export default function DashboardPage() {
         <p className="mt-1.5 text-xs text-ash sm:text-sm">Analisis detail kesehatan basis pelanggan dan performa transaksi F&B</p>
       </motion.div>
 
+      {/* Branch Filter */}
+      <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6">
+        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+          {BRANCHES.map((b) => {
+            const isDisabled = (userRole === 'kasir' && b.id === 'ALL') ||
+                               (userRole === 'kasir' && b.id !== userBranch)
+            return (
+              <button
+                key={b.id}
+                onClick={() => {
+                  if (!isDisabled) {
+                    setBranchFilter(b.id)
+                  }
+                }}
+                disabled={isDisabled}
+                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all whitespace-nowrap ${
+                  branchFilter === b.id
+                    ? 'bg-accent text-white shadow-md shadow-accent/30'
+                    : isDisabled
+                      ? 'border border-hairline bg-sunken/50 text-mist cursor-not-allowed opacity-50'
+                      : 'border border-hairline bg-white text-ash hover:bg-sunken hover:text-ink'
+                }`}
+              >
+                <Storefront size={14} weight="duotone" />
+                {b.label}
+              </button>
+            )
+          })}
+        </div>
+        {userRole === 'kasir' && (
+          <p className="mt-2 text-xs text-ash">Kasir hanya bisa melihat data cabang sendiri ({userBranch})</p>
+        )}
+      </motion.div>
+
       {/* Grid khusus mobile: 1-col on mobile, 2-col on tablet, 4-col on desktop */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 mb-6">
         {statsGrid.map((s, i) => (
           <motion.div
             key={s.label}
             variants={fadeUp}
-            custom={i + 1}
+            custom={i + 2}
             initial="hidden"
             animate={ready ? 'show' : 'hidden'}
           >
@@ -183,7 +254,7 @@ export default function DashboardPage() {
       {/* Middle Section: Segmentation & Channel Breakdown */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 mb-8">
         {/* Retention Segmentation Progress Bars */}
-        <motion.div variants={fadeUp} custom={5} initial="hidden" animate={ready ? 'show' : 'hidden'} className="lg:col-span-7">
+        <motion.div variants={fadeUp} custom={6} initial="hidden" animate={ready ? 'show' : 'hidden'} className="lg:col-span-7">
           <div className="doppel-outer h-full">
             <div className="doppel-inner p-5 sm:p-6 flex flex-col justify-between h-full">
               <div>
@@ -228,7 +299,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Channel Breakdown */}
-        <motion.div variants={fadeUp} custom={6} initial="hidden" animate={ready ? 'show' : 'hidden'} className="lg:col-span-5">
+        <motion.div variants={fadeUp} custom={7} initial="hidden" animate={ready ? 'show' : 'hidden'} className="lg:col-span-5">
           <div className="doppel-outer h-full">
             <div className="doppel-inner p-5 sm:p-6">
               <div className="flex items-center justify-between mb-4">
@@ -263,8 +334,37 @@ export default function DashboardPage() {
         </motion.div>
       </div>
 
+      {/* Branch Breakdown (only for owner) */}
+      {userRole === 'owner' && Object.keys(branchCounts).length > 0 && (
+        <motion.div variants={fadeUp} custom={8} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-8">
+          <div className="doppel-outer">
+            <div className="doppel-inner p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-ink">Order per Cabang</h2>
+                <Storefront size={18} weight="duotone" className="text-accent" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {Object.entries(branchCounts).sort((a, b) => b[1] - a[1]).map(([branch, count]) => {
+                  const pct = totalOrdersAll > 0 ? Math.round((count / totalOrdersAll) * 100) : 0
+                  return (
+                    <div key={branch} className="rounded-2xl border border-hairline bg-white p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Storefront size={14} weight="duotone" className="text-accent" />
+                        <span className="text-sm font-semibold text-ink">{branch}</span>
+                      </div>
+                      <div className="text-2xl font-bold text-ink">{count}</div>
+                      <div className="text-xs text-ash">{pct}% dari total order</div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Category List & Deep Reporting Table Section */}
-      <motion.div variants={fadeUp} custom={7} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-8">
+      <motion.div variants={fadeUp} custom={9} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-8">
         <div className="doppel-outer">
           <div className="doppel-inner p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -305,6 +405,9 @@ export default function DashboardPage() {
                   const isRisk = c.retention_status === 'at_risk'
                   const isChurn = c.retention_status === 'churned'
 
+                  // Get unique branches for this customer
+                  const customerBranches = [...new Set(c.orders?.map(o => o.branch).filter(Boolean) || [])]
+
                   return (
                     <div
                       key={c.id}
@@ -326,6 +429,14 @@ export default function DashboardPage() {
                             <span className="font-mono text-ink-soft">{c.phone_normalized}</span>
                             <span>&middot;</span>
                             <span className="font-semibold text-accent">{c.order_count}x order</span>
+                            {customerBranches.length > 0 && (
+                              <>
+                                <span>&middot;</span>
+                                <span className="text-[10px] bg-sunken rounded-full px-2 py-0.5">
+                                  {customerBranches.join(', ')}
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>

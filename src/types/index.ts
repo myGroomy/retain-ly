@@ -7,6 +7,8 @@ export type ChannelType =
   | 'whatsapp'
   | 'custom'
 
+export type BranchType = 'CMH' | 'BDG'
+
 export interface Channel {
   id: ChannelType
   label: string
@@ -20,13 +22,14 @@ export interface Customer {
   name: string
   first_order_date: string
   created_at: string
+  branch?: string
 }
 
 export interface CustomerWithStats extends Customer {
   order_count: number
   last_order_date: string
   retention_status: RetentionStatus
-  orders?: Array<{ order_date: string; channel: string }>
+  orders?: Array<{ order_date: string; channel: string; branch?: string }>
 }
 
 export interface Order {
@@ -36,24 +39,25 @@ export interface Order {
   channel: ChannelType
   raw_phone_input: string | null
   created_at: string
+  branch?: string
 }
 
 export interface OrderWithCustomer extends Order {
   customer?: Customer
 }
 
+export interface User {
+  id: string
+  username: string
+  pin: string
+  role: 'owner' | 'kasir'
+  created_at: string
+  branch?: string
+}
+
 export interface RetentionThresholds {
   activeDays: number
   atRiskDays: number
-}
-
-export interface DashboardSummary {
-  totalCustomers: number
-  activeCustomers: number
-  atRiskCustomers: number
-  churnedCustomers: number
-  totalOrders: number
-  channelBreakdown: Record<ChannelType, number>
 }
 
 export interface PaginatedResponse<T> {
