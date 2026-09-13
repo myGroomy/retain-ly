@@ -23,6 +23,10 @@ export interface Customer {
   first_order_date: string
   created_at: string
   branch?: string
+  order_count?: number
+  description?: string
+  age_range?: string
+  gender?: string
 }
 
 export interface CustomerWithStats extends Customer {

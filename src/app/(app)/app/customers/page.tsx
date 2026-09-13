@@ -6,19 +6,42 @@ import { motion } from 'framer-motion'
 import {
   MagnifyingGlass,
   UsersThree,
-  ArrowRight,
   Calendar,
   Funnel,
   X,
   Phone,
   ShoppingBag,
 } from '@phosphor-icons/react'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getCustomersWithStats, searchCustomers } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
 import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
 import { fadeUp } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats, RetentionStatus } from '@/types'
+
+type RepeatFilter = 'all' | '1x' | '2-5x' | '6-10x' | '11-20x' | '21x+'
+
+const REPEAT_FILTERS: { key: RepeatFilter; label: string }[] = [
+  { key: 'all', label: 'Semua' },
+  { key: '1x', label: '1x' },
+  { key: '2-5x', label: '2-5x' },
+  { key: '6-10x', label: '6-10x' },
+  { key: '11-20x', label: '11-20x' },
+  { key: '21x+', label: '21x+' },
+]
+
+function matchesRepeatFilter(count: number, filter: RepeatFilter): boolean {
+  if (filter === 'all') return true
+  if (filter === '1x') return count === 1
+  if (filter === '2-5x') return count >= 2 && count <= 5
+  if (filter === '6-10x') return count >= 6 && count <= 10
+  if (filter === '11-20x') return count >= 11 && count <= 20
+  if (filter === '21x+') return count >= 21
+  return true
+}
 
 export default function CustomerListPage() {
   const ready = useMounted()
@@ -29,6 +52,7 @@ export default function CustomerListPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<RetentionStatus | 'all'>('all')
+  const [repeatFilter, setRepeatFilter] = useState<RepeatFilter>('all')
 
   // Date Filter State
   const [dateFrom, setDateFrom] = useState('')
@@ -68,6 +92,7 @@ export default function CustomerListPage() {
 
   const filtered = customers.filter((c) => {
     if (filter !== 'all' && c.retention_status !== filter) return false
+    if (!matchesRepeatFilter(c.order_count || 0, repeatFilter)) return false
     if (dateFrom && c.last_order_date < dateFrom) return false
     if (dateTo && c.last_order_date > dateTo) return false
     return true
@@ -76,16 +101,16 @@ export default function CustomerListPage() {
   const getInitials = (name: string) => name.split(' ').map((n) => n[0]).join('').slice(0, 2)
   const getDaysSince = (date: string) => Math.floor((Date.now() - new Date(date).getTime()) / 86400000)
 
-  const getStatusStyle = (status: RetentionStatus) => {
-    if (status === 'active') return 'border-emerald/25 bg-emerald/10 text-emerald'
-    if (status === 'at_risk') return 'border-amber/25 bg-amber/10 text-amber-600'
-    return 'border-rose/25 bg-rose/10 text-rose-600'
+  const getStatusBadge = (status: RetentionStatus, days: number) => {
+    if (status === 'active') return <Badge className="bg-emerald/10 text-emerald border-emerald/20">Active</Badge>
+    if (status === 'at_risk') return <Badge className="bg-amber/10 text-accent-deep border-amber/20">{days}d Risk</Badge>
+    return <Badge className="bg-rose/10 text-ink border-rose/20">{days}d Churned</Badge>
   }
 
   const getAvatarStyle = (status: RetentionStatus) => {
     if (status === 'active') return 'bg-accent-wash text-accent-deep'
-    if (status === 'at_risk') return 'bg-amber/10 text-amber-600'
-    return 'bg-rose/10 text-rose-600'
+    if (status === 'at_risk') return 'bg-amber/10 text-accent-deep'
+    return 'bg-rose/10 text-ink'
   }
 
   const getFavChannel = (c: CustomerWithStats) => {
@@ -99,7 +124,7 @@ export default function CustomerListPage() {
   const counts = { active: 0, at_risk: 0, churned: 0 }
   customers.forEach((c) => counts[c.retention_status as keyof typeof counts]++)
 
-  const filters = [
+  const statusFilters = [
     { key: 'all' as const, label: 'Semua', count: total },
     { key: 'active' as const, label: 'Active', count: counts.active },
     { key: 'at_risk' as const, label: 'At Risk', count: counts.at_risk },
@@ -112,22 +137,22 @@ export default function CustomerListPage() {
     <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 md:py-10 pb-28 md:pb-20">
       {/* Heading */}
       <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6">
-        <span className="eyebrow">Database</span>
+        <Badge className="h-auto rounded-full border-hairline bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">Database</Badge>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Daftar Customer</h1>
         <p className="mt-1.5 text-xs text-ash sm:text-sm">{total} customer terdaftar dalam database</p>
       </motion.div>
 
-      {/* Search & Date Filter Bar */}
+      {/* Search & Filters */}
       <motion.div variants={fadeUp} custom={1} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-5 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-[240px]">
             <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 text-mist" size={20} weight="light" />
-            <input
+            <Input
               type="text"
               placeholder="Cari nama atau no. telepon..."
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(0) }}
-              className="field h-12 pl-11 text-sm"
+              className="h-12 pl-11 text-sm rounded-2xl"
             />
           </div>
           <button
@@ -160,7 +185,7 @@ export default function CustomerListPage() {
                 {hasDateFilter && (
                   <button
                     onClick={() => { setDateFrom(''); setDateTo('') }}
-                    className="flex items-center gap-1 text-xs text-rose-600 hover:underline"
+                    className="flex items-center gap-1 text-xs text-ink hover:underline"
                   >
                     <X size={13} weight="bold" /> Reset Tanggal
                   </button>
@@ -169,20 +194,20 @@ export default function CustomerListPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="mb-1 block text-[11px] font-semibold text-ash">Dari Tanggal</label>
-                  <input
+                  <Input
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="field h-10 text-xs"
+                    className="h-10 text-xs rounded-2xl"
                   />
                 </div>
                 <div>
                   <label className="mb-1 block text-[11px] font-semibold text-ash">Sampai Tanggal</label>
-                  <input
+                  <Input
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="field h-10 text-xs"
+                    className="h-10 text-xs rounded-2xl"
                   />
                 </div>
               </div>
@@ -191,15 +216,15 @@ export default function CustomerListPage() {
         )}
       </motion.div>
 
-      {/* Filter Chips */}
-      <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {filters.map((f) => (
+      {/* Status Filter Chips */}
+      <motion.div variants={fadeUp} custom={2} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+        {statusFilters.map((f) => (
           <button
             key={f.key}
             onClick={() => { setFilter(f.key); setPage(0) }}
             className={`group flex min-h-[38px] flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-300 active:scale-[0.98] ${
               filter === f.key
-                ? 'bg-accent text-white shadow-[0_6px_16px_-6px_rgba(47,108,255,0.5)]'
+                ? 'bg-white text-ink ring-1 ring-ink/10 shadow-[0_6px_16px_-6px_rgba(27,44,193,0.5)]'
                 : 'border border-hairline bg-white text-ash hover:bg-sunken hover:text-ink'
             }`}
           >
@@ -209,6 +234,28 @@ export default function CustomerListPage() {
             }`}>{f.count}</span>
           </button>
         ))}
+      </motion.div>
+
+      {/* Repeat Order Filter */}
+      <motion.div variants={fadeUp} custom={2.5} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-ash">Repeat:</span>
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
+            {REPEAT_FILTERS.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => { setRepeatFilter(f.key); setPage(0) }}
+                className={`flex-shrink-0 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-all ${
+                  repeatFilter === f.key
+                    ? 'bg-accent-wash text-accent-deep border border-accent/20'
+                    : 'border border-hairline bg-white text-ash hover:bg-sunken'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </motion.div>
 
       {/* Customer Grid/List */}
@@ -247,9 +294,15 @@ export default function CustomerListPage() {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-sm font-semibold text-ink truncate">{customer.name}</span>
-                            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${getStatusStyle(status)}`}>
-                              {status === 'at_risk' ? `${days}d Risk` : status === 'churned' ? `${days}d Churned` : getRetentionLabel(status)}
-                            </span>
+                            {getStatusBadge(status, days)}
+                            <Badge variant="outline" className="border-accent/20 text-accent">
+                              Order ke-{(customer.order_count || 0) + 1}
+                            </Badge>
+                            {(!customer.age_range || !customer.gender) && (
+                              <Badge variant="outline" className="border-accent-soft/40 text-accent-deep">
+                                profil belum lengkap
+                              </Badge>
+                            )}
                           </div>
 
                           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ash">

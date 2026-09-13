@@ -11,10 +11,12 @@ import {
   FileCsv,
   CheckCircle,
 } from '@phosphor-icons/react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { getCustomersWithStats } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
-import { getAppSettings } from '@/services/settingsService'
 import { CHANNELS } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
@@ -132,7 +134,7 @@ export default function ExportPage() {
     <main className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 md:py-10 pb-28 md:pb-20">
       {/* Heading */}
       <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-8">
-        <span className="eyebrow">Export Laporan</span>
+        <Badge className="h-auto rounded-full border-hairline bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">Export Laporan</Badge>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Export Data (CSV / Excel)</h1>
         <p className="mt-1.5 text-xs text-ash sm:text-sm">Unduh data transaksi & customer dalam format file CSV yang siap dibuka di Excel</p>
       </motion.div>
@@ -158,7 +160,7 @@ export default function ExportPage() {
                   }`}
                 >
                   <span className={`mb-3 flex h-10 w-10 items-center justify-center rounded-2xl transition-all ${
-                    exportType === opt.key ? 'bg-accent text-white shadow-sm' : 'bg-accent-wash text-accent'
+                    exportType === opt.key ? 'bg-white text-ink ring-1 ring-ink/10 shadow-sm' : 'bg-accent-wash text-accent'
                   }`}>
                     <opt.icon size={20} weight="duotone" />
                   </span>
@@ -181,12 +183,12 @@ export default function ExportPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-ash">Dari Tanggal (Periode A)</label>
-                    <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="field h-11 text-xs" />
+                    <Label className="mb-1.5 block text-xs font-semibold text-ash">Dari Tanggal (Periode A)</Label>
+                    <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11 text-xs" />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold text-ash">Sampai Tanggal (Periode B)</label>
-                    <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="field h-11 text-xs" />
+                    <Label className="mb-1.5 block text-xs font-semibold text-ash">Sampai Tanggal (Periode B)</Label>
+                    <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11 text-xs" />
                   </div>
                 </div>
               </motion.div>
@@ -203,7 +205,7 @@ export default function ExportPage() {
               onClick={handleExport}
               disabled={loading}
               className="mt-6 group flex min-h-[48px] h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98] disabled:opacity-50"
-              style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
+              style={{ boxShadow: '0 8px 24px -8px rgba(27, 44, 193, 0.5)' }}
             >
               {loading ? (
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />

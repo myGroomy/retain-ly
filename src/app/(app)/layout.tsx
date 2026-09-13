@@ -17,9 +17,13 @@ import {
   X,
   FileCsv,
   DownloadSimple,
+  Buildings,
 } from '@phosphor-icons/react'
 import { getAppSettings, syncSettingsFromSheets } from '@/services/settingsService'
 import { syncStaging } from '@/services/sheetsService'
+import { isManagerRole } from '@/services/adminService'
+import { Toaster } from '@/components/ui/sonner'
+import { SettingsProvider } from '@/lib/SettingsProvider'
 import type { ReactNode } from 'react'
 
 interface User {
@@ -27,13 +31,25 @@ interface User {
   role: string
 }
 
-const NAV_ITEMS = [
+interface NavItem {
+  href: string
+  icon: React.ElementType
+  label: string
+  adminOnly?: boolean
+}
+
+const NAV_ITEMS: NavItem[] = [
   { href: '/app', icon: Basket, label: 'Input Order' },
   { href: '/app/customers', icon: UsersIcon, label: 'Customer' },
   { href: '/app/dashboard', icon: ChartBar, label: 'Dashboard' },
   { href: '/app/follow-up', icon: CheckSquare, label: 'Follow-up' },
+  { href: '/app/admin', icon: Buildings, label: 'Admin', adminOnly: true },
   { href: '/app/settings', icon: Gear, label: 'Settings' },
 ]
+
+function visibleNav(user: User | null): NavItem[] {
+  return user ? NAV_ITEMS.filter((i) => !i.adminOnly || isManagerRole(user.role)) : NAV_ITEMS
+}
 
 function NavLink({ href, icon: Icon, label, onClick }: { href: string; icon: React.ElementType; label: string; onClick?: () => void }) {
   const pathname = usePathname()
@@ -45,7 +61,7 @@ function NavLink({ href, icon: Icon, label, onClick }: { href: string; icon: Rea
       onClick={onClick}
       className={`group relative flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm transition-all duration-300 active:scale-[0.98] ${
         isActive
-          ? 'bg-white font-semibold text-accent shadow-[0_2px_8px_-4px_rgba(47,108,255,0.4)] ring-1 ring-hairline'
+          ? 'bg-white font-semibold text-accent shadow-[0_2px_8px_-4px_rgba(27,44,193,0.4)] ring-1 ring-hairline'
           : 'text-ash hover:bg-sunken hover:text-ink'
       }`}
     >
@@ -83,7 +99,7 @@ function Sidebar({ user, storeName, onLogout }: { user: User | null; storeName: 
             </div>
 
             <nav className="flex flex-col gap-1">
-              {NAV_ITEMS.map((item) => (
+              {visibleNav(user).map((item) => (
                 <NavLink key={item.href} {...item} />
               ))}
               {/* Export Link in Sidebar */}
@@ -123,14 +139,14 @@ function Sidebar({ user, storeName, onLogout }: { user: User | null; storeName: 
   )
 }
 
-function BottomNav({ onLogout }: { onLogout: () => void }) {
+function BottomNav({ user, onLogout }: { user: User | null; onLogout: () => void }) {
   const pathname = usePathname()
 
   return (
     <nav className="fixed inset-x-4 bottom-4 z-50 md:hidden">
       <div className="doppel-outer rounded-[1.75rem]">
         <div className="doppel-inner flex h-16 items-center justify-around rounded-[calc(1.75rem-0.375rem)] px-2">
-          {NAV_ITEMS.map((item) => {
+          {visibleNav(user).map((item) => {
             const isActive = pathname === item.href
             return (
               <Link
@@ -195,11 +211,14 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   const handleLogout = () => {
     localStorage.removeItem('retainly_user')
+    document.cookie = 'retainly_session=; path=/; max-age=0'
     router.replace('/login')
   }
 
   return (
+    <SettingsProvider>
     <div className="sky-hero grain relative min-h-[100dvh] md:pl-64">
+      <Toaster position="top-center" />
       {/* Top Navbar Header with Hamburg Menu */}
       <header className="sticky top-0 z-40 border-b border-hairline bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -266,7 +285,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   </div>
 
                   <div className="space-y-1">
-                    {NAV_ITEMS.map((item) => (
+                    {visibleNav(user).map((item) => (
                       <NavLink key={item.href} {...item} onClick={() => setMenuOpen(false)} />
                     ))}
 
@@ -283,7 +302,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   <div className="border-t border-hairline pt-3">
                     <button
                       onClick={() => { setMenuOpen(false); handleLogout() }}
-                      className="flex w-full items-center gap-2.5 rounded-2xl px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose/10 transition-colors"
+                      className="flex w-full items-center gap-2.5 rounded-2xl px-3.5 py-2 text-xs font-semibold text-ink hover:bg-rose/10 transition-colors"
                     >
                       <SignOut size={16} weight="bold" />
                       <span>Keluar (Logout)</span>
@@ -298,7 +317,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       <Sidebar user={user} storeName={storeName} onLogout={handleLogout} />
       <main className="relative pb-28 md:pb-10">{children}</main>
-      <BottomNav onLogout={handleLogout} />
+      <BottomNav user={user} onLogout={handleLogout} />
     </div>
+    </SettingsProvider>
   )
 }

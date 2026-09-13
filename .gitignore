@@ -27,3 +27,5 @@ coverage/
 npm-debug.log*
 .vercel
 .next/
+.env*
+scripts/*.js

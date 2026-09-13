@@ -86,3 +86,17 @@ export async function updateRow(
 
   cache.delete(sheetName)
 }
+
+export async function deleteRow(sheetName: string, rowIndex: number): Promise<void> {
+  const response = await fetch('/api/sheets/delete', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sheet: sheetName, rowIndex }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete row in ${sheetName}`)
+  }
+
+  cache.delete(sheetName)
+}

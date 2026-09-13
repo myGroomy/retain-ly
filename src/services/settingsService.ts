@@ -1,7 +1,6 @@
 import { getSheetData, appendRow, updateRow } from './sheetsService'
 
 const SETTINGS_SHEET = 'settings'
-const SETTINGS_KEY = 'retainly_settings'
 
 export interface AppSettings {
   storeName: string
@@ -29,52 +28,42 @@ function rowsToSettings(rows: Record<string, string>[]): AppSettings {
   }
 }
 
-// Get settings from localStorage (fast, synchronous)
-export function getAppSettings(): AppSettings {
-  if (typeof window === 'undefined') return DEFAULT_APP_SETTINGS
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY)
-    if (!raw) return DEFAULT_APP_SETTINGS
-    const parsed = JSON.parse(raw)
-    return {
-      storeName: parsed.storeName || DEFAULT_APP_SETTINGS.storeName,
-      activeDays: Number(parsed.activeDays) || DEFAULT_APP_SETTINGS.activeDays,
-      atRiskDays: Number(parsed.atRiskDays) || DEFAULT_APP_SETTINGS.atRiskDays,
-      waTemplate: parsed.waTemplate || DEFAULT_APP_SETTINGS.waTemplate,
-    }
-  } catch {
-    return DEFAULT_APP_SETTINGS
+// In-memory cache — sumber utama settings adalah Google Sheets, bukan localStorage.
+// Di-set lewat syncSettingsFromSheets(); dipakai sebagai sumber sinkron untuk
+// komponen yang butuh nilai seketika (churnStatus, waLinkBuilder, layout, provider).
+let _cache: AppSettings | null = null
+
+function broadcastChange(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('retainly_settings_changed'))
   }
 }
 
-// Save settings to localStorage (fast, synchronous)
-function saveToLocalStorage(settings: AppSettings): void {
-  if (typeof window === 'undefined') return
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
-  window.dispatchEvent(new Event('retainly_settings_changed'))
+// Get settings (synchronous, dari cache yang di-sync dari Sheets)
+export function getAppSettings(): AppSettings {
+  return _cache ?? DEFAULT_APP_SETTINGS
 }
 
-// Sync settings FROM Sheets to localStorage
+// Baca langsung dari Sheets lalu simpan ke cache in-memory
 export async function syncSettingsFromSheets(): Promise<AppSettings> {
   try {
     const rows = await getSheetData(SETTINGS_SHEET)
     if (rows.length > 0) {
-      const settings = rowsToSettings(rows)
-      saveToLocalStorage(settings)
-      return settings
+      _cache = rowsToSettings(rows)
+      broadcastChange()
+      return _cache
     }
   } catch {
-    // Fallback to localStorage
+    // Fallback ke cache / default
   }
   return getAppSettings()
 }
 
-// Save settings TO Sheets AND localStorage
+// Simpan ke cache + Sheets (Google Sheets adalah source of truth)
 export async function saveAppSettings(settings: AppSettings): Promise<void> {
-  // Save to localStorage first (instant)
-  saveToLocalStorage(settings)
+  _cache = settings
+  broadcastChange()
 
-  // Then save to Sheets (async)
   try {
     const rows = await getSheetData(SETTINGS_SHEET)
     const map = new Map(rows.map((r, idx) => [r.key, idx]))
@@ -95,6 +84,6 @@ export async function saveAppSettings(settings: AppSettings): Promise<void> {
       }
     }
   } catch {
-    // localStorage already saved, Sheets sync will happen later
+    // Cache sudah ter-update; Sheets sync bisa retry belakangan
   }
 }

@@ -16,6 +16,8 @@ import {
   Basket,
   ArrowRight,
 } from '@phosphor-icons/react'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { getOrdersByDate } from '@/services/orderService'
 import { getCustomersWithStats } from '@/services/customerService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
@@ -105,7 +107,7 @@ export default function FollowUpPage() {
       {/* Header */}
       <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <span className="eyebrow">Pusat Interaksi</span>
+          <Badge className="h-auto rounded-full border-hairline bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">Pusat Interaksi</Badge>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Follow-up Customer</h1>
           <p className="mt-1.5 text-xs text-ash sm:text-sm">
             Chat & simpan nomor customer setelah transaksi untuk mempererat retensi
@@ -131,7 +133,7 @@ export default function FollowUpPage() {
             onClick={() => setMode('churn_alert')}
             className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold transition-all ${
               mode === 'churn_alert'
-                ? 'bg-white text-rose-600 shadow-sm'
+                ? 'bg-white text-ink shadow-sm'
                 : 'text-ash hover:text-ink'
             }`}
           >
@@ -180,7 +182,7 @@ export default function FollowUpPage() {
                       onClick={() => setSelectedDate(todayStr)}
                       className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
                         selectedDate === todayStr
-                          ? 'bg-accent text-white shadow-sm'
+                          ? 'bg-white text-ink ring-1 ring-ink/10 shadow-[0_6px_16px_-6px_rgba(27,44,193,0.5)]'
                           : 'border border-hairline bg-white text-ash hover:bg-sunken'
                       }`}
                     >
@@ -190,17 +192,17 @@ export default function FollowUpPage() {
                       onClick={() => setSelectedDate(yesterdayStr)}
                       className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
                         selectedDate === yesterdayStr
-                          ? 'bg-accent text-white shadow-sm'
+                          ? 'bg-white text-ink ring-1 ring-ink/10 shadow-[0_6px_16px_-6px_rgba(27,44,193,0.5)]'
                           : 'border border-hairline bg-white text-ash hover:bg-sunken'
                       }`}
                     >
                       Kemarin
                     </button>
-                    <input
+                    <Input
                       type="date"
                       value={selectedDate}
                       onChange={(e) => setSelectedDate(e.target.value)}
-                      className="field h-9 text-xs w-auto min-w-[140px]"
+                      className="h-9 w-auto min-w-[140px] text-xs"
                     />
                   </div>
                 </div>
@@ -242,7 +244,7 @@ export default function FollowUpPage() {
                         <button
                           onClick={() => toggleCheck(order.id)}
                           className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300 active:scale-90 ${
-                            isChecked ? 'border-accent bg-accent text-white' : 'border-mist bg-white hover:border-accent'
+                            isChecked ? 'border-accent bg-white text-ink ring-1 ring-ink/10' : 'border-mist bg-white hover:border-accent'
                           }`}
                           title="Tandai Sudah Di-chat"
                         >
@@ -253,13 +255,13 @@ export default function FollowUpPage() {
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-sm font-semibold text-ink truncate">{cust.name}</span>
                             {isNewCustomer ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald/30 bg-emerald/10 px-2 py-0.5 text-[10px] font-semibold text-emerald">
+                              <Badge className="border-emerald/30 bg-emerald/10 text-emerald">
                                 <Sparkle size={11} weight="fill" /> Pelanggan Baru
-                              </span>
+                              </Badge>
                             ) : (
-                              <span className="rounded-full border border-accent/25 bg-accent-wash px-2 py-0.5 text-[10px] font-semibold text-accent-deep">
+                              <Badge className="border-accent/25 bg-accent-wash text-accent-deep">
                                 Langganan
-                              </span>
+                              </Badge>
                             )}
                           </div>
                           <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ash">
@@ -277,7 +279,7 @@ export default function FollowUpPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex min-h-[44px] h-10 items-center gap-2 rounded-full bg-emerald px-4 text-xs font-semibold text-white transition-all hover:scale-105 active:scale-95"
-                          style={{ boxShadow: '0 6px 16px -6px rgba(16, 185, 129, 0.5)' }}
+                          style={{ boxShadow: '0 6px 16px -6px rgba(27, 44, 193, 0.5)' }}
                         >
                           <WhatsappLogo size={16} weight="fill" />
                           <span>Chat WA</span>
@@ -328,7 +330,7 @@ export default function FollowUpPage() {
             const isChecked = checked.has(c.id)
             const days = Math.floor((Date.now() - new Date(c.last_order_date).getTime()) / 86400000)
             const isRisk = c.retention_status === 'at_risk'
-            const statusColor = isRisk ? 'border-amber/25 bg-amber/10 text-amber-600' : 'border-rose/25 bg-rose/10 text-rose-600'
+            const statusColor = isRisk ? 'border-amber/25 bg-amber/10 text-accent-deep' : 'border-rose/25 bg-rose/10 text-ink'
 
             return (
               <div key={c.id} className={`doppel-outer transition-opacity duration-500 ${isChecked ? 'opacity-40' : ''}`}>
@@ -337,7 +339,7 @@ export default function FollowUpPage() {
                     <button
                       onClick={() => toggleCheck(c.id)}
                       className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300 active:scale-90 ${
-                        isChecked ? 'border-accent bg-accent text-white' : 'border-mist bg-white hover:border-accent'
+                        isChecked ? 'border-accent bg-white text-ink ring-1 ring-ink/10' : 'border-mist bg-white hover:border-accent'
                       }`}
                     >
                       {isChecked && <CheckSquare size={13} weight="fill" />}
@@ -348,14 +350,14 @@ export default function FollowUpPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusColor}`}>
+                    <Badge className={`px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusColor}`}>
                       {getRetentionLabel(c.retention_status)}
-                    </span>
+                    </Badge>
                     <a
                       href={buildWaLink(c.phone_normalized, c.name)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald text-white transition-all hover:scale-105 active:scale-95"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-ink ring-1 ring-ink/10 transition-all hover:scale-105 active:scale-95"
                     >
                       <WhatsappLogo size={16} weight="fill" />
                     </a>

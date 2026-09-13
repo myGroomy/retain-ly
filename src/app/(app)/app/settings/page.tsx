@@ -15,7 +15,11 @@ import {
   DownloadSimple,
   Spinner,
 } from '@phosphor-icons/react'
-import { getAppSettings, saveAppSettings, type AppSettings, DEFAULT_APP_SETTINGS } from '@/services/settingsService'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
+import { syncSettingsFromSheets, saveAppSettings, type AppSettings, DEFAULT_APP_SETTINGS } from '@/services/settingsService'
 import { fadeUp } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 
@@ -26,6 +30,8 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [newChannelInput, setNewChannelInput] = useState('')
   const [savedToast, setSavedToast] = useState(false)
+  const [recalculating, setRecalculating] = useState(false)
+  const [recalcResult, setRecalcResult] = useState<string | null>(null)
 
   useEffect(() => {
     loadSettings()
@@ -34,7 +40,7 @@ export default function SettingsPage() {
   const loadSettings = async () => {
     setLoading(true)
     try {
-      const s = await getAppSettings()
+      const s = await syncSettingsFromSheets()
       setSettings(s)
     } catch {
       // Use defaults
@@ -65,6 +71,24 @@ export default function SettingsPage() {
     // Channels are now fixed in the app, this is just for display
   }
 
+  const handleRecalculate = async () => {
+    setRecalculating(true)
+    setRecalcResult(null)
+    try {
+      const res = await fetch('/api/orders/recalculate', { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        setRecalcResult(`Selesai. ${data.total_orders} orders, ${data.updated} customer diperbarui.`)
+      } else {
+        setRecalcResult(`Gagal: ${data.error}`)
+      }
+    } catch {
+      setRecalcResult('Gagal menghubungi server')
+    } finally {
+      setRecalculating(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-[70dvh] items-center justify-center">
@@ -91,7 +115,7 @@ export default function SettingsPage() {
 
       {/* Heading */}
       <motion.div variants={fadeUp} custom={0} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mb-8">
-        <span className="eyebrow">Preferensi</span>
+        <Badge className="h-auto rounded-full border-hairline bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">Preferensi</Badge>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-4xl">Pengaturan Aplikasi</h1>
         <p className="mt-1.5 text-xs text-ash sm:text-sm">Kustomisasi identitas toko, ambang retensi, dan template WhatsApp (tersimpan di cloud)</p>
       </motion.div>
@@ -112,13 +136,12 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Nama Cabang / Outlet</label>
-                <input
-                  type="text"
+                <Label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Nama Cabang / Outlet</Label>
+                <Input
                   value={settings.storeName}
                   onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
                   placeholder="Misal: Cabang Senopati / Outlet Sudirman"
-                  className="field h-12 text-sm font-medium"
+                  className="h-12 text-sm font-medium"
                 />
               </div>
             </div>
@@ -141,31 +164,31 @@ export default function SettingsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Batas Active (Hari)</label>
-                  <input
+                  <Label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Batas Active (Hari)</Label>
+                  <Input
                     type="number"
                     value={settings.activeDays}
                     onChange={(e) => setSettings({ ...settings, activeDays: Number(e.target.value) || 30 })}
-                    className="field h-11 bg-sunken/50 font-semibold"
+                    className="h-11 bg-sunken/50 font-semibold"
                   />
                   <p className="mt-1.5 text-[11px] text-ash">0 &ndash; {settings.activeDays} hari = <strong className="text-emerald">Active</strong></p>
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Batas At Risk (Hari)</label>
-                  <input
+                  <Label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ash">Batas At Risk (Hari)</Label>
+                  <Input
                     type="number"
                     value={settings.atRiskDays}
                     onChange={(e) => setSettings({ ...settings, atRiskDays: Number(e.target.value) || 60 })}
-                    className="field h-11 bg-sunken/50 font-semibold"
+                    className="h-11 bg-sunken/50 font-semibold"
                   />
-                  <p className="mt-1.5 text-[11px] text-ash">{settings.activeDays + 1} &ndash; {settings.atRiskDays} hari = <strong className="text-amber-600">At Risk</strong></p>
+                  <p className="mt-1.5 text-[11px] text-ash">{settings.activeDays + 1} &ndash; {settings.atRiskDays} hari = <strong className="text-accent-deep">At Risk</strong></p>
                 </div>
               </div>
 
               <div className="mt-5 flex items-start gap-3 rounded-2xl border border-amber/20 bg-amber/5 p-3.5">
-                <Info size={18} weight="duotone" className="mt-0.5 shrink-0 text-amber-600" />
+                <Info size={18} weight="duotone" className="mt-0.5 shrink-0 text-accent-deep" />
                 <p className="text-xs leading-relaxed text-ash">
-                  Customer yang tidak melakukan transaksi lebih dari <strong>{settings.atRiskDays} hari</strong> akan otomatis dimasukkan ke status <strong className="text-rose-600">Churned</strong> di seluruh dashboard & laporan.
+                  Customer yang tidak melakukan transaksi lebih dari <strong>{settings.atRiskDays} hari</strong> akan otomatis dimasukkan ke status <strong className="text-ink">Churned</strong> di seluruh dashboard & laporan.
                 </p>
               </div>
             </div>
@@ -186,11 +209,11 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <textarea
+              <Textarea
                 value={settings.waTemplate}
                 onChange={(e) => setSettings({ ...settings, waTemplate: e.target.value })}
                 rows={3}
-                className="field resize-none text-sm leading-relaxed"
+                className="resize-none text-sm leading-relaxed"
               />
 
               <div className="mt-3 rounded-2xl border border-hairline bg-sunken/40 p-4">
@@ -218,7 +241,7 @@ export default function SettingsPage() {
             onClick={handleSave}
             disabled={saving}
             className="group flex min-h-[50px] h-13 w-full items-center justify-center gap-3 rounded-full bg-accent text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98] disabled:opacity-50"
-            style={{ boxShadow: '0 8px 24px -8px rgba(47, 108, 255, 0.5)' }}
+            style={{ boxShadow: '0 8px 24px -8px rgba(27, 44, 193, 0.5)' }}
           >
             {saving ? (
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -229,6 +252,20 @@ export default function SettingsPage() {
               </>
             )}
           </button>
+        </motion.div>
+
+        {/* Hidden Recalculate (admin tool) */}
+        <motion.div variants={fadeUp} custom={6} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-8 border-t border-hairline pt-4">
+          <button
+            onClick={handleRecalculate}
+            disabled={recalculating}
+            className="text-[11px] text-mist/60 hover:text-mist transition-colors"
+          >
+            {recalculating ? 'Menghitung ulang order_count...' : 'Recalculate order_count'}
+          </button>
+          {recalcResult && (
+            <p className="mt-1 text-[11px] text-ash">{recalcResult}</p>
+          )}
         </motion.div>
       </div>
     </main>

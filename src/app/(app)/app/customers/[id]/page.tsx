@@ -20,8 +20,15 @@ import {
   X,
   FloppyDisk,
   Plus,
-  Basket,
 } from '@phosphor-icons/react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 import { getCustomerById, updateCustomer } from '@/services/customerService'
 import { getOrdersByCustomer } from '@/services/orderService'
 import { getRetentionStatus, getRetentionLabel } from '@/utils/churnStatus'
@@ -31,6 +38,20 @@ import { CHANNELS, DEFAULT_THRESHOLDS, PAGE_SIZE } from '@/constants'
 import { fadeUp, FLUID_EASE } from '@/lib/motion'
 import { useMounted } from '@/lib/useMounted'
 import type { CustomerWithStats, Order } from '@/types'
+
+const AGE_RANGES = [
+  { value: '<17', label: '<17 — Anak-anak/Remaja awal' },
+  { value: '17-25', label: '17-25 — Gen Z / Pelajar-Mahasiswa' },
+  { value: '26-35', label: '26-35 — Muda bekerja' },
+  { value: '36-45', label: '36-45 — Keluarga muda' },
+  { value: '46-55', label: '46-55 — Dewasa mapan' },
+  { value: '56+', label: '56+ — Senior' },
+]
+
+const GENDERS = [
+  { value: 'L', label: 'Laki-laki' },
+  { value: 'P', label: 'Perempuan' },
+]
 
 export default function CustomerDetailPage() {
   const ready = useMounted()
@@ -49,6 +70,12 @@ export default function CustomerDetailPage() {
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
+  // Detail fields
+  const [ageRange, setAgeRange] = useState('')
+  const [gender, setGender] = useState('')
+  const [description, setDescription] = useState('')
+  const [savingDetails, setSavingDetails] = useState(false)
+
   useEffect(() => { if (id) loadData() }, [id])
 
   const loadData = async () => {
@@ -61,6 +88,9 @@ export default function CustomerDetailPage() {
         setCustomer({ ...c, retention_status: status })
         setEditName(c.name)
         setEditPhone(c.phone_normalized)
+        setAgeRange(c.age_range || '')
+        setGender(c.gender || '')
+        setDescription(c.description || '')
       }
       setOrders(o.data)
     } catch { /* silent */ } finally { setLoading(false) }
@@ -80,10 +110,29 @@ export default function CustomerDetailPage() {
       })
       setCustomer((prev) => prev ? { ...prev, name: updated.name, phone_normalized: updated.phone_normalized } : null)
       setIsEditing(false)
+      toast.success('Profil customer diperbarui')
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Gagal mengubah data customer')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleSaveDetails = async () => {
+    if (!customer) return
+    setSavingDetails(true)
+    try {
+      await updateCustomer(customer.id, {
+        age_range: ageRange,
+        gender: gender,
+        description: description,
+      })
+      setCustomer((prev) => prev ? { ...prev, age_range: ageRange, gender, description } : null)
+      toast.success('Detail customer diperbarui')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Gagal menyimpan detail')
+    } finally {
+      setSavingDetails(false)
     }
   }
 
@@ -111,10 +160,10 @@ export default function CustomerDetailPage() {
 
   const fav = getFavChannel()
 
-  const getStatusStyle = () => {
-    if (status === 'active') return 'border-emerald/25 bg-emerald/10 text-emerald'
-    if (status === 'at_risk') return 'border-amber/25 bg-amber/10 text-amber-600'
-    return 'border-rose/25 bg-rose/10 text-rose-600'
+  const getStatusBadge = () => {
+    if (status === 'active') return <Badge className="bg-emerald/10 text-emerald border-emerald/20">Active</Badge>
+    if (status === 'at_risk') return <Badge className="bg-amber/10 text-accent-deep border-amber/20">At Risk</Badge>
+    return <Badge className="bg-rose/10 text-ink border-rose/20">Churned</Badge>
   }
 
   const stats = [
@@ -144,8 +193,8 @@ export default function CustomerDetailPage() {
 
         <Link
           href="/app"
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs sm:text-sm font-semibold text-white transition-all hover:bg-accent-deep active:scale-[0.98]"
-          style={{ boxShadow: '0 6px 16px -6px rgba(47, 108, 255, 0.5)' }}
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-ink ring-1 ring-ink/10 transition-all hover:bg-ink/5 active:scale-[0.98]"
+          style={{ boxShadow: '0 6px 16px -6px rgba(27, 44, 193, 0.5)' }}
         >
           <Plus size={16} weight="bold" />
           <span>+ Catat Order Baru</span>
@@ -166,12 +215,12 @@ export default function CustomerDetailPage() {
                       {customer.phone_normalized}
                     </a>
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${getStatusStyle()}`}>
-                        {getRetentionLabel(status)}
-                      </span>
-                      <span className="rounded-full border border-hairline bg-white px-2.5 py-0.5 text-[11px] font-medium text-ash">
+                      {getStatusBadge()}
+                      <Badge variant="outline" className="border-accent/20 text-accent">
                         {customer.order_count}x Order
-                      </span>
+                      </Badge>
+                      {ageRange && <Badge variant="secondary">{ageRange}</Badge>}
+                      {gender && <Badge variant="secondary">{gender === 'L' ? 'Laki-laki' : 'Perempuan'}</Badge>}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2.5 shrink-0">
@@ -183,7 +232,7 @@ export default function CustomerDetailPage() {
                       className="group flex min-h-[36px] items-center gap-1.5 rounded-full border border-hairline bg-white px-3 py-1.5 text-xs font-semibold text-ash transition-all duration-300 hover:bg-sunken hover:text-ink active:scale-[0.96]"
                     >
                       <PencilSimple size={14} weight="bold" className="text-accent" />
-                      Edit Kontak
+                      Edit Profil
                     </button>
                   </div>
                 </div>
@@ -205,28 +254,28 @@ export default function CustomerDetailPage() {
                 </div>
 
                 {saveError && (
-                  <div className="rounded-2xl border border-rose/20 bg-rose/10 p-3 text-xs text-rose-600">
+                  <div className="rounded-2xl border border-rose/20 bg-rose/10 p-3 text-xs text-ink">
                     {saveError}
                   </div>
                 )}
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">Nama Lengkap</label>
-                  <input
+                  <Label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">Nama Lengkap</Label>
+                  <Input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="field h-11"
+                    className="h-11 rounded-2xl"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">No. WhatsApp</label>
-                  <input
+                  <Label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">No. WhatsApp</Label>
+                  <Input
                     type="tel"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="field h-11 font-mono"
+                    className="h-11 rounded-2xl font-mono"
                   />
                 </div>
 
@@ -274,50 +323,122 @@ export default function CustomerDetailPage() {
         ))}
       </motion.div>
 
-      {/* Order History */}
+      {/* Tabs: Riwayat / Detail */}
       <motion.div variants={fadeUp} custom={3} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-8 sm:mt-10">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-ink">Riwayat Transaksi</h3>
-          <span className="text-xs text-ash">{orders.length} order</span>
-        </div>
-        <div className="space-y-3">
-          {orders.map((order) => {
-            const ch = CHANNELS.find((c) => c.id === order.channel)
-            return (
-              <div key={order.id} className="doppel-outer">
-                <div className="doppel-inner flex items-center justify-between p-4">
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-accent-wash text-accent">
-                      <ShoppingBag size={18} weight="duotone" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-ink">{order.order_date}</div>
-                      <div className="text-xs text-ash">Cabang {order.branch || '-'}</div>
+        <Tabs defaultValue="history">
+          <TabsList className="mb-4">
+            <TabsTrigger value="history">Riwayat Order</TabsTrigger>
+            <TabsTrigger value="details">Detail Profil</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="history">
+            <div className="space-y-3">
+              {orders.map((order, idx) => {
+                const ch = CHANNELS.find((c) => c.id === order.channel)
+                return (
+                  <div key={order.id} className="doppel-outer">
+                    <div className="doppel-inner flex items-center justify-between p-4">
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-accent-wash text-accent">
+                          <ShoppingBag size={18} weight="duotone" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-ink">{order.order_date}</span>
+                            <Badge variant="outline" className="text-[10px]">
+                              Order ke-{idx + 1} dari {orders.length}
+                            </Badge>
+                          </div>
+                          <div className="text-xs text-ash">Cabang {order.branch || '-'}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="rounded-full border border-hairline bg-white px-3 py-1 text-[11px] font-semibold text-ink-soft">
+                          {ch?.label || order.channel}
+                        </span>
+                        <span className="flex items-center gap-1 text-xs text-emerald">
+                          <CheckCircle size={13} weight="fill" /> Selesai
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="rounded-full border border-hairline bg-white px-3 py-1 text-[11px] font-semibold text-ink-soft">
-                      {ch?.label || order.channel}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-emerald">
-                      <CheckCircle size={13} weight="fill" /> Selesai
-                    </span>
+                )
+              })}
+              {orders.length === 0 && (
+                <div className="py-10 text-center text-sm text-ash">Belum ada riwayat order</div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="details">
+            <div className="doppel-outer">
+              <div className="doppel-inner p-5 space-y-5">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">Kategori Usia</Label>
+                    <Select value={ageRange} onValueChange={(v) => setAgeRange(v || '')}>
+                      <SelectTrigger className="h-11 rounded-2xl">
+                        <SelectValue placeholder="Pilih rentang usia" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {AGE_RANGES.map((ar) => (
+                          <SelectItem key={ar.value} value={ar.value}>{ar.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">Gender</Label>
+                    <Select value={gender} onValueChange={(v) => setGender(v || '')}>
+                      <SelectTrigger className="h-11 rounded-2xl">
+                        <SelectValue placeholder="Pilih gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {GENDERS.map((g) => (
+                          <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
+
+                <div>
+                  <Label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ash">Deskripsi / Catatan</Label>
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Contoh: suka pedas, biasa dine-in weekend, kadang dipesan oleh adiknya..."
+                    className="min-h-[100px] rounded-2xl"
+                  />
+                </div>
+
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleSaveDetails}
+                    disabled={savingDetails}
+                    className="rounded-full"
+                  >
+                    {savingDetails ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    ) : (
+                      <>
+                        <FloppyDisk size={16} weight="bold" className="mr-2" />
+                        Simpan Detail
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
-            )
-          })}
-          {orders.length === 0 && (
-            <div className="py-10 text-center text-sm text-ash">Belum ada riwayat order</div>
-          )}
-        </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </motion.div>
 
       {/* Recommendation */}
       <motion.div variants={fadeUp} custom={4} initial="hidden" animate={ready ? 'show' : 'hidden'} className="mt-4">
         <div className="rounded-3xl border border-hairline bg-white p-5">
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-amber/10 text-amber-600">
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-amber/10 text-accent-deep">
               <Lightbulb size={18} weight="duotone" />
             </span>
             <div>
@@ -335,7 +456,7 @@ export default function CustomerDetailPage() {
         </div>
       </motion.div>
 
-      {/* Fixed bottom CTA — mobile optimized above bottom nav */}
+      {/* Fixed bottom CTA */}
       <div className="fixed inset-x-0 bottom-20 md:bottom-0 z-30 md:left-64">
         <div className="mx-auto max-w-3xl px-4 py-3">
           <div className="doppel-outer rounded-[1.75rem]">
@@ -345,7 +466,7 @@ export default function CustomerDetailPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex min-h-[48px] h-12 sm:h-13 flex-1 items-center justify-center gap-2.5 rounded-full bg-emerald text-xs sm:text-sm font-semibold text-white transition-all duration-500 hover:-translate-y-px active:scale-[0.98]"
-                style={{ boxShadow: '0 8px 24px -8px rgba(16, 185, 129, 0.5)' }}
+                style={{ boxShadow: '0 8px 24px -8px rgba(27, 44, 193, 0.5)' }}
               >
                 <WhatsappLogo size={20} weight="fill" />
                 <span>Kirim WhatsApp</span>

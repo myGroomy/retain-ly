@@ -1,5 +1,4 @@
-import { getSheetData, appendRow } from './sheetsService'
-import { generateId } from '@/utils/generateId'
+import { getSheetData } from './sheetsService'
 import type { Order, OrderWithCustomer, PaginatedResponse } from '@/types'
 
 const ORDERS_SHEET = 'orders'
@@ -29,37 +28,47 @@ function paginate<T>(data: T[], page: number, pageSize: number): PaginatedRespon
   }
 }
 
-export async function createOrder(
-  order: Omit<Order, 'id' | 'created_at'>,
-): Promise<Order> {
-  const customers = await getSheetData(CUSTOMERS_SHEET)
-  const customerExists = customers.some(c => c.id === order.customer_id)
+export interface CreateOrderInput {
+  customer_id: string
+  order_date: string
+  channel: Order['channel']
+  raw_phone_input?: string | null
+  branch?: string
+  alias_note?: string
+}
 
-  if (!customerExists) {
-    throw new Error('Customer not found')
+export async function createOrder(order: CreateOrderInput): Promise<Order> {
+  const res = await fetch('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      customer_id: order.customer_id,
+      order_date: order.order_date,
+      channel: order.channel,
+      raw_phone_input: order.raw_phone_input || '',
+      branch: order.branch || '',
+      alias_note: order.alias_note || '',
+    }),
+  })
+
+  const data = await res.json().catch(() => ({}))
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error('Sesi tidak valid, silakan login ulang')
+    }
+    throw new Error(data.error || 'Gagal menyimpan order')
   }
 
-  const newOrder: Order = {
-    id: generateId(),
+  return {
+    id: data.order_id,
     customer_id: order.customer_id,
     order_date: order.order_date,
     channel: order.channel,
-    raw_phone_input: order.raw_phone_input,
+    raw_phone_input: order.raw_phone_input || '',
     created_at: new Date().toISOString(),
     branch: order.branch || '',
   }
-
-  await appendRow(ORDERS_SHEET, {
-    id: newOrder.id,
-    customer_id: newOrder.customer_id,
-    order_date: newOrder.order_date,
-    channel: newOrder.channel,
-    raw_phone_input: newOrder.raw_phone_input || '',
-    created_at: newOrder.created_at,
-    branch: newOrder.branch || '',
-  })
-
-  return newOrder
 }
 
 export async function getOrdersByCustomer(

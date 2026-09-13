@@ -14,6 +14,10 @@ function toCustomer(row: Record<string, string>): Customer {
     first_order_date: row.first_order_date,
     created_at: row.created_at,
     branch: row.branch || '',
+    order_count: parseInt(row.order_count || '0', 10),
+    description: row.description || '',
+    age_range: row.age_range || '',
+    gender: row.gender || '',
   }
 }
 
@@ -50,7 +54,7 @@ export async function searchCustomers(
     })
     .map(c => ({
       ...toCustomer(c),
-      order_count: 0,
+      order_count: parseInt(c.order_count || '0', 10),
       last_order_date: c.first_order_date,
       retention_status: 'active' as const,
       orders: [],
@@ -70,14 +74,13 @@ export async function getCustomerById(id: string): Promise<CustomerWithStats | n
     .filter(o => o.customer_id === id)
     .map(o => ({ order_date: o.order_date, channel: o.channel, branch: o.branch }))
 
-  const orderCount = customerOrders.length
   const lastOrderDate = customerOrders.length > 0
     ? customerOrders.reduce((latest, o) => o.order_date > latest ? o.order_date : latest, customerOrders[0].order_date)
     : customer.first_order_date
 
   return {
     ...toCustomer(customer),
-    order_count: orderCount,
+    order_count: parseInt(customer.order_count || '0', 10),
     last_order_date: lastOrderDate,
     retention_status: 'active',
     orders: customerOrders,
@@ -115,12 +118,11 @@ export async function getCustomersWithStats(
   const customersWithStats = customers.map(c => {
     const customer = toCustomer(c)
     const customerOrders = ordersByCustomer.get(c.id) || []
-    const orderCount = customerOrders.length
     const lastOrderDate = lastOrderDateByCustomer.get(c.id) || c.first_order_date
 
     return {
       ...customer,
-      order_count: orderCount,
+      order_count: parseInt(c.order_count || '0', 10),
       last_order_date: lastOrderDate,
       retention_status: 'active' as const,
       orders: customerOrders,
@@ -159,6 +161,10 @@ export async function createCustomer(
     first_order_date: customer.first_order_date,
     created_at: new Date().toISOString(),
     branch: customer.branch || '',
+    order_count: 0,
+    description: customer.description || '',
+    age_range: customer.age_range || '',
+    gender: customer.gender || '',
   }
 
   await appendRow(CUSTOMERS_SHEET, {
@@ -169,6 +175,10 @@ export async function createCustomer(
     created_at: newCustomer.created_at,
     version: '1',
     branch: newCustomer.branch || '',
+    order_count: '0',
+    description: newCustomer.description || '',
+    age_range: newCustomer.age_range || '',
+    gender: newCustomer.gender || '',
   })
 
   return newCustomer
@@ -176,7 +186,7 @@ export async function createCustomer(
 
 export async function updateCustomer(
   id: string,
-  updates: Partial<Pick<Customer, 'name' | 'phone_normalized'>>,
+  updates: Partial<Pick<Customer, 'name' | 'phone_normalized' | 'age_range' | 'gender' | 'description'>>,
 ): Promise<Customer> {
   const customers = await getSheetData(CUSTOMERS_SHEET)
   const index = customers.findIndex(c => c.id === id)
@@ -196,6 +206,10 @@ export async function updateCustomer(
     created_at: existing.created_at,
     version: String(parseInt(existing.version || '1') + 1),
     branch: existing.branch || '',
+    order_count: existing.order_count || '0',
+    description: updates.description !== undefined ? updates.description : (existing.description || ''),
+    age_range: updates.age_range !== undefined ? updates.age_range : (existing.age_range || ''),
+    gender: updates.gender !== undefined ? updates.gender : (existing.gender || ''),
   }
 
   await updateRow(CUSTOMERS_SHEET, index, updatedData)
@@ -207,5 +221,9 @@ export async function updateCustomer(
     first_order_date: updatedData.first_order_date,
     created_at: updatedData.created_at,
     branch: updatedData.branch,
+    order_count: parseInt(updatedData.order_count, 10),
+    description: updatedData.description,
+    age_range: updatedData.age_range,
+    gender: updatedData.gender,
   }
 }
